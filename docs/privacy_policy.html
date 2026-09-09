@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Privacy Policy - Peak Frequency</title>
+  <style>
+    :root {
+      --bg-color: #0d1117;
+      --card-bg: #161b22;
+      --border-color: #30363d;
+      --text-main: #c9d1d9;
+      --text-heading: #f0f6fc;
+      --text-muted: #8b949e;
+      --accent-color: #58a6ff;
+      --accent-cyan: #00e5ff;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      line-height: 1.65;
+      color: var(--text-main);
+      background-color: var(--bg-color);
+      padding: 2rem 1rem;
+    }
+
+    .container {
+      max-width: 760px;
+      margin: 0 auto;
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 2.5rem;
+    }
+
+    header {
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    h1 {
+      color: var(--text-heading);
+      font-size: 1.85rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+    }
+
+    .updated-date {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+    }
+
+    h2 {
+      color: var(--text-heading);
+      font-size: 1.25rem;
+      margin-top: 1.75rem;
+      margin-bottom: 0.75rem;
+      border-bottom: 1px solid #21262d;
+      padding-bottom: 0.3rem;
+    }
+
+    p {
+      margin-bottom: 1rem;
+    }
+
+    ul {
+      margin-bottom: 1.25rem;
+      padding-left: 1.5rem;
+    }
+
+    li {
+      margin-bottom: 0.5rem;
+    }
+
+    li strong {
+      color: var(--text-heading);
+    }
+
+    code {
+      font-family: ui-monospace, SFMono-Regular, SF Mono, Menlo, Consolas, monospace;
+      font-size: 0.85em;
+      background-color: rgba(110, 118, 129, 0.2);
+      padding: 0.2em 0.4em;
+      border-radius: 4px;
+      color: var(--accent-cyan);
+    }
+
+    a {
+      color: var(--accent-color);
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    .callout {
+      background-color: rgba(56, 139, 253, 0.1);
+      border-left: 4px solid var(--accent-color);
+      padding: 1rem;
+      margin-bottom: 1.5rem;
+      border-radius: 0 4px 4px 0;
+    }
+
+    footer {
+      margin-top: 2.5rem;
+      padding-top: 1rem;
+      border-top: 1px solid var(--border-color);
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+  </style>
+</head>
+<body>
+
+  <main class="container">
+    <header>
+      <h1>Privacy Policy for Peak Frequency</h1>
+      <div class="updated-date">Last Updated: September 2026</div>
+    </header>
+
+    <div class="callout">
+      <strong>On-Device Architecture:</strong> Peak Frequency operates entirely on your watch. <strong>We do not collect, transmit, store on external servers, or sell your personal, sensor, or biometric data.</strong>
+    </div>
+
+    <section>
+      <h2>1. Data Accessed and Processed</h2>
+      <p>To provide real-time biofeedback and calculate your cardiovascular resonance frequency, the application interacts with device APIs locally:</p>
+      <ul>
+        <li><strong>Biometric & Sensor Data (<code>Sensor</code>):</strong> Streams real-time heart rate and beat-to-beat intervals directly from your watch's optical PPG sensor or paired chest strap. This telemetry is handled in volatile RAM solely to determine heart rate oscillation size and phase alignment.</li>
+        <li><strong>User Profile Data (<code>UserProfile</code>):</strong> Reads height and biological sex locally from your Garmin profile to compute an individualized baseline starting breath frequency.</li>
+        <li><strong>Activity Recording & Metrics (<code>ActivityRecording</code>, <code>FitContributor</code>):</strong> If you choose to save a completed session, summary metrics and respiratory wave data are written to standard on-device <code>.FIT</code> activity files.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>2. Data Storage and Retention</h2>
+      <ul>
+        <li><strong>Local Flash Storage:</strong> The application stores your calculated optimal resonance cadence in local storage (<code>Toybox.Application.Storage</code>) so the app remembers your pacing cadence for subsequent sessions.</li>
+        <li><strong>Activity History:</strong> Recorded sessions exist locally on your watch storage until synced with your personal <strong>Garmin Connect</strong> account according to <a href="https://www.garmin.com/privacy/" target="_blank" rel="noopener noreferrer">Garmin's Privacy Policy</a>.</li>
+        <li><strong>Volatile Memory:</strong> Beat-to-beat interval arrays and raw sensor buffers used during live biofeedback are wiped from device memory immediately upon exiting the session.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>3. Third-Party Access and Data Sharing</h2>
+      <ul>
+        <li><strong>Zero External Communication:</strong> The app does not request or include network permissions (<code>Communications</code>). It has no technical capability to communicate with external APIs, cloud servers, or third-party platforms.</li>
+        <li><strong>No Trackers or Analytics:</strong> The app contains no tracking scripts, advertising frameworks, crash-reporting SDKs, or behavioral telemetries.</li>
+        <li><strong>No Commercial Data Use:</strong> No data is ever sold, rented, monetized, or shared with third parties.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>4. User Control & Data Deletion</h2>
+      <ul>
+        <li><strong>Sensor Permissions:</strong> You may uninstall the application or revoke sensor access permissions at any time through the Garmin Connect IQ mobile application or Garmin Express.</li>
+        <li><strong>Session Deletion:</strong> You can discard an active session at any point to prevent recording to your device. Saved activities can be deleted at any time directly through your Garmin device history or your Garmin Connect account.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>5. Contact</h2>
+      <p>For questions, feature feedback, or source code inquiries regarding this application, please contact:</p>
+      <ul>
+        <li><strong>Developer:</strong> Michael Egger</li>
+        <li><strong>Email:</strong> <a href="mailto:mesw@mailbox.org">mesw@mailbox.org</a></li>
+        <li><strong>Source Repository:</strong> <a href="https://github.com/mesw/PeakFrequency" target="_blank" rel="noopener noreferrer">https://github.com/mesw/PeakFrequency</a></li>
+      </ul>
+    </section>
+
+    <footer>
+      &copy; 2026 Peak Frequency. Built for Garmin Connect IQ.
+    </footer>
+  </main>
+
+</body>
+</html>
