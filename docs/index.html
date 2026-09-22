@@ -211,17 +211,20 @@
       margin-bottom: 4rem;
     }
 
-    /* Interactive Live Pacer Simulation */
+    /* Interactive Live Pacer Simulation (Accurate Garmin Watch Clone) */
     .pacer-preview {
       background: var(--bg-surface);
       border: 1px solid var(--border-subtle);
-      border-radius: 24px;
-      padding: 2.5rem 2rem;
-      max-width: 460px;
+      border-radius: 28px;
+      padding: 3rem 2rem;
+      max-width: 480px;
       margin: 0 auto;
-      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.7), 0 0 50px rgba(0, 229, 255, 0.08);
       position: relative;
       overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
     }
 
     .pacer-preview::before {
@@ -231,79 +234,152 @@
       left: -50%;
       width: 200%;
       height: 200%;
-      background: radial-gradient(circle, rgba(0, 229, 255, 0.05) 0%, transparent 60%);
+      background: radial-gradient(circle, rgba(0, 229, 255, 0.04) 0%, transparent 60%);
       pointer-events: none;
     }
 
+    /* Garmin Forerunner Bezel Frame */
     .watch-bezel {
-      width: 260px;
-      height: 260px;
+      width: 330px;
+      height: 330px;
       border-radius: 50%;
-      background: #000;
-      border: 4px solid #1a2233;
-      margin: 0 auto 1.5rem auto;
+      background: #151821;
+      border: 10px solid #232733;
+      box-shadow: 
+        0 20px 50px rgba(0, 0, 0, 0.9),
+        0 0 35px rgba(0, 229, 255, 0.12),
+        inset 0 0 10px rgba(0, 0, 0, 0.9);
+      position: relative;
       display: flex;
-      flex-direction: column;
       align-items: center;
       justify-content: center;
-      position: relative;
-      box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.8), 0 0 30px rgba(0, 229, 255, 0.1);
+      margin: 0 auto 1.5rem auto;
     }
 
-    .breath-circle {
+    /* 12 o'clock bezel notch */
+    .watch-bezel::before {
+      content: '';
       position: absolute;
+      top: -10px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 3px;
+      height: 7px;
+      background: #ffffff;
+      border-radius: 2px;
+      z-index: 5;
+    }
+
+    /* Yellow start/stop accent at 2 o'clock */
+    .watch-bezel::after {
+      content: '';
+      position: absolute;
+      top: 14px;
+      right: 28px;
+      width: 4px;
+      height: 22px;
+      background: #d4e157;
+      border-radius: 2px;
+      transform: rotate(35deg);
+      z-index: 5;
+    }
+
+    /* Garmin AMOLED Circular Display */
+    .watch-screen {
+      width: 290px;
+      height: 290px;
       border-radius: 50%;
-      background: radial-gradient(circle, rgba(0, 229, 255, 0.25) 0%, rgba(0, 229, 255, 0.02) 70%);
-      border: 2px solid var(--cyan);
-      width: 110px;
-      height: 110px;
-      transition: all 0.1s linear;
-      box-shadow: 0 0 24px var(--cyan-glow);
+      background: #000000;
+      position: relative;
+      overflow: hidden;
+      box-shadow: inset 0 0 16px rgba(0, 0, 0, 0.98);
+      user-select: none;
     }
 
-    .watch-ui {
-      z-index: 2;
+    /* Pacer Elements matched to Monkey C drawScreen4 coordinates & screenshots */
+    .pacer-hint {
+      position: absolute;
+      top: 15%;
+      left: 0;
+      width: 100%;
       text-align: center;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 0.25rem;
-    }
-
-    .watch-directive {
-      font-size: 1.35rem;
-      font-weight: 800;
-      letter-spacing: 0.04em;
-      color: var(--cyan);
-      transition: color 0.3s ease;
-    }
-
-    .watch-somatic {
-      font-size: 0.75rem;
+      font-size: 16px;
       font-weight: 500;
-      color: #9feeff;
-      min-height: 1.2rem;
+      color: #ccffff;
+      letter-spacing: 0.01em;
+      transition: color 0.25s ease;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
     }
 
-    .watch-timer {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 1.1rem;
-      font-weight: 700;
-      color: #fff;
+    .pacer-directive {
+      position: absolute;
+      top: 28%;
+      left: 0;
+      width: 100%;
+      text-align: center;
+      font-size: 32px;
+      font-weight: 800;
+      letter-spacing: 0.03em;
+      line-height: 1.1;
+      color: #00ffff;
+      transition: color 0.25s ease;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
     }
 
-    .watch-cadence {
-      font-size: 0.7rem;
-      color: var(--text-muted);
-      margin-top: 0.25rem;
+    /* Progress Capsule Bar */
+    .pacer-bar-track {
+      position: absolute;
+      top: 48%;
+      transform: translateY(-50%);
+      left: 19%;
+      width: 62%;
+      height: 14px;
+      background: #222226;
+      border-radius: 7px;
+      overflow: hidden;
+    }
+
+    .pacer-bar-fill {
+      height: 100%;
+      width: 0%;
+      background: #00ffff;
+      border-radius: 7px;
+      transition: background-color 0.2s ease;
+    }
+
+    .pacer-cadence {
+      position: absolute;
+      top: 64%;
+      left: 0;
+      width: 100%;
+      text-align: center;
+      font-size: 17px;
+      font-weight: 600;
+      color: #00ffff;
+      letter-spacing: 0.01em;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+    }
+
+    .pacer-telemetry {
+      position: absolute;
+      top: 77%;
+      left: 0;
+      width: 100%;
+      text-align: center;
+      font-size: 16px;
+      font-weight: 500;
+      color: #ffffff;
+      letter-spacing: 0.01em;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
     }
 
     .pacer-controls {
       display: flex;
       justify-content: center;
       align-items: center;
-      gap: 1rem;
+      gap: 1.25rem;
       margin-top: 1rem;
+      width: 100%;
     }
 
     .pacer-rate {
@@ -505,6 +581,26 @@
       .navbar { padding: 1rem; }
       .nav-links { display: none; }
     }
+
+    @media (max-width: 400px) {
+      .watch-bezel {
+        width: 290px;
+        height: 290px;
+      }
+      .watch-screen {
+        width: 250px;
+        height: 250px;
+      }
+      .pacer-directive {
+        font-size: 26px;
+      }
+      .pacer-cadence {
+        font-size: 14px;
+      }
+      .pacer-telemetry {
+        font-size: 14px;
+      }
+    }
   </style>
 </head>
 <body>
@@ -547,21 +643,23 @@
         <a href="privacy_policy.html" class="btn btn-outline">Privacy Policy</a>
       </div>
 
-      <!-- Interactive Watch Pacer Simulation -->
+      <!-- Interactive Watch Pacer Simulation (Garmin UI Clone) -->
       <div class="pacer-preview" id="demo">
         <div class="watch-bezel">
-          <div class="breath-circle" id="circle"></div>
-          <div class="watch-ui">
-            <div class="watch-directive" id="pacer-directive">BREATHE IN</div>
-            <div class="watch-somatic" id="pacer-hint">Easily into belly</div>
-            <div class="watch-timer" id="pacer-timer">2.4s</div>
-            <div class="watch-cadence">6.00 BPM • 40% In / 60% Out</div>
+          <div class="watch-screen">
+            <div class="pacer-hint" id="pacer-hint">Easily into belly</div>
+            <div class="pacer-directive" id="pacer-directive">BREATHE IN</div>
+            <div class="pacer-bar-track">
+              <div class="pacer-bar-fill" id="pacer-bar"></div>
+            </div>
+            <div class="pacer-cadence" id="pacer-cadence">R1 Center: 5.00 BPM</div>
+            <div class="pacer-telemetry" id="pacer-telemetry">HR: 68 | 118 s left</div>
           </div>
         </div>
 
         <div class="pacer-controls">
           <button class="btn btn-outline" id="btn-toggle-pacer">Pause Pacer</button>
-          <div class="pacer-rate" id="pacer-rate-display">Rate: 6.0 BPM</div>
+          <div class="pacer-rate" id="pacer-rate-display">Rate: 5.00 BPM</div>
         </div>
       </div>
     </div>
@@ -780,62 +878,98 @@ Diese Anwendung dient ausschließlich Fitness-, Atemtrainings- sowie allgemeinen
     </div>
   </footer>
 
-  <!-- Interactive Pacer Logic -->
+  <!-- Interactive Pacer Logic (Faithful Garmin Connect IQ UI Simulation) -->
   <script>
-    const circle = document.getElementById('circle');
     const directive = document.getElementById('pacer-directive');
     const hint = document.getElementById('pacer-hint');
-    const timerText = document.getElementById('pacer-timer');
+    const barFill = document.getElementById('pacer-bar');
+    const cadence = document.getElementById('pacer-cadence');
+    const telemetry = document.getElementById('pacer-telemetry');
     const toggleBtn = document.getElementById('btn-toggle-pacer');
 
-    // 6.0 BPM = 10.0s cycle (4.0s Inhale / 6.0s Exhale)
-    const INHALE_MS = 4000;
-    const EXHALE_MS = 6000;
-    const CYCLE_MS = INHALE_MS + EXHALE_MS;
+    // 5.00 BPM Protocol = 12.0s Cycle (40% Inhale = 4.8s / 60% Exhale = 7.2s)
+    const CYCLE_MS = 12000;
+    const INHALE_MS = 4800;
+    const EXHALE_MS = 7200;
 
-    const inHints = ["Easily into belly", "Through nose", "Normal, shallow", "Belly out", "Chest still"];
-    const outHints = ["Pursed lips", "Stay shallow", "Relax shoulders", "Relax jaw", "Without force"];
+    // Authentic Somatic Coaching Cues from Garmin AtemPacerApp
+    const inHints = [
+      "Easily into belly",
+      "Through nose",
+      "Normal, shallow",
+      "Quiet, relaxed",
+      "Belly out",
+      "Chest still"
+    ];
+
+    const outHints = [
+      "Pursed lips",
+      "Stay shallow",
+      "Relax shoulders",
+      "Relax jaw",
+      "Gently",
+      "Without force"
+    ];
 
     let isRunning = true;
     let startTime = performance.now();
-    let currentCycle = 0;
+    let pauseTime = 0;
+    const stageTotalSec = 120; // 2-minute recording leg
 
     function updatePacer(now) {
       if (!isRunning) return;
 
       const elapsed = (now - startTime) % CYCLE_MS;
+      const cycleIndex = Math.floor((now - startTime) / CYCLE_MS);
       const isInhaling = elapsed < INHALE_MS;
 
-      if (isInhaling) {
-        const progress = elapsed / INHALE_MS;
-        const size = 110 + (progress * 130);
-        circle.style.width = size + 'px';
-        circle.style.height = size + 'px';
-        circle.style.borderColor = '#00e5ff';
-        circle.style.background = 'radial-gradient(circle, rgba(0, 229, 255, 0.3) 0%, rgba(0, 229, 255, 0.05) 70%)';
+      // Realistic Stage Countdown (e.g. 118s -> 0s)
+      const sessionElapsedSec = Math.floor((now - startTime) / 1000) % stageTotalSec;
+      const stageRemSec = Math.max(0, stageTotalSec - sessionElapsedSec);
 
-        directive.innerText = 'BREATHE IN';
-        directive.style.color = '#00e5ff';
-        hint.innerText = inHints[currentCycle % inHints.length];
-        
-        const remSec = ((INHALE_MS - elapsed) / 1000).toFixed(1);
-        timerText.innerText = remSec + 's';
+      // Physiological Respiratory Sinus Arrhythmia (RSA) simulation in range 60-80 BPM:
+      // HR rises on inhale (from ~62 up to ~78 bpm) and falls on exhale (from ~78 down to ~62 bpm)
+      const minHR = 62;
+      const maxHR = 78;
+      let hr;
+      if (isInhaling) {
+        const inFrac = elapsed / INHALE_MS;
+        hr = Math.round(minHR + (maxHR - minHR) * Math.sin((inFrac * Math.PI) / 2));
+      } else {
+        const outElapsed = elapsed - INHALE_MS;
+        const outFrac = outElapsed / EXHALE_MS;
+        hr = Math.round(maxHR - (maxHR - minHR) * (1 - Math.cos(outFrac * Math.PI)) / 2);
+      }
+
+      if (isInhaling) {
+        const phaseProgress = Math.min(1.0, Math.max(0.0, elapsed / INHALE_MS));
+        const fillPercent = phaseProgress * 100;
+
+        directive.textContent = 'BREATHE IN';
+        directive.style.color = '#00ffff';
+
+        hint.textContent = inHints[cycleIndex % inHints.length];
+        hint.style.color = '#ccffff';
+
+        barFill.style.width = fillPercent + '%';
+        barFill.style.backgroundColor = '#00ffff';
       } else {
         const exhaleElapsed = elapsed - INHALE_MS;
-        const progress = exhaleElapsed / EXHALE_MS;
-        const size = 240 - (progress * 130);
-        circle.style.width = size + 'px';
-        circle.style.height = size + 'px';
-        circle.style.borderColor = '#ffaa00';
-        circle.style.background = 'radial-gradient(circle, rgba(255, 170, 0, 0.25) 0%, rgba(255, 170, 0, 0.04) 70%)';
+        const phaseProgress = Math.min(1.0, Math.max(0.0, exhaleElapsed / EXHALE_MS));
+        // On exhale, fill descends from 100% down to 0%
+        const fillPercent = (1.0 - phaseProgress) * 100;
 
-        directive.innerText = 'BREATHE OUT';
+        directive.textContent = 'BREATHE OUT';
         directive.style.color = '#ffaa00';
-        hint.innerText = outHints[currentCycle % outHints.length];
 
-        const remSec = ((EXHALE_MS - exhaleElapsed) / 1000).toFixed(1);
-        timerText.innerText = remSec + 's';
+        hint.textContent = outHints[cycleIndex % outHints.length];
+        hint.style.color = '#ffe8b8';
+
+        barFill.style.width = fillPercent + '%';
+        barFill.style.backgroundColor = '#ffaa00';
       }
+
+      telemetry.textContent = `HR: ${hr} | ${stageRemSec} s left`;
 
       requestAnimationFrame(updatePacer);
     }
@@ -846,8 +980,10 @@ Diese Anwendung dient ausschließlich Fitness-, Atemtrainings- sowie allgemeinen
       isRunning = !isRunning;
       toggleBtn.innerText = isRunning ? 'Pause Pacer' : 'Resume Pacer';
       if (isRunning) {
-        startTime = performance.now();
+        startTime += (performance.now() - pauseTime);
         requestAnimationFrame(updatePacer);
+      } else {
+        pauseTime = performance.now();
       }
     });
 
