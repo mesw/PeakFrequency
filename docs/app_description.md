@@ -8,7 +8,7 @@
 **Peak Frequency — HRV Resonance Breath Pacer**
 
 ### Short Description (App Summary)
-Discover your individual cardiovascular resonance frequency with clinical-grade HRV biofeedback and somatic breath pacing.
+Discover your individual cardiovascular resonance frequency with precision HRV biofeedback and somatic breath pacing.
 
 ### Full Store Description
 
@@ -32,7 +32,7 @@ Your baseline starting cadence is automatically estimated upon launch based on y
 🌊 **Live Phase Synchrony & Wave Graph**
 Post-session review displays your respiration sine wave overlaid directly onto your heart rate oscillation curve, measuring phase lag (ms) and delta HR (dHR) across tested frequencies.
 
-🧘 **Concise Somatic Prompts (Zero Clinical Baggage)**
+🧘 **Concise Somatic Prompts (Zero Confusing Jargon)**
 Unmistakable physical cues during active pacing keep your breath natural, calm, and diaphragmatic:
 • *Inhale:* "Easily into belly", "Through nose", "Normal, shallow", "Belly out", "Chest still"
 • *Exhale:* "Pursed lips", "Stay shallow", "Relax shoulders", "Relax jaw", "Gently", "Without force"
@@ -52,8 +52,13 @@ Saves sessions to native Garmin `.FIT` activity files with beat-to-beat (`rr_int
 ---
 
 ### Hardware & Sensor Recommendations
-• **Chest Strap Recommended:** For clinical-grade beat-to-beat (RR) accuracy, pair an ANT+ or BLE chest strap (Garmin HRM-Pro, HRM-Dual, Polar H10).
+• **Chest Strap Recommended:** For highest beat-to-beat (RR) precision, pair an ANT+ or BLE chest strap (Garmin HRM-Pro, HRM-Dual, Polar H10).
 • **Optical HR Supported:** Built-in optical sensors are fully supported with intelligent motion filtering.
+
+---
+
+### Important Disclaimer (Not a Medical Device)
+This application is designed solely for fitness, breathwork training, and general informational / wellness reference purposes. It is not a medical device and is not intended to diagnose, treat, cure, mitigate, or prevent any disease, illness, or medical condition. It does not replace the advice of a medical professional. Always consult a qualified physician or healthcare provider regarding any health concerns or before starting any new breathing or exercise program.
 
 ---
 
@@ -116,3 +121,15 @@ Sitzungen werden als reguläre Garmin-Aktivitäten mit echtem Schlag-zu-Schlag-I
 ### Sensor-Empfehlung
 • **Brustgurt empfohlen:** Für maximale Millisekunden-Präzision empfiehlt sich ein ANT+/BLE-Brustgurt (Garmin HRM-Pro, Polar H10).
 • **Optische Pulsmessung:** Die sensorbasierte Handgelenksmessung wird mit adaptiver Glättung vollständig unterstützt.
+
+---
+
+### Wichtiger Hinweis (Kein Medizinprodukt)
+Diese Anwendung dient ausschließlich Fitness-, Atemtrainings- sowie allgemeinen Informations- und Wellness-Zwecken. Sie ist kein Medizinprodukt und nicht zur Diagnose, Behandlung, Linderung, Heilung oder Vorbeugung von Krankheiten oder medizinischen Zuständen bestimmt. Die App ersetzt weder eine ärztliche Untersuchung noch den Rat eines qualifizierten Mediziners. Wende dich bei gesundheitlichen Beschwerden oder vor Aufnahme eines neuen Trainingsprogramms stets an einen Arzt.
+
+---
+
+### Wissenschaftliche Grundlagen
+1. Lehrer, P. M., et al. (2000). *Heart rate variability biofeedback: How and why does it work?*
+2. Hasuo, H., et al. (2023). *Height-dependent estimation of individual cardiac resonance frequency.*
+3. Vaschillo, E. G., et al. (2006). *Characteristics of resonance in the cardiovascular system.*

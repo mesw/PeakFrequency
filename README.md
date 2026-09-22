@@ -11,7 +11,7 @@ The source code is not open sourced yet.
 
 ## Overview
 
-**Peak Frequency** is a clinical-grade breathwork and heart rate variability (HRV) biofeedback application built for Garmin wearables. It implements the gold-standard 2-round assessment protocol developed by Dr. Paul Lehrer and modern physiological research (Hasuo et al., 2023; Vaschillo et al., 2006) to identify your unique cardiovascular resonance frequency to within 0.12 BPM.
+**Peak Frequency** is a precision breathwork and heart rate variability (HRV) biofeedback application built for Garmin wearables. It implements the gold-standard 2-round assessment protocol developed by Dr. Paul Lehrer and modern physiological research (Hasuo et al., 2023; Vaschillo et al., 2006) to identify your unique cardiovascular resonance frequency to within 0.12 BPM.
 
 At your individual resonance frequency:
 - Respiration and heart rate oscillations align in **0° phase synchrony**.
@@ -36,3 +36,9 @@ At your individual resonance frequency:
 - **Landing Page**: [https://mesw.github.io/peakfrequency/](https://mesw.github.io/peakfrequency/)
 - **Privacy Policy**: [Privacy Policy](docs/privacy_policy.html)
 - **App Store Description**: [docs/app_description.md](docs/app_description.md)
+
+---
+
+## Disclaimer
+
+This application is intended strictly for general informational, wellness, and athletic breathwork reference purposes. It is **not** a medical device and is not intended to diagnose, treat, cure, mitigate, or prevent any disease, illness, or medical condition. It does not replace the advice of a medical professional. Always consult a qualified healthcare provider regarding any medical questions or prior to beginning any new respiratory or physical training program.
