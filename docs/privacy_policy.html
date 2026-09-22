@@ -14,6 +14,9 @@
       --text-muted: #8b949e;
       --accent-color: #58a6ff;
       --accent-cyan: #00e5ff;
+      --pill-bg: #21262d;
+      --pill-active: #00e5ff;
+      --pill-active-text: #000000;
     }
 
     * {
@@ -31,25 +34,66 @@
     }
 
     .container {
-      max-width: 760px;
+      max-width: 800px;
       margin: 0 auto;
       background: var(--card-bg);
       border: 1px solid var(--border-color);
-      border-radius: 8px;
+      border-radius: 12px;
       padding: 2.5rem;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
     }
 
     header {
       border-bottom: 1px solid var(--border-color);
       padding-bottom: 1.5rem;
       margin-bottom: 2rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .header-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .lang-switcher {
+      display: flex;
+      gap: 0.35rem;
+      flex-wrap: wrap;
+    }
+
+    .lang-btn {
+      background: var(--pill-bg);
+      color: var(--text-main);
+      border: 1px solid var(--border-color);
+      padding: 0.25rem 0.65rem;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .lang-btn:hover {
+      border-color: var(--accent-cyan);
+      color: #fff;
+    }
+
+    .lang-btn.active {
+      background: var(--pill-active);
+      color: var(--pill-active-text);
+      border-color: var(--pill-active);
     }
 
     h1 {
       color: var(--text-heading);
       font-size: 1.85rem;
       font-weight: 700;
-      margin-bottom: 0.5rem;
+      margin-bottom: 0.3rem;
     }
 
     .updated-date {
@@ -60,10 +104,10 @@
     h2 {
       color: var(--text-heading);
       font-size: 1.25rem;
-      margin-top: 1.75rem;
+      margin-top: 1.85rem;
       margin-bottom: 0.75rem;
       border-bottom: 1px solid #21262d;
-      padding-bottom: 0.3rem;
+      padding-bottom: 0.35rem;
     }
 
     p {
@@ -102,19 +146,31 @@
     }
 
     .callout {
-      background-color: rgba(56, 139, 253, 0.1);
-      border-left: 4px solid var(--accent-color);
-      padding: 1rem;
-      margin-bottom: 1.5rem;
-      border-radius: 0 4px 4px 0;
+      background-color: rgba(0, 229, 255, 0.08);
+      border-left: 4px solid var(--accent-cyan);
+      padding: 1.1rem;
+      margin-bottom: 1.75rem;
+      border-radius: 0 8px 8px 0;
+    }
+
+    .lang-section {
+      display: none;
+    }
+
+    .lang-section.active {
+      display: block;
     }
 
     footer {
       margin-top: 2.5rem;
-      padding-top: 1rem;
+      padding-top: 1.25rem;
       border-top: 1px solid var(--border-color);
       font-size: 0.85rem;
       color: var(--text-muted);
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 0.5rem;
     }
   </style>
 </head>
@@ -122,64 +178,279 @@
 
   <main class="container">
     <header>
-      <h1>Privacy Policy for Peak Frequency</h1>
-      <div class="updated-date">Last Updated: September 2026</div>
+      <div class="header-top">
+        <div>
+          <h1 id="page-title">Privacy Policy</h1>
+          <div class="updated-date" id="page-date">Peak Frequency • Last Updated: September 2026</div>
+        </div>
+        <div class="lang-switcher" aria-label="Select Language">
+          <button class="lang-btn active" data-lang="en">EN</button>
+          <button class="lang-btn" data-lang="de">DE</button>
+          <button class="lang-btn" data-lang="it">IT</button>
+          <button class="lang-btn" data-lang="hu">HU</button>
+          <button class="lang-btn" data-lang="fr">FR</button>
+          <button class="lang-btn" data-lang="es">ES</button>
+        </div>
+      </div>
     </header>
 
-    <div class="callout">
-      <strong>On-Device Architecture:</strong> Peak Frequency operates entirely on your watch. <strong>We do not collect, transmit, store on external servers, or sell your personal, sensor, or biometric data.</strong>
+    <!-- ==================== ENGLISH ==================== -->
+    <div id="lang-en" class="lang-section active">
+      <div class="callout">
+        <strong>On-Device Architecture:</strong> Peak Frequency operates completely locally on your Garmin watch. <strong>We do not collect, transmit, store on external servers, or sell any personal, sensor, or biometric data.</strong>
+      </div>
+
+      <section>
+        <h2>1. Data Accessed and Processed</h2>
+        <p>To provide real-time biofeedback and calculate your cardiovascular resonance breathing cadence, the application interacts with device APIs locally:</p>
+        <ul>
+          <li><strong>Heart Rate & Beat-to-Beat RR Telemetry (<code>Sensor</code>):</strong> Reads real-time heart rate and beat-to-beat intervals (IBI/RR) directly from your watch's optical PPG sensor or a paired chest strap. This telemetry is processed exclusively in volatile RAM to determine heart rate oscillation amplitude and respiratory phase synchrony.</li>
+          <li><strong>Accelerometer Motion Tracking (<code>Sensor.SENSOR_ACCELEROMETER</code>):</strong> Reads 3-axis wrist acceleration at 10 Hz during rest and pacing intervals solely to detect excessive movement and display the somatic "Stay still" guidance. Accelerometer samples are evaluated purely in volatile memory and are immediately discarded.</li>
+          <li><strong>Pulse Oximetry (<code>Sensor</code>, <code>SensorHistory</code>):</strong> Reads on-device oxygen saturation (SpO2) to monitor physiological stability during breathwork.</li>
+          <li><strong>User Profile Data (<code>UserProfile</code>):</strong> Reads height and biological sex locally from your Garmin user profile to estimate your initial resonance frequency starting anchor (based on Hasuo et al., 2023).</li>
+          <li><strong>Activity Recording (<code>ActivityRecording</code>, <code>FitContributor</code>):</strong> When you choose to save a session, summary metrics and breath/HR synchrony data are written to standard on-device <code>.FIT</code> activity files.</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>2. Data Storage and Retention</h2>
+        <ul>
+          <li><strong>Local Flash Storage:</strong> The application saves your discovered optimal resonance cadence and sound preference in Garmin local storage (<code>Toybox.Application.Storage</code>) so the app remembers your preferred cadence for future sessions.</li>
+          <li><strong>Activity Records:</strong> Completed sessions reside on your watch until synced with your personal <strong>Garmin Connect</strong> account in accordance with <a href="https://www.garmin.com/privacy/" target="_blank" rel="noopener noreferrer">Garmin's Privacy Policy</a>.</li>
+          <li><strong>Volatile Memory:</strong> Beat-to-beat arrays, raw accelerometer buffers, and telemetry queues are cleared from memory immediately upon finishing or exiting the session.</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>3. Third-Party Access and Data Sharing</h2>
+        <ul>
+          <li><strong>Zero Network Communication:</strong> The app does not request or possess network permissions (<code>Communications</code>). It has no technical capability to communicate with external APIs, cloud servers, or third-party platforms.</li>
+          <li><strong>No Trackers or Analytics:</strong> The app contains no third-party tracking scripts, advertising frameworks, crash-reporting SDKs, or behavioral telemetries.</li>
+          <li><strong>No Commercial Data Use:</strong> No data is ever sold, rented, monetized, or shared.</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>4. User Control & Data Deletion</h2>
+        <ul>
+          <li><strong>Discarding Sessions:</strong> You can discard an active session at any time ([BACK] Discard) to prevent writing any record to device storage.</li>
+          <li><strong>Deleting Activities:</strong> Saved activities can be deleted at any time directly through your Garmin device history or via the Garmin Connect mobile app / website.</li>
+          <li><strong>Uninstalling:</strong> Uninstalling the application completely removes all locally stored application preferences from your watch.</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>5. Developer & Contact</h2>
+        <p>For questions, support, or source code inquiries regarding Peak Frequency, please contact:</p>
+        <ul>
+          <li><strong>Developer:</strong> Michael Egger</li>
+          <li><strong>Email:</strong> <a href="mailto:mesw@mailbox.org">mesw@mailbox.org</a></li>
+          <li><strong>Project Repository:</strong> <a href="https://github.com/mesw/peakfrequency" target="_blank" rel="noopener noreferrer">https://github.com/mesw/peakfrequency</a></li>
+        </ul>
+      </section>
     </div>
 
-    <section>
-      <h2>1. Data Accessed and Processed</h2>
-      <p>To provide real-time biofeedback and calculate your cardiovascular resonance frequency, the application interacts with device APIs locally:</p>
-      <ul>
-        <li><strong>Biometric & Sensor Data (<code>Sensor</code>):</strong> Streams real-time heart rate and beat-to-beat intervals directly from your watch's optical PPG sensor or paired chest strap. This telemetry is handled in volatile RAM solely to determine heart rate oscillation size and phase alignment.</li>
-        <li><strong>User Profile Data (<code>UserProfile</code>):</strong> Reads height and biological sex locally from your Garmin profile to compute an individualized baseline starting breath frequency.</li>
-        <li><strong>Activity Recording & Metrics (<code>ActivityRecording</code>, <code>FitContributor</code>):</strong> If you choose to save a completed session, summary metrics and respiratory wave data are written to standard on-device <code>.FIT</code> activity files.</li>
-      </ul>
-    </section>
+    <!-- ==================== GERMAN ==================== -->
+    <div id="lang-de" class="lang-section">
+      <div class="callout">
+        <strong>Lokale Ausführung auf der Uhr:</strong> Peak Frequency läuft vollständig lokal auf deiner Garmin-Uhr. <strong>Wir erfassen, übertragen, speichern auf externen Servern oder verkaufen zu keinem Zeitpunkt persönliche Daten, Sensordaten oder biometrische Werte.</strong>
+      </div>
 
-    <section>
-      <h2>2. Data Storage and Retention</h2>
-      <ul>
-        <li><strong>Local Flash Storage:</strong> The application stores your calculated optimal resonance cadence in local storage (<code>Toybox.Application.Storage</code>) so the app remembers your pacing cadence for subsequent sessions.</li>
-        <li><strong>Activity History:</strong> Recorded sessions exist locally on your watch storage until synced with your personal <strong>Garmin Connect</strong> account according to <a href="https://www.garmin.com/privacy/" target="_blank" rel="noopener noreferrer">Garmin's Privacy Policy</a>.</li>
-        <li><strong>Volatile Memory:</strong> Beat-to-beat interval arrays and raw sensor buffers used during live biofeedback are wiped from device memory immediately upon exiting the session.</li>
-      </ul>
-    </section>
+      <section>
+        <h2>1. Verarbeitete Daten</h2>
+        <p>Um Herzfrequenzvariabilitäts-Biofeedback in Echtzeit bereitzustellen und deine persönliche Resonanzfrequenz zu ermitteln, nutzt die Anwendung lokale Schnittstellen:</p>
+        <ul>
+          <li><strong>Herzfrequenz & Schlag-zu-Schlag-Intervalle (<code>Sensor</code>):</strong> Liest Herzfrequenz und RR-Intervalle (IBI) live vom optischen Sensor oder gekoppelten Brustgurt ein. Die Daten werden ausschließlich im flüchtigen RAM verarbeitet, um die Schwingungsamplitude und Phasensynchronie zu berechnen.</li>
+          <li><strong>Beschleunigungssensor (<code>Sensor.SENSOR_ACCELEROMETER</code>):</strong> Erfasst die 3D-Handgelenksbewegung mit 10 Hz während der Ruhe- und Taktphasen, um Bewegung zu erkennen und den Hinweis „Ruhig sitzen“ einzublenden. Die Werte werden nur im flüchtigen Speicher verarbeitet und nicht dauerhaft gespeichert.</li>
+          <li><strong>Pulsoximetrie (<code>Sensor</code>, <code>SensorHistory</code>):</strong> Liest die Sauerstoffsättigung (SpO2) lokal aus, um physiologische Stabilität während der Atemübung anzuzeigen.</li>
+          <li><strong>Benutzerprofil (<code>UserProfile</code>):</strong> Liest Körpergröße und biologisches Geschlecht lokal aus deinem Garmin-Profil, um die individuelle Startfrequenz zu berechnen (nach Hasuo et al., 2023).</li>
+          <li><strong>Aktivitätsaufzeichnung (<code>ActivityRecording</code>, <code>FitContributor</code>):</strong> Wenn du die Aktivität speicherst, werden Zusammenfassungen und Atemkurven in die standardmäßige <code>.FIT</code>-Aktivitätsdatei auf der Uhr geschrieben.</li>
+        </ul>
+      </section>
 
-    <section>
-      <h2>3. Third-Party Access and Data Sharing</h2>
-      <ul>
-        <li><strong>Zero External Communication:</strong> The app does not request or include network permissions (<code>Communications</code>). It has no technical capability to communicate with external APIs, cloud servers, or third-party platforms.</li>
-        <li><strong>No Trackers or Analytics:</strong> The app contains no tracking scripts, advertising frameworks, crash-reporting SDKs, or behavioral telemetries.</li>
-        <li><strong>No Commercial Data Use:</strong> No data is ever sold, rented, monetized, or shared with third parties.</li>
-      </ul>
-    </section>
+      <section>
+        <h2>2. Speicherung und Aufbewahrung</h2>
+        <ul>
+          <li><strong>Lokaler Flash-Speicher:</strong> Die App speichert deine ermittelte Resonanzkadenz und Toneinstellungen im internen App-Speicher (<code>Toybox.Application.Storage</code>), damit deine Kadenz für die nächste Sitzung erhalten bleibt.</li>
+          <li><strong>Aktivitätsprotokolle:</strong> Gespeicherte Trainings verbleiben auf der Uhr, bis du sie über dein persönliches <strong>Garmin Connect</strong>-Konto synchronisierst (gemäß <a href="https://www.garmin.com/de-DE/privacy/global/" target="_blank" rel="noopener noreferrer">Garmins Datenschutzrichtlinie</a>).</li>
+          <li><strong>Flüchtiger Speicher:</strong> Live-Sensordaten und Zwischenpuffer werden sofort nach Beenden der Sitzung vollständig aus dem Arbeitsspeicher gelöscht.</li>
+        </ul>
+      </section>
 
-    <section>
-      <h2>4. User Control & Data Deletion</h2>
-      <ul>
-        <li><strong>Sensor Permissions:</strong> You may uninstall the application or revoke sensor access permissions at any time through the Garmin Connect IQ mobile application or Garmin Express.</li>
-        <li><strong>Session Deletion:</strong> You can discard an active session at any point to prevent recording to your device. Saved activities can be deleted at any time directly through your Garmin device history or your Garmin Connect account.</li>
-      </ul>
-    </section>
+      <section>
+        <h2>3. Drittanbieter und Weitergabe</h2>
+        <ul>
+          <li><strong>Keine Internetverbindung:</strong> Die App fordert keine Netzwerkberechtigung an (<code>Communications</code>). Es besteht technisch keine Möglichkeit, mit externen Servern oder APIs zu kommunizieren.</li>
+          <li><strong>Keine Tracker oder Werbedienste:</strong> Es sind keinerlei Analyseskripte, Werbe-SDKs oder Tracking-Dienste integriert.</li>
+          <li><strong>Keine kommerzielle Datennutzung:</strong> Es werden niemals Daten verkauft, vermietet oder weitergegeben.</li>
+        </ul>
+      </section>
 
-    <section>
-      <h2>5. Contact</h2>
-      <p>For questions, feature feedback, or source code inquiries regarding this application, please contact:</p>
-      <ul>
-        <li><strong>Developer:</strong> Michael Egger</li>
-        <li><strong>Email:</strong> <a href="mailto:mesw@mailbox.org">mesw@mailbox.org</a></li>
-        <li><strong>Source Repository:</strong> <a href="https://github.com/mesw/PeakFrequency" target="_blank" rel="noopener noreferrer">https://github.com/mesw/PeakFrequency</a></li>
-      </ul>
-    </section>
+      <section>
+        <h2>4. Kontrolle und Löschung</h2>
+        <ul>
+          <li><strong>Verwerfen:</strong> Eine laufende Sitzung kann jederzeit mit [BACK] verworfen werden, ohne dass Daten auf der Uhr gespeichert werden.</li>
+          <li><strong>Löschen:</strong> Gespeicherte Aktivitäten können direkt auf der Uhr oder über Garmin Connect jederzeit gelöscht werden.</li>
+          <li><strong>Deinstallation:</strong> Bei der Deinstallation werden alle lokal gespeicherten Einstellungen restlos von der Uhr entfernt.</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>5. Entwickler & Kontakt</h2>
+        <p>Bei Fragen, Feedback oder Anfragen zum Projekt wende dich an:</p>
+        <ul>
+          <li><strong>Entwickler:</strong> Michael Egger</li>
+          <li><strong>E-Mail:</strong> <a href="mailto:mesw@mailbox.org">mesw@mailbox.org</a></li>
+          <li><strong>Quellcode-Repository:</strong> <a href="https://github.com/mesw/peakfrequency" target="_blank" rel="noopener noreferrer">https://github.com/mesw/peakfrequency</a></li>
+        </ul>
+      </section>
+    </div>
+
+    <!-- ==================== ITALIAN ==================== -->
+    <div id="lang-it" class="lang-section">
+      <div class="callout">
+        <strong>Architettura Locale su Dispositivo:</strong> Peak Frequency opera esclusivamente sul tuo orologio Garmin. <strong>Non raccogliamo, trasmettiamo, memorizziamo su server esterni né vendiamo dati personali o biometrici.</strong>
+      </div>
+
+      <section>
+        <h2>1. Dati Trattati</h2>
+        <ul>
+          <li><strong>Frequenza Cardiaca e Intervalli RR (<code>Sensor</code>):</strong> Elabora la frequenza cardiaca e gli intervalli battito-battito (IBI/RR) esclusivamente nella memoria RAM per calcolare l'ampiezza di oscillazione e la risonanza respiratoria.</li>
+          <li><strong>Accelerometro (<code>Sensor.SENSOR_ACCELEROMETER</code>):</strong> Rileva il movimento del polso a 10 Hz durante le fasi di riposo e guida al respiro per mostrare il suggerimento «Resta fermo». I dati non vengono mai salvati.</li>
+          <li><strong>Profilo Utente (<code>UserProfile</code>):</strong> Accede localmente ad altezza e sesso per determinare la cadenza respiratoria di partenza ideale.</li>
+          <li><strong>Registrazione Attività (<code>FitContributor</code>):</strong> Scrive il riassunto dell'allenamento nel file standard <code>.FIT</code> dell'orologio solo se confermi il salvataggio.</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>2. Connessioni e Terze Parti</h2>
+        <p>L'applicazione non dispone dell'autorizzazione di rete (<code>Communications</code>). Non comunica con internet, non include tracker pubblicitari o strumenti di profilazione.</p>
+      </section>
+
+      <section>
+        <h2>3. Contatto</h2>
+        <p>Per informazioni: Michael Egger — <a href="mailto:mesw@mailbox.org">mesw@mailbox.org</a></p>
+      </section>
+    </div>
+
+    <!-- ==================== HUNGARIAN ==================== -->
+    <div id="lang-hu" class="lang-section">
+      <div class="callout">
+        <strong>Eszközön Belüli Működés:</strong> A Peak Frequency teljes mértékben az órádon működik. <strong>Nem gyűjtünk, nem továbbítunk külső szerverekre, és nem értékesítünk semmilyen személyes vagy biometrikus adatot.</strong>
+      </div>
+
+      <section>
+        <h2>1. Kezelt Adatok</h2>
+        <ul>
+          <li><strong>Pulzus és RR-intervallumok (<code>Sensor</code>):</strong> Valós idejű pulzus- és szívverésközök feldolgozása a memóriában (RAM) a rezonanciafrekvencia kiszámításához.</li>
+          <li><strong>Gyorsulásmérő (<code>Sensor.SENSOR_ACCELEROMETER</code>):</strong> Csuklómozgás érzékelése nyugalmi és légzési fázisokban a „Maradj nyugton” jelzés megjelenítéséhez. Az adatok nem kerülnek mentésre.</li>
+          <li><strong>Felhasználói Profil (<code>UserProfile</code>):</strong> Testmagasság és biológiai nem helyi leolvasása a kezdő légzésritmus kiszámításához.</li>
+          <li><strong>Edzés Mentése (<code>FitContributor</code>):</strong> A mérés összefoglaló adatai kizárólag a helyi <code>.FIT</code> fájlba kerülnek mentésre jóváhagyás esetén.</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>2. Hálózati Kapcsolat és Adatvédelem</h2>
+        <p>Az alkalmazás nem használ hálózati hozzáférést (<code>Communications</code>). Nincsenek reklámok, követőkódok vagy külső szerverek.</p>
+      </section>
+
+      <section>
+        <h2>3. Kapcsolat</h2>
+        <p>Kapcsolat: Michael Egger — <a href="mailto:mesw@mailbox.org">mesw@mailbox.org</a></p>
+      </section>
+    </div>
+
+    <!-- ==================== FRENCH ==================== -->
+    <div id="lang-fr" class="lang-section">
+      <div class="callout">
+        <strong>Traitement Local sur la Montre:</strong> Peak Frequency fonctionne entièrement sur votre montre Garmin. <strong>Aucune donnée personnelle, biométrique ou de capteur n'est collectée, transmise à des serveurs externes ou vendue.</strong>
+      </div>
+
+      <section>
+        <h2>1. Données Utilisées</h2>
+        <ul>
+          <li><strong>Fréquence Cardiaque & Intervalles RR (<code>Sensor</code>):</strong> Mesure en mémoire vive (RAM) pour calculer la résonance cardiorespiratoire en temps réel.</li>
+          <li><strong>Accéléromètre (<code>Sensor.SENSOR_ACCELEROMETER</code>):</strong> Détection des mouvements du poignet à 10 Hz pour afficher l'indication « Reste immobile ». Les données sont immédiatement effacées.</li>
+          <li><strong>Profil Utilisateur (<code>UserProfile</code>):</strong> Lecture locale de la taille et du sexe pour calculer la cadence initiale personnalisée.</li>
+          <li><strong>Enregistrement FIT (<code>FitContributor</code>):</strong> Écriture dans le fichier d'activité <code>.FIT</code> sur la montre uniquement si vous validez l'enregistrement.</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>2. Zéro Connexion Réseau</h2>
+        <p>L'application ne demande aucune autorisation réseau (<code>Communications</code>). Elle ne communique avec aucun serveur et ne contient aucun traceur.</p>
+      </section>
+
+      <section>
+        <h2>3. Contact</h2>
+        <p>Développeur: Michael Egger — <a href="mailto:mesw@mailbox.org">mesw@mailbox.org</a></p>
+      </section>
+    </div>
+
+    <!-- ==================== SPANISH ==================== -->
+    <div id="lang-es" class="lang-section">
+      <div class="callout">
+        <strong>Procesamiento Local en el Reloj:</strong> Peak Frequency funciona exclusivamente en tu reloj Garmin. <strong>No recopilamos, transmitimos, almacenamos en servidores externos ni vendemos ningún dato personal o biométrico.</strong>
+      </div>
+
+      <section>
+        <h2>1. Datos Tratados</h2>
+        <ul>
+          <li><strong>Frecuencia Cardíaca e Intervalos RR (<code>Sensor</code>):</strong> Procesamiento en memoria volátil (RAM) para evaluar la amplitud de oscilación y la sincronía respiratoria.</li>
+          <li><strong>Acelerómetro (<code>Sensor.SENSOR_ACCELEROMETER</code>):</strong> Detección de movimiento a 10 Hz para emitir el aviso «Quédate quieto» en fases de reposo y ritmo. Los datos no se almacenan.</li>
+          <li><strong>Perfil de Usuario (<code>UserProfile</code>):</strong> Lectura local de altura y sexo para calcular la cadencia respiratoria óptima inicial.</li>
+          <li><strong>Archivo de Actividad (<code>FitContributor</code>):</strong> Registro en el archivo <code>.FIT</code> local del reloj solo si decides guardar la sesión.</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>2. Sin Conexión a Internet</h2>
+        <p>La aplicación no cuenta con permisos de red (<code>Communications</code>). Carece de capacidad para conectarse a servidores externos y no incluye rastreadores ni publicidad.</p>
+      </section>
+
+      <section>
+        <h2>3. Contacto</h2>
+        <p>Desarrollador: Michael Egger — <a href="mailto:mesw@mailbox.org">mesw@mailbox.org</a></p>
+      </section>
+    </div>
 
     <footer>
-      &copy; 2026 Peak Frequency. Built for Garmin Connect IQ.
+      <span>&copy; 2026 Peak Frequency • Open Biofeedback for Garmin</span>
+      <span><a href="https://github.com/mesw/peakfrequency" target="_blank" rel="noopener noreferrer">GitHub Project</a></span>
     </footer>
   </main>
 
+  <script>
+    const langButtons = document.querySelectorAll('.lang-btn');
+    const langSections = document.querySelectorAll('.lang-section');
+
+    function setLanguage(lang) {
+      langButtons.forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.lang === lang);
+      });
+      langSections.forEach(section => {
+        section.classList.toggle('active', section.id === 'lang-' + lang);
+      });
+      try {
+        localStorage.setItem('pf_privacy_lang', lang);
+      } catch (e) {}
+    }
+
+    langButtons.forEach(btn => {
+      btn.addEventListener('click', () => setLanguage(btn.dataset.lang));
+    });
+
+    try {
+      const savedLang = localStorage.getItem('pf_privacy_lang');
+      if (savedLang && document.getElementById('lang-' + savedLang)) {
+        setLanguage(savedLang);
+      } else {
+        const browserLang = (navigator.language || navigator.userLanguage || 'en').substring(0, 2).toLowerCase();
+        if (document.getElementById('lang-' + browserLang)) {
+          setLanguage(browserLang);
+        }
+      }
+    } catch (e) {}
+  </script>
 </body>
 </html>

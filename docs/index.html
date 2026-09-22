@@ -1,0 +1,865 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Peak Frequency — HRV Resonance Breath Pacer for Garmin</title>
+  <meta name="description" content="Discover your exact cardiovascular resonance breathing cadence with clinical-grade HRV biofeedback on your Garmin watch. Based on the Lehrer Protocol.">
+  <link rel="icon" type="image/png" href="assets/app_icon_512x512.png">
+  <meta property="og:title" content="Peak Frequency — HRV Resonance Breath Pacer for Garmin">
+  <meta property="og:description" content="Discover your exact cardiovascular resonance breathing cadence with clinical-grade HRV biofeedback on your Garmin watch.">
+  <meta property="og:image" content="assets/cover_image.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="assets/cover_image.png">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg-dark: #07090e;
+      --bg-surface: #0f141f;
+      --bg-card: #151c2c;
+      --border-subtle: #232d42;
+      --border-accent: rgba(0, 229, 255, 0.3);
+      --text-main: #c3ccdb;
+      --text-heading: #f4f7fc;
+      --text-muted: #76839a;
+      --cyan: #00e5ff;
+      --cyan-glow: rgba(0, 229, 255, 0.25);
+      --amber: #ffaa00;
+      --green: #00e676;
+      --gradient-hero: radial-gradient(circle at 50% -20%, rgba(0, 229, 255, 0.15) 0%, rgba(7, 9, 14, 0) 70%);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    a {
+      color: var(--cyan);
+      text-decoration: none;
+      transition: all 0.2s ease;
+    }
+
+    a:hover {
+      color: #80f2ff;
+      text-decoration: underline;
+    }
+
+    /* Navigation */
+    .navbar {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      backdrop-filter: blur(12px);
+      background: rgba(7, 9, 14, 0.82);
+      border-bottom: 1px solid var(--border-subtle);
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-weight: 700;
+      font-size: 1.25rem;
+      color: var(--text-heading);
+      letter-spacing: -0.02em;
+    }
+
+    .brand-icon {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--cyan), #0077ff);
+      box-shadow: 0 0 16px var(--cyan-glow);
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+      font-size: 0.9rem;
+      font-weight: 500;
+    }
+
+    .nav-links a {
+      color: var(--text-main);
+    }
+
+    .nav-links a:hover {
+      color: var(--cyan);
+      text-decoration: none;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-weight: 600;
+      font-size: 0.9rem;
+      padding: 0.65rem 1.25rem;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      border: 1px solid transparent;
+    }
+
+    .btn-primary {
+      background: var(--cyan);
+      color: #000;
+      box-shadow: 0 4px 20px var(--cyan-glow);
+    }
+
+    .btn-primary:hover {
+      background: #4df0ff;
+      transform: translateY(-1px);
+      box-shadow: 0 6px 24px rgba(0, 229, 255, 0.4);
+      color: #000;
+      text-decoration: none;
+    }
+
+    .btn-outline {
+      background: rgba(255, 255, 255, 0.04);
+      border-color: var(--border-subtle);
+      color: var(--text-heading);
+    }
+
+    .btn-outline:hover {
+      background: rgba(255, 255, 255, 0.08);
+      border-color: var(--cyan);
+      color: #fff;
+      text-decoration: none;
+    }
+
+    /* Container */
+    .container {
+      max-width: 1140px;
+      margin: 0 auto;
+      padding: 0 1.5rem;
+    }
+
+    /* Hero */
+    .hero {
+      position: relative;
+      background: var(--gradient-hero);
+      padding: 5rem 0 4rem 0;
+      text-align: center;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: rgba(0, 229, 255, 0.1);
+      border: 1px solid rgba(0, 229, 255, 0.3);
+      color: var(--cyan);
+      padding: 0.35rem 0.9rem;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 1.5rem;
+    }
+
+    .hero h1 {
+      font-size: 3.25rem;
+      font-weight: 800;
+      line-height: 1.15;
+      letter-spacing: -0.03em;
+      color: var(--text-heading);
+      margin-bottom: 1.25rem;
+      max-width: 820px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .hero h1 span {
+      background: linear-gradient(135deg, #ffffff 40%, var(--cyan) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .hero p {
+      font-size: 1.15rem;
+      color: var(--text-muted);
+      max-width: 680px;
+      margin: 0 auto 2.5rem auto;
+    }
+
+    .hero-actions {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+      margin-bottom: 4rem;
+    }
+
+    /* Interactive Live Pacer Simulation */
+    .pacer-preview {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: 24px;
+      padding: 2.5rem 2rem;
+      max-width: 460px;
+      margin: 0 auto;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .pacer-preview::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle, rgba(0, 229, 255, 0.05) 0%, transparent 60%);
+      pointer-events: none;
+    }
+
+    .watch-bezel {
+      width: 260px;
+      height: 260px;
+      border-radius: 50%;
+      background: #000;
+      border: 4px solid #1a2233;
+      margin: 0 auto 1.5rem auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.8), 0 0 30px rgba(0, 229, 255, 0.1);
+    }
+
+    .breath-circle {
+      position: absolute;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(0, 229, 255, 0.25) 0%, rgba(0, 229, 255, 0.02) 70%);
+      border: 2px solid var(--cyan);
+      width: 110px;
+      height: 110px;
+      transition: all 0.1s linear;
+      box-shadow: 0 0 24px var(--cyan-glow);
+    }
+
+    .watch-ui {
+      z-index: 2;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.25rem;
+    }
+
+    .watch-directive {
+      font-size: 1.35rem;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      color: var(--cyan);
+      transition: color 0.3s ease;
+    }
+
+    .watch-somatic {
+      font-size: 0.75rem;
+      font-weight: 500;
+      color: #9feeff;
+      min-height: 1.2rem;
+    }
+
+    .watch-timer {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .watch-cadence {
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      margin-top: 0.25rem;
+    }
+
+    .pacer-controls {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+
+    .pacer-rate {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--cyan);
+    }
+
+    /* Section Styling */
+    section {
+      padding: 5rem 0;
+    }
+
+    .section-header {
+      text-align: center;
+      max-width: 680px;
+      margin: 0 auto 3.5rem auto;
+    }
+
+    .section-header h2 {
+      font-size: 2.35rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      color: var(--text-heading);
+      margin-bottom: 0.75rem;
+    }
+
+    .section-header p {
+      color: var(--text-muted);
+      font-size: 1.05rem;
+    }
+
+    /* Features Grid */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: 16px;
+      padding: 2rem;
+      transition: all 0.25s ease;
+      position: relative;
+    }
+
+    .card:hover {
+      border-color: var(--border-accent);
+      transform: translateY(-3px);
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4);
+    }
+
+    .card-icon {
+      font-size: 1.75rem;
+      margin-bottom: 1.25rem;
+      display: inline-block;
+    }
+
+    .card h3 {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: var(--text-heading);
+      margin-bottom: 0.65rem;
+    }
+
+    .card p {
+      font-size: 0.92rem;
+      color: var(--text-muted);
+      line-height: 1.6;
+    }
+
+    /* Protocol Steps */
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 1.5rem;
+      position: relative;
+    }
+
+    .step-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: 16px;
+      padding: 1.75rem;
+      position: relative;
+    }
+
+    .step-num {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      background: rgba(0, 229, 255, 0.12);
+      border: 1px solid rgba(0, 229, 255, 0.4);
+      color: var(--cyan);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.85rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 1rem;
+    }
+
+    .step-card h3 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--text-heading);
+      margin-bottom: 0.5rem;
+    }
+
+    .step-card p {
+      font-size: 0.88rem;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+
+    /* Store Description Box */
+    .store-box {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: 16px;
+      padding: 2rem;
+      margin-top: 2rem;
+    }
+
+    .tab-bar {
+      display: flex;
+      gap: 0.5rem;
+      border-bottom: 1px solid var(--border-subtle);
+      padding-bottom: 1rem;
+      margin-bottom: 1.5rem;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+    }
+
+    .tab-buttons {
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    .tab-btn {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-main);
+      padding: 0.4rem 0.9rem;
+      border-radius: 6px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .tab-btn.active {
+      background: var(--cyan);
+      color: #000;
+      border-color: var(--cyan);
+    }
+
+    .store-content {
+      display: none;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.85rem;
+      background: #090c13;
+      padding: 1.5rem;
+      border-radius: 8px;
+      border: 1px solid var(--border-subtle);
+      white-space: pre-wrap;
+      max-height: 400px;
+      overflow-y: auto;
+      color: #d1d7e0;
+    }
+
+    .store-content.active {
+      display: block;
+    }
+
+    /* Footer */
+    footer {
+      border-top: 1px solid var(--border-subtle);
+      padding: 3rem 0;
+      background: var(--bg-dark);
+      font-size: 0.88rem;
+      color: var(--text-muted);
+    }
+
+    .footer-grid {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1.5rem;
+    }
+
+    @media (max-width: 768px) {
+      .hero h1 { font-size: 2.35rem; }
+      .navbar { padding: 1rem; }
+      .nav-links { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar">
+    <div class="brand">
+      <div class="brand-icon"></div>
+      <span>Peak Frequency</span>
+    </div>
+    <div class="nav-links">
+      <a href="#science">The Science</a>
+      <a href="#protocol">Protocol</a>
+      <a href="#features">Features</a>
+      <a href="#store-copy">Store Copy</a>
+      <a href="privacy_policy.html">Privacy Policy</a>
+      <a href="https://github.com/mesw/peakfrequency" target="_blank" rel="noopener noreferrer">GitHub</a>
+    </div>
+    <div>
+      <a href="https://github.com/mesw/peakfrequency" class="btn btn-primary" target="_blank" rel="noopener noreferrer">
+        View Project
+      </a>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="container">
+      <div class="badge">Garmin Connect IQ Watch App</div>
+      <h1>Find Your Resonant Breath.<br><span>Maximize Heart Rate Variability.</span></h1>
+      <p>
+        An open-source, clinical-grade HRV biofeedback breath pacer for Garmin watches. Calibrate and lock into your individual resonance frequency with zero clinical friction.
+      </p>
+
+      <div class="hero-actions">
+        <a href="#demo" class="btn btn-primary">Try Interactive Demo</a>
+        <a href="privacy_policy.html" class="btn btn-outline">Privacy Policy</a>
+        <a href="#store-copy" class="btn btn-outline">Connect IQ Description</a>
+      </div>
+
+      <!-- Interactive Watch Pacer Simulation -->
+      <div class="pacer-preview" id="demo">
+        <div class="watch-bezel">
+          <div class="breath-circle" id="circle"></div>
+          <div class="watch-ui">
+            <div class="watch-directive" id="pacer-directive">BREATHE IN</div>
+            <div class="watch-somatic" id="pacer-hint">Easily into belly</div>
+            <div class="watch-timer" id="pacer-timer">2.4s</div>
+            <div class="watch-cadence">6.00 BPM • 40% In / 60% Out</div>
+          </div>
+        </div>
+
+        <div class="pacer-controls">
+          <button class="btn btn-outline" id="btn-toggle-pacer">Pause Pacer</button>
+          <div class="pacer-rate" id="pacer-rate-display">Rate: 6.0 BPM</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Science Section -->
+  <section id="science" style="background: var(--bg-surface);">
+    <div class="container">
+      <div class="section-header">
+        <h2>Why Resonance Breathing?</h2>
+        <p>Your cardiovascular system possesses an intrinsic resonance frequency governed by the baroreflex loop. One generic cadence does not fit all bodies.</p>
+      </div>
+
+      <div class="grid">
+        <div class="card">
+          <div class="card-icon">🫀</div>
+          <h3>0° Phase Synchrony</h3>
+          <p>
+            When breathing at your resonant cadence (~0.1 Hz / 4.5–6.5 BPM), inhalation-driven tachycardia and exhalation-driven bradycardia align in exact synchrony, dramatically amplifying vagal tone.
+          </p>
+        </div>
+
+        <div class="card">
+          <div class="card-icon">📏</div>
+          <h3>Anatomical Anchor (Hasuo 2023)</h3>
+          <p>
+            Vascular transit delay correlates directly with arterial length. Peak Frequency auto-calculates your personalized starting anchor using your height and biological sex from your Garmin user profile.
+          </p>
+        </div>
+
+        <div class="card">
+          <div class="card-icon">📈</div>
+          <h3>Baroreflex Gain Amplification</h3>
+          <p>
+            Empirical research by Dr. Paul Lehrer demonstrates that resonance pacing stimulates the baroreceptors at their natural oscillation frequency, training autonomic flexibility and recovery.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Protocol Walkthrough -->
+  <section id="protocol">
+    <div class="container">
+      <div class="section-header">
+        <h2>The Lehrer 2-Round Calibration Protocol</h2>
+        <p>How Peak Frequency systematically discovers your precise physiological resonance cadence in under 12 minutes.</p>
+      </div>
+
+      <div class="steps">
+        <div class="step-card">
+          <div class="step-num">00</div>
+          <h3>Rest Baseline</h3>
+          <p>2 minutes of spontaneous natural breathing. Establishes baseline resting heart rate and baseline HRV metrics without guidance.</p>
+        </div>
+
+        <div class="step-card">
+          <div class="step-num">01</div>
+          <h3>Round 1: Coarse Scan</h3>
+          <p>Tests 3 cadences (Center, +0.25 BPM, -0.25 BPM) with 1-minute settling and 2-minute recording legs to detect peak HRV delta.</p>
+        </div>
+
+        <div class="step-card">
+          <div class="step-num">02</div>
+          <h3>Round 2: Fine Tuning</h3>
+          <p>Narrows around Round 1's winning frequency with micro-increments of ±0.125 BPM to isolate your definitive resonance peak.</p>
+        </div>
+
+        <div class="step-card">
+          <div class="step-num">03</div>
+          <h3>Resonance Lock</h3>
+          <p>The optimal cadence locks permanently into watch memory for daily 40/60 resonance training, accompanied by live synchrony graphs.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features Grid -->
+  <section id="features" style="background: var(--bg-surface);">
+    <div class="container">
+      <div class="section-header">
+        <h2>Engineered for Performance & Privacy</h2>
+        <p>Built specifically for Garmin AMOLED and MIP displays with zero clinical fluff.</p>
+      </div>
+
+      <div class="grid">
+        <div class="card">
+          <div class="card-icon">🧘</div>
+          <h3>Minimal Somatic Prompts</h3>
+          <p>Replaces distracting medical jargon with instant physical cues: <em>"Belly out"</em>, <em>"Pursed lips"</em>, <em>"Relax jaw"</em>, <em>"Without force"</em>.</p>
+        </div>
+
+        <div class="card">
+          <div class="card-icon">🏃</div>
+          <h3>3D Motion Detection</h3>
+          <p>Onboard accelerometer filters wrist tremor while catching fidgeting. Displays a subtle <em>"Stay still"</em> prompt without disrupting timing or HRV recording.</p>
+        </div>
+
+        <div class="card">
+          <div class="card-icon">⚡</div>
+          <h3>AMOLED Low-Power Mode</h3>
+          <p>Intelligent 3-second keep-alive refresh and sleep mode prevents display burn-in on Forerunner 965 and Venu/Vivoactive without dropping breath tracking.</p>
+        </div>
+
+        <div class="card">
+          <div class="card-icon">🌍</div>
+          <h3>14 European Languages</h3>
+          <p>Full native translations in English, German, Italian, Hungarian, French, Spanish, Dutch, Portuguese, Polish, Swedish, Norwegian, Danish, Finnish, and Czech.</p>
+        </div>
+
+        <div class="card">
+          <div class="card-icon">🔒</div>
+          <h3>100% Private & Offline</h3>
+          <p>Zero internet permissions (<code>Communications</code>). All biofeedback runs strictly in volatile RAM. No servers, no tracking, no ads.</p>
+        </div>
+
+        <div class="card">
+          <div class="card-icon">📊</div>
+          <h3>Native FIT & RR Intervals</h3>
+          <p>Exports standard Garmin activities with high-precision beat-to-beat (<code>rr_interval</code>) developer fields compatible with Runalyze and Kubios.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Connect IQ Store Copy Section -->
+  <section id="store-copy">
+    <div class="container">
+      <div class="section-header">
+        <h2>Garmin Connect IQ Store Descriptions</h2>
+        <p>Ready-to-use copy formatted for the Garmin Connect IQ developer submission portal.</p>
+      </div>
+
+      <div class="store-box">
+        <div class="tab-bar">
+          <div class="tab-buttons">
+            <button class="tab-btn active" data-tab="tab-en">English</button>
+            <button class="tab-btn" data-tab="tab-de">Deutsch</button>
+          </div>
+          <button class="btn btn-outline" id="btn-copy">Copy to Clipboard</button>
+        </div>
+
+        <div class="store-content active" id="tab-en">App Title:
+Peak Frequency — HRV Resonance Breath Pacer
+
+Short Description:
+Discover your individual cardiovascular resonance frequency with clinical-grade HRV biofeedback and somatic breath pacing.
+
+Full Description:
+Peak Frequency is a precision breathwork tool designed for endurance athletes, biohackers, and stress-regulation practitioners. Based on the gold-standard protocol developed by Dr. Paul Lehrer and physiological research by Hasuo et al. (2023) and Vaschillo et al. (2006), it identifies the exact breathing cadence where your heart rate and respiration lock into 0° phase synchrony—maximizing heart rate variability (HRV) and baroreflex gain.
+
+Unlike generic breath pacers that force you into arbitrary breathing rates, Peak Frequency empirically tests and calibrates your individual resonant cadence through a systematic 2-round assessment.
+
+Key Features:
+• Personalized Physiological Anchor: Starting cadence auto-calculated from height and biological sex (Hasuo et al., 2023).
+• 2-Round Bracketed Calibration: Coarse scan (±0.25 BPM) followed by precision fine-tuning (±0.125 BPM).
+• Live Phase Synchrony: Respiration sine wave overlaid onto heart rate curve with phase lag and delta HR metrics.
+• Somatic Athletic Cues: Immediate physical prompts without clinical baggage ("Belly out", "Pursed lips", "Relax jaw").
+• AMOLED Battery Guard: Automatic low-power pacing mode and burn-in prevention.
+• Real-Time Motion Detection: Wrist accelerometer filter prompts "Stay still" during restlessness without interrupting cycles.
+• 100% Private & On-Device: Zero network permissions, no external servers, no tracking.
+• FIT & RR-Interval Export: Saves native Garmin activities with beat-to-beat intervals for Runalyze, Kubios, and GoldenCheetah.
+
+Recommended Setup:
+• Chest strap (Garmin HRM-Pro, Polar H10) recommended for millisecond RR precision. Optical HR fully supported with adaptive smoothing.</div>
+
+        <div class="store-content" id="tab-de">App-Titel:
+Peak Frequency — Resonanzfrequenz Atem-Pacer
+
+Kurzbeschreibung:
+Finde deine persönliche kardiovaskuläre Resonanzfrequenz mit wissenschaftlichem HRV-Biofeedback und somatischer Atemführung.
+
+Vollständige Beschreibung:
+Peak Frequency ist ein Präzisions-Atemwerkzeug für Ausdauerathleten, Biohacker und gezieltes Nervensystem-Training. Basierend auf dem Goldstandard-Protokoll von Dr. Paul Lehrer und den physiologischen Forschungen von Hasuo et al. (2023) sowie Vaschillo et al. (2006) ermittelt die App exakt jene Atemfrequenz, bei der Herzfrequenz und Atmung in Phasensynchronie schwingen—für maximale Herzfrequenzvariabilität (HRV) und optimale Baroreflex-Sensitivität.
+
+Im Gegensatz zu starren Standard-Apps ermittelt Peak Frequency deine individuelle Frequenz über einen 2-stufigen, empirisch kalibrierten Test.
+
+Wichtigste Funktionen:
+• Personalisierter Start-Anker: Automatische Berechnung der Ausgangsfrequenz anhand von Körpergröße und biologischem Geschlecht (Hasuo et al., 2023).
+• 2-Runden-Kalibrierung: Grobsuche (±0,25 BPM) gefolgt von hochpräziser Feinabstimmung (±0,125 BPM).
+• Phasensynchronie & Wellenform-Analyse: Direkte Gegenüberstellung von Atem- und HF-Kurve inklusive Phasenverschiebung (ms).
+• Somatische Athleten-Impulse: Klare, minimalistische Hinweise ohne klinischen Ballast („In den Bauch“, „Lippen spitzen“, „Kiefer locker“).
+• AMOLED-Stromsparmodus: Display-Schutz vor Einbrennen bei minimalem Akkuverbrauch.
+• Echtzeit-Bewegungserkennung: Beschleunigungssensor erinnert mit „Ruhig sitzen“ an eine ruhige Haltung.
+• 100 % Lokal & Privat: Keine Internetberechtigung, keine Server, keine Tracker.
+• Volle FIT- & RR-Aufzeichnung: Speichert reguläre Garmin-Trainings mit echtem Schlag-zu-Schlag-Intervall (rr_interval) für Runalyze und Kubios.
+
+Sensor-Empfehlung:
+• Brustgurt (Garmin HRM-Pro, Polar H10) für maximale RR-Präzision empfohlen. Optischer Pulssensor wird mit adaptiver Glättung voll unterstützt.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container footer-grid">
+      <div>
+        <strong>Peak Frequency</strong> • Open Biofeedback for Garmin Connect IQ
+      </div>
+      <div style="display: flex; gap: 1.5rem;">
+        <a href="privacy_policy.html">Privacy Policy</a>
+        <a href="tutorial_redirect.html">Video Guide</a>
+        <a href="https://github.com/mesw/peakfrequency" target="_blank" rel="noopener noreferrer">GitHub Repository</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Interactive Pacer Logic -->
+  <script>
+    const circle = document.getElementById('circle');
+    const directive = document.getElementById('pacer-directive');
+    const hint = document.getElementById('pacer-hint');
+    const timerText = document.getElementById('pacer-timer');
+    const toggleBtn = document.getElementById('btn-toggle-pacer');
+
+    // 6.0 BPM = 10.0s cycle (4.0s Inhale / 6.0s Exhale)
+    const INHALE_MS = 4000;
+    const EXHALE_MS = 6000;
+    const CYCLE_MS = INHALE_MS + EXHALE_MS;
+
+    const inHints = ["Easily into belly", "Through nose", "Normal, shallow", "Belly out", "Chest still"];
+    const outHints = ["Pursed lips", "Stay shallow", "Relax shoulders", "Relax jaw", "Without force"];
+
+    let isRunning = true;
+    let startTime = performance.now();
+    let currentCycle = 0;
+
+    function updatePacer(now) {
+      if (!isRunning) return;
+
+      const elapsed = (now - startTime) % CYCLE_MS;
+      const isInhaling = elapsed < INHALE_MS;
+
+      if (isInhaling) {
+        const progress = elapsed / INHALE_MS;
+        const size = 110 + (progress * 130);
+        circle.style.width = size + 'px';
+        circle.style.height = size + 'px';
+        circle.style.borderColor = '#00e5ff';
+        circle.style.background = 'radial-gradient(circle, rgba(0, 229, 255, 0.3) 0%, rgba(0, 229, 255, 0.05) 70%)';
+
+        directive.innerText = 'BREATHE IN';
+        directive.style.color = '#00e5ff';
+        hint.innerText = inHints[currentCycle % inHints.length];
+        
+        const remSec = ((INHALE_MS - elapsed) / 1000).toFixed(1);
+        timerText.innerText = remSec + 's';
+      } else {
+        const exhaleElapsed = elapsed - INHALE_MS;
+        const progress = exhaleElapsed / EXHALE_MS;
+        const size = 240 - (progress * 130);
+        circle.style.width = size + 'px';
+        circle.style.height = size + 'px';
+        circle.style.borderColor = '#ffaa00';
+        circle.style.background = 'radial-gradient(circle, rgba(255, 170, 0, 0.25) 0%, rgba(255, 170, 0, 0.04) 70%)';
+
+        directive.innerText = 'BREATHE OUT';
+        directive.style.color = '#ffaa00';
+        hint.innerText = outHints[currentCycle % outHints.length];
+
+        const remSec = ((EXHALE_MS - exhaleElapsed) / 1000).toFixed(1);
+        timerText.innerText = remSec + 's';
+      }
+
+      requestAnimationFrame(updatePacer);
+    }
+
+    requestAnimationFrame(updatePacer);
+
+    toggleBtn.addEventListener('click', () => {
+      isRunning = !isRunning;
+      toggleBtn.innerText = isRunning ? 'Pause Pacer' : 'Resume Pacer';
+      if (isRunning) {
+        startTime = performance.now();
+        requestAnimationFrame(updatePacer);
+      }
+    });
+
+    // Tab switcher
+    const tabBtns = document.querySelectorAll('.tab-btn');
+    const storeContents = document.querySelectorAll('.store-content');
+    const copyBtn = document.getElementById('btn-copy');
+
+    tabBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        tabBtns.forEach(b => b.classList.remove('active'));
+        storeContents.forEach(c => c.classList.remove('active'));
+        btn.classList.add('active');
+        document.getElementById(btn.dataset.tab).classList.add('active');
+      });
+    });
+
+    copyBtn.addEventListener('click', () => {
+      const activeContent = document.querySelector('.store-content.active');
+      navigator.clipboard.writeText(activeContent.innerText).then(() => {
+        const originalText = copyBtn.innerText;
+        copyBtn.innerText = 'Copied!';
+        setTimeout(() => { copyBtn.innerText = originalText; }, 2000);
+      });
+    });
+  </script>
+</body>
+</html>
