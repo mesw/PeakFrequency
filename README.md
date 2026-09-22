@@ -33,7 +33,7 @@ At your individual resonance frequency:
 ## Website & Documentation
 
 - **Garmin Connect IQ**: [Peak Frequency Store Listing](https://apps.garmin.com/apps/174cda32-a42a-43b4-8b07-658ddda48d92?tid=0) *(Pending review)*
-- **Landing Page**: [https://mesw.github.io/peakfrequency/](https://mesw.github.io/peakfrequency/)
+- **Landing Page**: [https://mesw.github.io/PeakFrequency/](https://mesw.github.io/PeakFrequency/)
 - **Privacy Policy**: [Privacy Policy](docs/privacy_policy.html)
 - **App Store Description**: [docs/app_description.md](docs/app_description.md)
 
