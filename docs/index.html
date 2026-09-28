@@ -1,20 +1,26 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Peak Frequency — HRV Resonance Breath Pacer for Garmin</title>
-  <meta name="description" content="Discover your exact cardiovascular resonance breathing cadence with precision HRV biofeedback on your Garmin watch. Based on the Lehrer Protocol.">
+  <meta name="description"
+    content="Discover your exact cardiovascular resonance breathing cadence with precision HRV biofeedback on your Garmin watch. Based on the Lehrer Protocol.">
   <link rel="icon" type="image/png" href="assets/app_icon_512x512.png">
   <meta property="og:title" content="Peak Frequency — HRV Resonance Breath Pacer for Garmin">
-  <meta property="og:description" content="Discover your exact cardiovascular resonance breathing cadence with precision HRV biofeedback on your Garmin watch.">
+  <meta property="og:description"
+    content="Discover your exact cardiovascular resonance breathing cadence with precision HRV biofeedback on your Garmin watch.">
   <meta property="og:image" content="assets/cover_image.png">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:image" content="assets/cover_image.png">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap"
+    rel="stylesheet">
+  <script src="assets/translations.js"></script>
 
   <style>
     :root {
@@ -105,6 +111,40 @@
     .nav-links a:hover {
       color: var(--cyan);
       text-decoration: none;
+    }
+
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.85rem;
+    }
+
+    .lang-select-nav {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-heading);
+      font-family: inherit;
+      font-size: 0.85rem;
+      font-weight: 600;
+      padding: 0.55rem 1.8rem 0.55rem 0.75rem;
+      border-radius: 8px;
+      cursor: pointer;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2300e5ff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 0.6rem center;
+      transition: all 0.2s ease;
+    }
+
+    .lang-select-nav:hover, .lang-select-nav:focus {
+      border-color: var(--cyan);
+      background-color: rgba(0, 229, 255, 0.08);
+      outline: none;
+    }
+
+    .lang-select-nav option {
+      background: #0f141f;
+      color: #f1f5f9;
     }
 
     .btn {
@@ -209,184 +249,6 @@
       gap: 1rem;
       flex-wrap: wrap;
       margin-bottom: 4rem;
-    }
-
-    /* Interactive Live Pacer Simulation (Accurate Garmin Watch Clone) */
-    .pacer-preview {
-      background: var(--bg-surface);
-      border: 1px solid var(--border-subtle);
-      border-radius: 28px;
-      padding: 3rem 2rem;
-      max-width: 480px;
-      margin: 0 auto;
-      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.7), 0 0 50px rgba(0, 229, 255, 0.08);
-      position: relative;
-      overflow: hidden;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
-
-    .pacer-preview::before {
-      content: '';
-      position: absolute;
-      top: -50%;
-      left: -50%;
-      width: 200%;
-      height: 200%;
-      background: radial-gradient(circle, rgba(0, 229, 255, 0.04) 0%, transparent 60%);
-      pointer-events: none;
-    }
-
-    /* Garmin Forerunner Bezel Frame */
-    .watch-bezel {
-      width: 330px;
-      height: 330px;
-      border-radius: 50%;
-      background: #151821;
-      border: 10px solid #232733;
-      box-shadow: 
-        0 20px 50px rgba(0, 0, 0, 0.9),
-        0 0 35px rgba(0, 229, 255, 0.12),
-        inset 0 0 10px rgba(0, 0, 0, 0.9);
-      position: relative;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin: 0 auto 1.5rem auto;
-    }
-
-    /* 12 o'clock bezel notch */
-    .watch-bezel::before {
-      content: '';
-      position: absolute;
-      top: -10px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 3px;
-      height: 7px;
-      background: #ffffff;
-      border-radius: 2px;
-      z-index: 5;
-    }
-
-    /* Yellow start/stop accent at 2 o'clock */
-    .watch-bezel::after {
-      content: '';
-      position: absolute;
-      top: 14px;
-      right: 28px;
-      width: 4px;
-      height: 22px;
-      background: #d4e157;
-      border-radius: 2px;
-      transform: rotate(35deg);
-      z-index: 5;
-    }
-
-    /* Garmin AMOLED Circular Display */
-    .watch-screen {
-      width: 290px;
-      height: 290px;
-      border-radius: 50%;
-      background: #000000;
-      position: relative;
-      overflow: hidden;
-      box-shadow: inset 0 0 16px rgba(0, 0, 0, 0.98);
-      user-select: none;
-    }
-
-    /* Pacer Elements matched to Monkey C drawScreen4 coordinates & screenshots */
-    .pacer-hint {
-      position: absolute;
-      top: 15%;
-      left: 0;
-      width: 100%;
-      text-align: center;
-      font-size: 16px;
-      font-weight: 500;
-      color: #ccffff;
-      letter-spacing: 0.01em;
-      transition: color 0.25s ease;
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
-    }
-
-    .pacer-directive {
-      position: absolute;
-      top: 28%;
-      left: 0;
-      width: 100%;
-      text-align: center;
-      font-size: 32px;
-      font-weight: 800;
-      letter-spacing: 0.03em;
-      line-height: 1.1;
-      color: #00ffff;
-      transition: color 0.25s ease;
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
-    }
-
-    /* Progress Capsule Bar */
-    .pacer-bar-track {
-      position: absolute;
-      top: 48%;
-      transform: translateY(-50%);
-      left: 19%;
-      width: 62%;
-      height: 14px;
-      background: #222226;
-      border-radius: 7px;
-      overflow: hidden;
-    }
-
-    .pacer-bar-fill {
-      height: 100%;
-      width: 0%;
-      background: #00ffff;
-      border-radius: 7px;
-      transition: background-color 0.2s ease;
-    }
-
-    .pacer-cadence {
-      position: absolute;
-      top: 64%;
-      left: 0;
-      width: 100%;
-      text-align: center;
-      font-size: 17px;
-      font-weight: 600;
-      color: #00ffff;
-      letter-spacing: 0.01em;
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
-    }
-
-    .pacer-telemetry {
-      position: absolute;
-      top: 77%;
-      left: 0;
-      width: 100%;
-      text-align: center;
-      font-size: 16px;
-      font-weight: 500;
-      color: #ffffff;
-      letter-spacing: 0.01em;
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
-    }
-
-    .pacer-controls {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      gap: 1.25rem;
-      margin-top: 1rem;
-      width: 100%;
-    }
-
-    .pacer-rate {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 0.95rem;
-      font-weight: 600;
-      color: var(--cyan);
     }
 
     /* Section Styling */
@@ -577,32 +439,82 @@
     }
 
     @media (max-width: 768px) {
-      .hero h1 { font-size: 2.35rem; }
-      .navbar { padding: 1rem; }
-      .nav-links { display: none; }
+      .hero {
+        padding: 3.5rem 0 2.5rem 0;
+      }
+
+      .hero h1 {
+        font-size: 2.15rem;
+      }
+
+      .container {
+        padding: 0 1rem;
+      }
+
+      .navbar {
+        padding: 0.85rem 1.25rem;
+      }
+
+      .nav-links {
+        display: none;
+      }
+
+      .grid {
+        grid-template-columns: 1fr;
+      }
+
+      .card {
+        padding: 1.5rem;
+      }
     }
 
-    @media (max-width: 400px) {
-      .watch-bezel {
-        width: 290px;
-        height: 290px;
+    @media (max-width: 480px) {
+      .hero {
+        padding: 2.75rem 0 2rem 0;
       }
-      .watch-screen {
-        width: 250px;
-        height: 250px;
+
+      .hero h1 {
+        font-size: 1.8rem;
+        line-height: 1.2;
       }
-      .pacer-directive {
-        font-size: 26px;
+
+      .container {
+        padding: 0 0.75rem;
       }
-      .pacer-cadence {
-        font-size: 14px;
+
+      .navbar {
+        padding: 0.75rem 0.85rem;
       }
-      .pacer-telemetry {
-        font-size: 14px;
+
+      .brand {
+        font-size: 1.05rem;
+        gap: 0.5rem;
+      }
+
+      .brand-icon {
+        width: 24px;
+        height: 24px;
+      }
+
+      .hero-actions {
+        flex-direction: column;
+        align-items: stretch;
+        max-width: 320px;
+        margin-left: auto;
+        margin-right: auto;
+        gap: 0.65rem;
+        margin-bottom: 2.5rem;
+      }
+
+      .hero-actions .btn {
+        justify-content: center;
+        text-align: center;
+        width: 100%;
       }
     }
   </style>
 </head>
+
 <body>
 
   <!-- Navbar -->
@@ -619,8 +531,25 @@
       <a href="privacy_policy.html">Privacy Policy</a>
       <a href="https://github.com/mesw/PeakFrequency" target="_blank" rel="noopener noreferrer">GitHub</a>
     </div>
-    <div>
-      <a href="https://apps.garmin.com/apps/174cda32-a42a-43b4-8b07-658ddda48d92?tid=0" class="btn btn-primary" target="_blank" rel="noopener noreferrer">
+    <div class="nav-actions">
+      <select id="globalLangSelect" class="lang-select-nav" aria-label="Select Language">
+        <option value="en">🇬🇧 English</option>
+        <option value="de">🇩🇪 Deutsch</option>
+        <option value="es">🇪🇸 Español</option>
+        <option value="fr">🇫🇷 Français</option>
+        <option value="it">🇮🇹 Italiano</option>
+        <option value="nl">🇳🇱 Nederlands</option>
+        <option value="pl">🇵🇱 Polski</option>
+        <option value="pt">🇵🇹 Português</option>
+        <option value="sv">🇸🇪 Svenska</option>
+        <option value="da">🇩🇰 Dansk</option>
+        <option value="nb">🇳🇴 Norsk</option>
+        <option value="fi">🇫🇮 Suomi</option>
+        <option value="cs">🇨🇿 Čeština</option>
+        <option value="hu">🇭🇺 Magyar</option>
+      </select>
+      <a href="https://apps.garmin.com/apps/174cda32-a42a-43b4-8b07-658ddda48d92?tid=0" class="btn btn-primary"
+        target="_blank" rel="noopener noreferrer">
         Connect IQ Store
       </a>
     </div>
@@ -632,11 +561,13 @@
       <div class="badge">Garmin Connect IQ Watch App • Pending Review</div>
       <h1>Find Your Resonant Breath.<br><span>Maximize Heart Rate Variability.</span></h1>
       <p>
-        A precision HRV biofeedback breath pacer for Garmin watches. Calibrate and lock into your individual resonance frequency with zero friction.
+        A precision HRV biofeedback breath pacer for Garmin watches. Calibrate and lock into your individual resonance
+        frequency with zero friction.
       </p>
 
       <div class="hero-actions">
-        <a href="https://apps.garmin.com/apps/174cda32-a42a-43b4-8b07-658ddda48d92?tid=0" class="btn btn-primary" target="_blank" rel="noopener noreferrer">
+        <a href="https://apps.garmin.com/apps/174cda32-a42a-43b4-8b07-658ddda48d92?tid=0" class="btn btn-primary"
+          target="_blank" rel="noopener noreferrer">
           Get on Connect IQ ↗
         </a>
         <a href="#demo" class="btn btn-outline">Try Interactive Demo</a>
@@ -644,24 +575,2042 @@
       </div>
 
       <!-- Interactive Watch Pacer Simulation (Garmin UI Clone) -->
-      <div class="pacer-preview" id="demo">
-        <div class="watch-bezel">
-          <div class="watch-screen">
-            <div class="pacer-hint" id="pacer-hint">Easily into belly</div>
-            <div class="pacer-directive" id="pacer-directive">BREATHE IN</div>
-            <div class="pacer-bar-track">
-              <div class="pacer-bar-fill" id="pacer-bar"></div>
+      <!-- ======================================================== -->
+      <!-- INTERACTIVE PACER DEMO (Garmin Protocol: 2m Rest / 2m Pace) -->
+      <!-- ======================================================== -->
+      <section id="demo" class="demo-section">
+        <div class="demo-container">
+          <div class="demo-header">
+            <div class="demo-lang-selector-bar">
+              <label for="demoLangSelect">Watch Language:</label>
+              <select id="demoLangSelect" class="demo-lang-select" aria-label="Select Demo Watch Language">
+                <option value="en">🇬🇧 English</option>
+                <option value="de">🇩🇪 Deutsch</option>
+                <option value="es">🇪🇸 Español</option>
+                <option value="fr">🇫🇷 Français</option>
+                <option value="it">🇮🇹 Italiano</option>
+                <option value="nl">🇳🇱 Nederlands</option>
+                <option value="pl">🇵🇱 Polski</option>
+                <option value="pt">🇵🇹 Português</option>
+                <option value="sv">🇸🇪 Svenska</option>
+                <option value="da">🇩🇰 Dansk</option>
+                <option value="nb">🇳🇴 Norsk</option>
+                <option value="fi">🇫🇮 Suomi</option>
+                <option value="cs">🇨🇿 Čeština</option>
+                <option value="hu">🇭🇺 Magyar</option>
+              </select>
             </div>
-            <div class="pacer-cadence" id="pacer-cadence">R1 Center: 5.00 BPM</div>
-            <div class="pacer-telemetry" id="pacer-telemetry">HR: 68 | 118 s left</div>
+            <h2>Interactive Resonance Frequency Pacer</h2>
+            <p class="subtitle">Experience the exact protocol from the Garmin Connect IQ app</p>
+          </div>
+
+          <!-- Parameter Setup Card -->
+          <div class="demo-card setup-card">
+            <div class="setup-grid">
+              <!-- Height Input -->
+              <div class="form-group">
+                <div class="form-label-row">
+                  <label for="userHeight" id="lblUserHeight">Height</label>
+                  <span class="value-chip" id="heightBadge"><span id="heightVal">175</span> cm</span>
+                </div>
+                <div class="input-row">
+                  <input type="range" id="userHeight" min="130" max="220" value="175" class="slider" aria-label="Height in centimeters">
+                  <input type="number" id="userHeightNum" min="130" max="220" value="175" class="num-input" aria-label="Height number in centimeters">
+                </div>
+              </div>
+
+              <!-- Sex Input with Mobile-Friendly Segmented Switch -->
+              <div class="form-group">
+                <div class="form-label-row">
+                  <label for="userSex" id="lblUserSex">Biological Sex</label>
+                </div>
+                <div class="segmented-control" role="group" aria-label="Biological Sex">
+                  <button type="button" class="seg-btn active" data-val="male" id="sexMaleBtn">♂ Male</button>
+                  <button type="button" class="seg-btn" data-val="female" id="sexFemaleBtn">♀ Female</button>
+                </div>
+                <select id="userSex" class="styled-select sr-only" aria-hidden="true" tabindex="-1">
+                  <option value="male" selected>Male</option>
+                  <option value="female">Female</option>
+                </select>
+              </div>
+
+              <!-- Target BPM Control with 0.05 step & Quick Presets -->
+              <div class="form-group bpm-form-group">
+                <div class="form-label-row">
+                  <label for="targetBpm" id="lblTargetCadence">Target Pacing Rate</label>
+                  <span class="value-chip chip-cyan" id="cycleSecHint">12.0s cycle</span>
+                </div>
+                <div class="bpm-control-row">
+                  <button type="button" class="step-btn" id="bpmMinus" aria-label="Decrease BPM by 0.05">−0.05</button>
+                  <div class="bpm-input-wrapper">
+                    <input type="number" id="targetBpm" min="3.50" max="9.00" step="0.05" value="5.00" class="bpm-input" aria-label="Target BPM">
+                    <span class="bpm-unit">BPM</span>
+                  </div>
+                  <button type="button" class="step-btn" id="bpmPlus" aria-label="Increase BPM by 0.05">+0.05</button>
+                </div>
+                <!-- Quick Cadence Presets for 1-tap mobile selection -->
+                <div class="presets-row" role="group" aria-label="Quick Cadence Presets">
+                  <span class="presets-label">Presets:</span>
+                  <button type="button" class="preset-chip active" data-bpm="5.00">5.0</button>
+                  <button type="button" class="preset-chip" data-bpm="5.50">5.5</button>
+                  <button type="button" class="preset-chip" data-bpm="5.65">5.65</button>
+                  <button type="button" class="preset-chip" data-bpm="6.00">6.0</button>
+                  <button type="button" class="preset-chip" data-bpm="6.50">6.5</button>
+                </div>
+                <small class="estimated-tag" id="estimatedTag">Estimated from body metrics</small>
+              </div>
+            </div>
+
+            <!-- Privacy Disclaimer -->
+            <div class="privacy-disclaimer">
+              <svg class="privacy-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor"
+                stroke-width="2">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+              </svg>
+              <p><strong>Privacy Disclaimer:</strong> Your height and sex are processed entirely locally in your
+                browser. No data is stored, tracked, or transmitted. It is solely used to calculate your initial
+                estimated resonance frequency rate.</p>
+            </div>
+          </div>
+
+          <!-- Pacer Display Card -->
+          <div class="demo-card pacer-card">
+            <!-- Session Telemetry (Mobile-Optimized Balanced Grid) -->
+            <div class="telemetry-bar">
+              <div class="telemetry-item">
+                <span class="telemetry-label">SESSION TIME</span>
+                <span class="telemetry-val" id="totalTimeDisplay">00:00</span>
+              </div>
+              <div class="telemetry-item">
+                <span class="telemetry-label">ROUND</span>
+                <span class="telemetry-val" id="roundDisplay">Round 1</span>
+              </div>
+              <div class="telemetry-item">
+                <span class="telemetry-label">PHASE</span>
+                <span class="telemetry-val phase-badge" id="phaseDisplay">Rest (2:00)</span>
+              </div>
+              <div class="telemetry-item">
+                <span class="telemetry-label">BREATH CYCLE</span>
+                <span class="telemetry-val" id="cycleDisplay">-- / --</span>
+              </div>
+            </div>
+
+            <!-- Garmin Smartwatch Hardware Simulation & AMOLED Pacer Display -->
+            <div class="watch-chassis-wrap">
+              <div class="watch-bezel" id="watchBezel">
+                <!-- Bezel Hardware Accent Notches -->
+                <div class="bezel-tick bezel-tick-12" title="12 o'clock bezel notch"></div>
+                <div class="bezel-tick bezel-tick-start" title="START button accent notch"></div>
+
+                <!-- Pure Black AMOLED Display -->
+                <div class="watch-screen" id="watchScreen">
+                  <!-- Line 1: Coaching Hint (Directly above directive) -->
+                  <div class="watch-hint" id="watchHint">Through nose</div>
+
+                  <!-- Line 2: Pacer Directive (BREATHE IN / BREATHE OUT) -->
+                  <div class="watch-directive" id="watchDirective">BREATHE IN</div>
+
+                  <!-- Line 3: Horizontal Capsule Progress Bar -->
+                  <div class="watch-bar-track" id="watchBarTrack">
+                    <div class="watch-bar-fill" id="watchBarFill" style="width: 70%;"></div>
+                  </div>
+
+                  <!-- Line 4: Round & Target Cadence -->
+                  <div class="watch-cadence" id="watchCadence">R1 Center: 5.00 BPM</div>
+
+                  <!-- Line 5: Live Telemetry (HR & Stage Seconds Left) -->
+                  <div class="watch-telemetry" id="watchTelemetry">HR: 78 | 8 s left</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Control Buttons (Thumb-First Ergonomic Layout with Zero Layout Shift) -->
+            <div class="pacer-actions">
+              <button type="button" class="btn-action-primary" id="btnStartPause">
+                <span id="btnStartPauseText">Start Session</span>
+              </button>
+              <div class="secondary-actions">
+                <button type="button" class="btn-secondary" id="btnReset">Reset</button>
+                <button type="button" class="btn-outline" id="btnSkipPhase" title="Skip to next phase (Rest ↔ Paced)">Skip Phase</button>
+                <button type="button" class="btn-icon" id="btnAudioToggle" title="Toggle audio and vibration cues">
+                  <span id="audioIcon">🔊 Cues ON</span>
+                </button>
+              </div>
+              <div class="cue-indicators">
+                <span class="cue-badge">📳 Haptics</span>
+                <span class="cue-badge">🔒 Screen Awake</span>
+                <span class="cue-badge">🌬️ Breath Acoustics & Clicks</span>
+              </div>
+            </div>
+
+            <!-- Technique Guidance Rules (Garmin Stage 3 Pre-Pacing Prompts) -->
+            <div class="technique-rules-container">
+              <div class="tech-header">
+                <span class="tech-badge">Garmin Stage 3</span>
+                <h3 id="techHeaderTitle">Technique Guidance (Pre-Pacing Rules)</h3>
+              </div>
+              <div class="technique-grid">
+                <div class="tech-card">
+                  <div class="tech-icon">⏳</div>
+                  <div class="tech-label" id="techRatioTitle">Breath Ratio</div>
+                  <div class="tech-val" id="techRatioDir">40% Inhale / 60% Out</div>
+                </div>
+                <div class="tech-card">
+                  <div class="tech-icon">🌊</div>
+                  <div class="tech-label" id="techFlowTitle">Continuous Flow</div>
+                  <div class="tech-val" id="techFlowDir">No Breath Holds</div>
+                </div>
+                <div class="tech-card">
+                  <div class="tech-icon">🫁</div>
+                  <div class="tech-label" id="techEffortTitle">Effort &amp; Pace</div>
+                  <div class="tech-val" id="techEffortDir">Breathe Gently</div>
+                </div>
+                <div class="tech-card">
+                  <div class="tech-icon">🧘</div>
+                  <div class="tech-label" id="techSignalTitle">Setup &amp; Signal</div>
+                  <div class="tech-val" id="techSignalDir">Sit Still &amp; Upright</div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
+      </section>
 
-        <div class="pacer-controls">
-          <button class="btn btn-outline" id="btn-toggle-pacer">Pause Pacer</button>
-          <div class="pacer-rate" id="pacer-rate-display">Rate: 5.00 BPM</div>
-        </div>
-      </div>
+      <!-- Pacer Styles -->
+      <style>
+        .sr-only {
+          position: absolute;
+          width: 1px;
+          height: 1px;
+          padding: 0;
+          margin: -1px;
+          overflow: hidden;
+          clip: rect(0, 0, 0, 0);
+          white-space: nowrap;
+          border: 0;
+        }
+
+        .demo-section {
+          padding: 2.5rem 0.5rem;
+          color: #f1f5f9;
+          font-family: inherit;
+        }
+
+        .demo-container {
+          max-width: 740px;
+          margin: 0 auto;
+          display: flex;
+          flex-direction: column;
+          gap: 1.5rem;
+        }
+
+        .demo-header {
+          text-align: center;
+          margin-bottom: 0.5rem;
+        }
+
+        .demo-header h2 {
+          font-size: 2rem;
+          margin-bottom: 0.4rem;
+          color: #38bdf8;
+          line-height: 1.25;
+        }
+
+        .demo-header .subtitle {
+          color: #94a3b8;
+          font-size: 0.98rem;
+        }
+
+        .demo-lang-selector-bar {
+          display: inline-flex;
+          align-items: center;
+          gap: 0.65rem;
+          background: rgba(15, 23, 42, 0.7);
+          border: 1px solid #1e293b;
+          border-radius: 9999px;
+          padding: 0.35rem 0.95rem;
+          margin-bottom: 0.85rem;
+          box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .demo-lang-selector-bar label {
+          font-size: 0.82rem;
+          font-weight: 600;
+          color: #94a3b8;
+          letter-spacing: 0.02em;
+        }
+
+        .demo-lang-select {
+          background: #0b1120;
+          border: 1px solid #334155;
+          color: #38bdf8;
+          font-family: inherit;
+          font-size: 0.84rem;
+          font-weight: 600;
+          border-radius: 6px;
+          padding: 0.28rem 1.65rem 0.28rem 0.65rem;
+          cursor: pointer;
+          appearance: none;
+          background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2338bdf8' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+          background-repeat: no-repeat;
+          background-position: right 0.5rem center;
+          transition: all 0.2s ease;
+        }
+
+        .demo-lang-select:hover, .demo-lang-select:focus {
+          border-color: #38bdf8;
+          outline: none;
+        }
+
+        .demo-card {
+          background: #131926;
+          border: 1px solid #23354d;
+          border-radius: 20px;
+          padding: 1.75rem;
+          box-shadow: 0 10px 35px rgba(0, 0, 0, 0.45);
+        }
+
+        .setup-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+          gap: 1.25rem;
+          margin-bottom: 1.25rem;
+        }
+
+        .form-group {
+          display: flex;
+          flex-direction: column;
+          gap: 0.5rem;
+        }
+
+        .form-label-row {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+        }
+
+        .form-group label {
+          font-size: 0.82rem;
+          font-weight: 700;
+          text-transform: uppercase;
+          letter-spacing: 0.05em;
+          color: #94a3b8;
+        }
+
+        .value-chip {
+          font-family: 'JetBrains Mono', monospace;
+          font-size: 0.82rem;
+          font-weight: 700;
+          color: #38bdf8;
+          background: rgba(56, 189, 248, 0.1);
+          border: 1px solid rgba(56, 189, 248, 0.28);
+          padding: 0.15rem 0.55rem;
+          border-radius: 12px;
+        }
+
+        .value-chip.chip-cyan {
+          color: #67e8f9;
+          background: rgba(6, 182, 212, 0.12);
+          border-color: rgba(6, 182, 212, 0.3);
+        }
+
+        .input-row {
+          display: flex;
+          align-items: center;
+          gap: 0.75rem;
+        }
+
+        .slider {
+          flex: 1;
+          height: 10px;
+          border-radius: 5px;
+          background: #1e293b;
+          accent-color: #38bdf8;
+          cursor: pointer;
+          touch-action: pan-y;
+        }
+
+        .slider::-webkit-slider-thumb {
+          width: 24px;
+          height: 24px;
+          border-radius: 50%;
+          background: #38bdf8;
+          border: 2px solid #0b111a;
+          box-shadow: 0 0 10px rgba(56, 189, 248, 0.7);
+          cursor: pointer;
+        }
+
+        .num-input {
+          width: 68px;
+          min-height: 44px;
+          background: #0b111a;
+          border: 1px solid #334155;
+          color: #f8fafc;
+          border-radius: 10px;
+          font-size: 16px; /* Prevents auto-zoom on iOS */
+          font-weight: 700;
+          text-align: center;
+        }
+
+        .segmented-control {
+          display: flex;
+          background: #0b111a;
+          border: 1px solid #2d3b4e;
+          border-radius: 10px;
+          padding: 3px;
+          gap: 3px;
+          min-height: 44px;
+        }
+
+        .seg-btn {
+          flex: 1;
+          border: none;
+          background: transparent;
+          color: #94a3b8;
+          font-size: 0.92rem;
+          font-weight: 600;
+          border-radius: 8px;
+          cursor: pointer;
+          transition: all 0.18s ease;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          user-select: none;
+        }
+
+        .seg-btn.active {
+          background: #38bdf8;
+          color: #082f49;
+          font-weight: 700;
+          box-shadow: 0 2px 8px rgba(56, 189, 248, 0.35);
+        }
+
+        .bpm-control-row {
+          display: flex;
+          align-items: center;
+          gap: 0.5rem;
+        }
+
+        .bpm-input-wrapper {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          background: #0b111a;
+          border: 1px solid #38bdf8;
+          border-radius: 10px;
+          padding: 0 0.5rem;
+          flex: 1;
+          min-height: 44px;
+        }
+
+        .bpm-input {
+          width: 72px;
+          background: transparent;
+          border: none;
+          color: #38bdf8;
+          font-weight: 800;
+          font-size: 1.25rem;
+          text-align: center;
+          outline: none;
+        }
+
+        .bpm-unit {
+          font-size: 0.8rem;
+          color: #94a3b8;
+          font-weight: 700;
+        }
+
+        .step-btn {
+          min-width: 52px;
+          min-height: 44px;
+          background: #203147;
+          border: 1px solid #334763;
+          color: #38bdf8;
+          font-weight: 800;
+          font-size: 1rem;
+          border-radius: 10px;
+          cursor: pointer;
+          transition: all 0.15s ease;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          user-select: none;
+        }
+
+        .step-btn:active {
+          background: #38bdf8;
+          color: #082f49;
+          transform: scale(0.96);
+        }
+
+        .presets-row {
+          display: flex;
+          align-items: center;
+          gap: 0.35rem;
+          flex-wrap: wrap;
+          margin-top: 0.4rem;
+        }
+
+        .presets-label {
+          font-size: 0.72rem;
+          font-weight: 700;
+          color: #64748b;
+          text-transform: uppercase;
+          letter-spacing: 0.05em;
+        }
+
+        .preset-chip {
+          background: rgba(56, 189, 248, 0.08);
+          border: 1px solid rgba(56, 189, 248, 0.22);
+          color: #7dd3fc;
+          border-radius: 14px;
+          padding: 0.2rem 0.55rem;
+          font-size: 0.78rem;
+          font-weight: 600;
+          cursor: pointer;
+          transition: all 0.15s ease;
+        }
+
+        .preset-chip:active,
+        .preset-chip.active {
+          background: #38bdf8;
+          color: #082f49;
+          font-weight: 700;
+          border-color: #38bdf8;
+        }
+
+        .estimated-tag {
+          font-size: 0.75rem;
+          color: #38bdf8;
+          opacity: 0.9;
+          margin-top: 0.2rem;
+        }
+
+        .privacy-disclaimer {
+          display: flex;
+          align-items: flex-start;
+          gap: 0.75rem;
+          background: rgba(56, 189, 248, 0.06);
+          border: 1px solid rgba(56, 189, 248, 0.22);
+          border-radius: 12px;
+          padding: 0.85rem 1rem;
+          font-size: 0.82rem;
+          line-height: 1.45;
+          color: #cbd5e1;
+        }
+
+        .privacy-icon {
+          flex-shrink: 0;
+          stroke: #38bdf8;
+          margin-top: 2px;
+        }
+
+        /* Telemetry Bar */
+        .telemetry-bar {
+          display: grid;
+          grid-template-columns: repeat(4, 1fr);
+          gap: 0.75rem;
+          background: #0b111a;
+          border: 1px solid #23354d;
+          border-radius: 14px;
+          padding: 0.85rem;
+          margin-bottom: 1.5rem;
+        }
+
+        .telemetry-item {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          background: rgba(255, 255, 255, 0.025);
+          border: 1px solid rgba(255, 255, 255, 0.04);
+          border-radius: 10px;
+          padding: 0.55rem 0.35rem;
+        }
+
+        .telemetry-label {
+          font-size: 0.68rem;
+          font-weight: 700;
+          letter-spacing: 0.06em;
+          color: #64748b;
+          margin-bottom: 0.2rem;
+        }
+
+        .telemetry-val {
+          font-size: 1.05rem;
+          font-weight: 700;
+          color: #f1f5f9;
+        }
+
+        .phase-badge {
+          color: #fbbf24;
+        }
+
+        .phase-badge.paced {
+          color: #38bdf8;
+        }
+
+        /* Garmin Smartwatch Hardware Simulation & AMOLED Display */
+        .watch-chassis-wrap {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          margin: 1.5rem 0;
+          position: relative;
+        }
+
+        .watch-bezel {
+          width: 320px;
+          height: 320px;
+          max-width: 86vw;
+          max-height: 86vw;
+          aspect-ratio: 1 / 1;
+          border-radius: 50%;
+          background: radial-gradient(circle at 45% 35%, #2a2f3d 0%, #1c202a 60%, #13161f 100%);
+          border: 4px solid #282d3b;
+          box-shadow: 
+            0 16px 45px rgba(0, 0, 0, 0.85),
+            inset 0 1px 2px rgba(255, 255, 255, 0.14),
+            inset 0 -2px 6px rgba(0, 0, 0, 0.7);
+          position: relative;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          box-sizing: border-box;
+          user-select: none;
+        }
+
+        /* 12 O'clock Top White Bezel Tick Mark */
+        .bezel-tick-12 {
+          position: absolute;
+          top: 3px;
+          left: 50%;
+          transform: translateX(-50%);
+          width: 3px;
+          height: 8px;
+          background: #ffffff;
+          border-radius: 2px;
+          z-index: 10;
+        }
+
+        /* ~45° (1:45-2:00) START Button Accent Lime-Green Tick Mark */
+        .bezel-tick-start {
+          position: absolute;
+          top: 18px;
+          right: 32px;
+          width: 3.5px;
+          height: 18px;
+          background: #c6f135;
+          border-radius: 2px;
+          transform: rotate(45deg);
+          transform-origin: center center;
+          z-index: 10;
+        }
+
+        /* AMOLED Circular Display Screen */
+        .watch-screen {
+          width: 82%;
+          height: 82%;
+          border-radius: 50%;
+          background: #000000;
+          box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.95);
+          position: relative;
+          overflow: hidden;
+          box-sizing: border-box;
+          user-select: none;
+        }
+
+        /* Line 1: Coaching Hint */
+        .watch-hint {
+          position: absolute;
+          top: 16%;
+          left: 0;
+          width: 100%;
+          text-align: center;
+          font-size: 15px;
+          font-weight: 500;
+          letter-spacing: 0.01em;
+          color: #ffffff;
+          font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+          line-height: 1.2;
+          user-select: none;
+          transition: color 0.3s ease;
+        }
+
+        /* Line 2: Pacer Directive */
+        .watch-directive {
+          position: absolute;
+          top: 28%;
+          left: 0;
+          width: 100%;
+          text-align: center;
+          font-size: 32px;
+          font-weight: 900;
+          letter-spacing: 0.04em;
+          text-transform: uppercase;
+          line-height: 1;
+          color: #00ffff;
+          font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+          user-select: none;
+          transition: color 0.2s ease;
+        }
+
+        .watch-directive.exhale {
+          color: #ff9800;
+        }
+
+        .watch-directive.rest {
+          color: #fbbf24;
+          font-size: 24px;
+        }
+
+        /* Line 3: Horizontal Capsule Progress Bar */
+        .watch-bar-track {
+          position: absolute;
+          top: 48%;
+          left: 19%;
+          width: 62%;
+          height: 14px;
+          transform: translateY(-50%);
+          border-radius: 7px;
+          background: #222226;
+          overflow: hidden;
+        }
+
+        .watch-bar-fill {
+          height: 100%;
+          width: 0%;
+          border-radius: 7px;
+          background: #00ffff;
+          transition: width 0.04s linear, background-color 0.2s ease;
+          will-change: width;
+        }
+
+        .watch-bar-fill.exhale {
+          background: #ff9800;
+        }
+
+        /* Line 4: Cadence Info */
+        .watch-cadence {
+          position: absolute;
+          top: 64%;
+          left: 0;
+          width: 100%;
+          text-align: center;
+          font-size: 16.5px;
+          font-weight: 700;
+          color: #00ffff;
+          letter-spacing: 0.01em;
+          font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+          user-select: none;
+        }
+
+        /* Line 5: Live Telemetry */
+        .watch-telemetry {
+          position: absolute;
+          top: 77%;
+          left: 0;
+          width: 100%;
+          text-align: center;
+          font-size: 15.5px;
+          font-weight: 700;
+          color: #ffffff;
+          letter-spacing: 0.01em;
+          font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+          user-select: none;
+        }
+
+        /* Ergonomic Actions */
+        .pacer-actions {
+          display: flex;
+          flex-direction: column;
+          gap: 0.75rem;
+          width: 100%;
+          margin-top: 1rem;
+        }
+
+        .btn-action-primary {
+          width: 100%;
+          min-height: 50px;
+          border-radius: 12px;
+          border: none;
+          background: #38bdf8;
+          color: #082f49;
+          font-size: 1.05rem;
+          font-weight: 800;
+          letter-spacing: 0.02em;
+          cursor: pointer;
+          box-shadow: 0 4px 20px rgba(56, 189, 248, 0.35);
+          transition: all 0.2s ease;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          user-select: none;
+        }
+
+        .btn-action-primary:active {
+          transform: translateY(1px);
+        }
+
+        .btn-action-primary.paused {
+          background: #fbbf24;
+          color: #451a03;
+          box-shadow: 0 4px 20px rgba(251, 191, 36, 0.35);
+        }
+
+        .secondary-actions {
+          display: grid;
+          grid-template-columns: repeat(3, 1fr);
+          gap: 0.5rem;
+          width: 100%;
+        }
+
+        .btn-secondary,
+        .btn-outline,
+        .btn-icon {
+          min-height: 44px;
+          padding: 0.65rem 0.5rem;
+          border-radius: 10px;
+          font-size: 0.85rem;
+          font-weight: 600;
+          cursor: pointer;
+          transition: all 0.15s ease;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          text-align: center;
+          user-select: none;
+        }
+
+        .btn-secondary {
+          background: #1e293b;
+          color: #f1f5f9;
+          border: 1px solid #334155;
+        }
+
+        .btn-secondary:hover {
+          background: #334155;
+        }
+
+        .btn-outline {
+          background: transparent;
+          color: #94a3b8;
+          border: 1px solid #334155;
+        }
+
+        .btn-outline:hover {
+          color: #f1f5f9;
+          border-color: #64748b;
+        }
+
+        .btn-icon {
+          background: #0f172a;
+          border: 1px solid #334155;
+          color: #cbd5e1;
+        }
+
+        .cue-indicators {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          gap: 0.5rem;
+          flex-wrap: wrap;
+          margin-top: 0.25rem;
+        }
+
+        .cue-badge {
+          font-size: 0.72rem;
+          color: #94a3b8;
+          background: rgba(255, 255, 255, 0.035);
+          border: 1px solid rgba(255, 255, 255, 0.06);
+          border-radius: 10px;
+          padding: 0.2rem 0.55rem;
+        }
+
+        /* Technique Rules Grid (Garmin Stage 3 Pre-Pacing Prompts) */
+        .technique-rules-container {
+          margin-top: 1.5rem;
+          padding-top: 1.25rem;
+          border-top: 1px solid #1e293b;
+        }
+
+        .tech-header {
+          display: flex;
+          align-items: center;
+          gap: 0.75rem;
+          margin-bottom: 0.9rem;
+        }
+
+        .tech-badge {
+          font-size: 0.72rem;
+          font-weight: 700;
+          letter-spacing: 0.05em;
+          text-transform: uppercase;
+          color: #38bdf8;
+          background: rgba(56, 189, 248, 0.12);
+          border: 1px solid rgba(56, 189, 248, 0.25);
+          border-radius: 6px;
+          padding: 0.2rem 0.5rem;
+        }
+
+        .tech-header h3 {
+          font-size: 0.95rem;
+          font-weight: 700;
+          color: #f1f5f9;
+          margin: 0;
+        }
+
+        .technique-grid {
+          display: grid;
+          grid-template-columns: repeat(4, 1fr);
+          gap: 0.75rem;
+        }
+
+        .tech-card {
+          background: #0b1120;
+          border: 1px solid #1e293b;
+          border-radius: 12px;
+          padding: 0.85rem 0.65rem;
+          text-align: center;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          gap: 0.3rem;
+          transition: border-color 0.2s ease, transform 0.2s ease;
+        }
+
+        .tech-card:hover {
+          border-color: #38bdf8;
+          transform: translateY(-2px);
+        }
+
+        .tech-icon {
+          font-size: 1.35rem;
+          line-height: 1;
+          margin-bottom: 0.15rem;
+        }
+
+        .tech-label {
+          font-size: 0.74rem;
+          font-weight: 600;
+          color: #94a3b8;
+          text-transform: uppercase;
+          letter-spacing: 0.03em;
+        }
+
+        .tech-val {
+          font-size: 0.84rem;
+          font-weight: 700;
+          color: #38bdf8;
+          line-height: 1.25;
+          white-space: pre-line;
+        }
+
+        /* Mobile Adjustments */
+        @media (max-width: 640px) {
+          .demo-section {
+            padding: 1.5rem 0.25rem;
+          }
+
+          .demo-card {
+            padding: 1.25rem 0.9rem;
+            border-radius: 16px;
+          }
+
+          .setup-grid {
+            grid-template-columns: 1fr;
+            gap: 1.15rem;
+          }
+
+          .telemetry-bar {
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0.55rem;
+            padding: 0.65rem;
+          }
+
+          .technique-grid {
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0.65rem;
+          }
+
+          .watch-chassis-wrap {
+            margin: 1.25rem 0;
+          }
+
+          .watch-bezel {
+            width: min(290px, 84vw);
+            height: min(290px, 84vw);
+          }
+
+          .bezel-tick-start {
+            top: 16px;
+            right: 28px;
+            height: 16px;
+          }
+
+          .watch-directive {
+            font-size: 28px;
+          }
+
+          .watch-hint {
+            font-size: 13.5px;
+          }
+
+          .watch-cadence {
+            font-size: 15px;
+          }
+
+          .watch-telemetry {
+            font-size: 14px;
+          }
+        }
+
+        @media (max-width: 380px) {
+          .secondary-actions {
+            grid-template-columns: 1fr 1fr;
+          }
+
+          .btn-icon {
+            grid-column: span 2;
+          }
+
+          .bpm-control-row {
+            flex-wrap: wrap;
+          }
+        }
+      </style>
+
+      <!-- Pacer Logic Script (Enhanced with Mobile Haptics & Screen Wake Lock) -->
+      <script>
+        (function () {
+          // --- Constants & Config ---
+          const PHASE_REST_SEC = 120;  // 2 Minutes Rest
+          const PHASE_PACE_SEC = 120;  // 2 Minutes Paced Breathing
+
+          // --- State Variables ---
+          let isRunning = false;
+          let currentPhase = 'REST';   // 'REST' | 'PACE'
+          let roundNumber = 1;
+          let totalElapsedSec = 0;
+          let phaseRemainingSec = PHASE_REST_SEC;
+          let cuesEnabled = true;
+
+          // Animation & Timer handles
+          let timerInterval = null;
+          let animFrameId = null;
+          let phaseStartTime = null;
+
+          // Screen Wake Lock API handle
+          let wakeLock = null;
+
+          // Web Audio Context (synthesized cues)
+          let audioCtx = null;
+
+          // --- DOM Elements ---
+          const userHeightSlider = document.getElementById('userHeight');
+          const userHeightNum = document.getElementById('userHeightNum');
+          const heightValText = document.getElementById('heightVal');
+          const userSexSelect = document.getElementById('userSex');
+          const sexMaleBtn = document.getElementById('sexMaleBtn');
+          const sexFemaleBtn = document.getElementById('sexFemaleBtn');
+          const targetBpmInput = document.getElementById('targetBpm');
+          const bpmMinusBtn = document.getElementById('bpmMinus');
+          const bpmPlusBtn = document.getElementById('bpmPlus');
+          const estimatedTag = document.getElementById('estimatedTag');
+          const cycleSecHint = document.getElementById('cycleSecHint');
+          const presetChips = document.querySelectorAll('.preset-chip');
+
+          const totalTimeDisplay = document.getElementById('totalTimeDisplay');
+          const roundDisplay = document.getElementById('roundDisplay');
+          const phaseDisplay = document.getElementById('phaseDisplay');
+          const cycleDisplay = document.getElementById('cycleDisplay');
+
+          const watchBezel = document.getElementById('watchBezel');
+          const watchScreen = document.getElementById('watchScreen');
+          const watchHint = document.getElementById('watchHint');
+          const watchDirective = document.getElementById('watchDirective');
+          const watchBarTrack = document.getElementById('watchBarTrack');
+          const watchBarFill = document.getElementById('watchBarFill');
+          const watchCadence = document.getElementById('watchCadence');
+          const watchTelemetry = document.getElementById('watchTelemetry');
+
+          // Internationalization (i18n) Selectors & Labels
+          const globalLangSelect = document.getElementById('globalLangSelect');
+          const demoLangSelect = document.getElementById('demoLangSelect');
+          const lblUserSex = document.getElementById('lblUserSex');
+          const lblTargetCadence = document.getElementById('lblTargetCadence');
+
+          const techHeaderTitle = document.getElementById('techHeaderTitle');
+          const techRatioTitle = document.getElementById('techRatioTitle');
+          const techRatioDir = document.getElementById('techRatioDir');
+          const techFlowTitle = document.getElementById('techFlowTitle');
+          const techFlowDir = document.getElementById('techFlowDir');
+          const techEffortTitle = document.getElementById('techEffortTitle');
+          const techEffortDir = document.getElementById('techEffortDir');
+          const techSignalTitle = document.getElementById('techSignalTitle');
+          const techSignalDir = document.getElementById('techSignalDir');
+
+          let currentLang = 'en';
+          let s = (window.PEAK_I18N && window.PEAK_I18N['en'] && window.PEAK_I18N['en'].strings) || {};
+
+          // Authentic Somatic Coaching Hints from Garmin strings.xml
+          let INHALE_HINTS = [
+            'Through nose',
+            'Easily into belly',
+            'Normal, shallow',
+            'Quiet, relaxed',
+            'Belly out',
+            'Chest still'
+          ];
+          let EXHALE_HINTS = [
+            'Relax shoulders',
+            'Pursed lips',
+            'Stay shallow',
+            'Relax jaw',
+            'Gently',
+            'Without force'
+          ];
+          let somaticHintIndex = 0;
+
+          const btnStartPause = document.getElementById('btnStartPause');
+          const btnStartPauseText = document.getElementById('btnStartPauseText');
+          const btnReset = document.getElementById('btnReset');
+          const btnSkipPhase = document.getElementById('btnSkipPhase');
+          const btnAudioToggle = document.getElementById('btnAudioToggle');
+          const audioIcon = document.getElementById('audioIcon');
+
+          // --- Mobile Screen Wake Lock API ---
+          async function requestWakeLock() {
+            if ('wakeLock' in navigator) {
+              try {
+                wakeLock = await navigator.wakeLock.request('screen');
+                wakeLock.addEventListener('release', () => {
+                  wakeLock = null;
+                });
+              } catch (err) {}
+            }
+          }
+
+          function releaseWakeLock() {
+            if (wakeLock) {
+              wakeLock.release().catch(() => {});
+              wakeLock = null;
+            }
+          }
+
+          // --- Mobile Vibration / Haptic Feedback ---
+          function triggerHaptic(pattern) {
+            if (!cuesEnabled) return;
+            if ('vibrate' in navigator) {
+              try {
+                navigator.vibrate(pattern);
+              } catch (e) {}
+            }
+          }
+
+          // --- Organic Noise-Based Shepard Glissando (Pure Breath, Zero Siren Tone) ---
+          let breathMasterGain = null;
+          let noiseSource = null;
+          let noiseBuffer = null;
+
+          // 1. Natural Breath Formant Noise Path (Airy base layer)
+          let formantFilter = null;
+          let formantGain = null;
+
+          // 2. Shepard Resonant Noise Filter Bank (7 Octave-Spaced Resonant Bands on Noise)
+          const SHEPARD_BANDS = 7;
+          const SHEPARD_BASE_FREQ = 80;    // 80 Hz up to ~5.1 kHz
+          const SHEPARD_CENTER_FREQ = 640; // Sweet spot of vocal/breath warmth
+          const SHEPARD_SIGMA = 1.5;
+          let shepardFilterNodes = []; // { filter, gain }
+          let shepardNoiseMasterGain = null;
+
+          function initAudio() {
+            if (!audioCtx) {
+              try {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+              } catch (e) {}
+            }
+            if (audioCtx && audioCtx.state === 'suspended') {
+              audioCtx.resume().catch(() => {});
+            }
+          }
+
+          // Pink / Brownian noise buffer for natural breath turbulence
+          function createPinkNoiseBuffer(ctx, seconds = 6) {
+            const bufferSize = ctx.sampleRate * seconds;
+            const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+            const data = buffer.getChannelData(0);
+            let b0 = 0, b1 = 0, b2 = 0, b3 = 0, b4 = 0, b5 = 0, b6 = 0;
+            for (let i = 0; i < bufferSize; i++) {
+              const white = Math.random() * 2 - 1;
+              b0 = 0.99886 * b0 + white * 0.0555179;
+              b1 = 0.99332 * b1 + white * 0.0750759;
+              b2 = 0.96900 * b2 + white * 0.1538520;
+              b3 = 0.86650 * b3 + white * 0.3104856;
+              b4 = 0.55000 * b4 + white * 0.5329522;
+              b5 = -0.7616 * b5 - white * 0.0168980;
+              data[i] = (b0 + b1 + b2 + b3 + b4 + b5 + b6 + white * 0.5362) * 0.11;
+              b6 = white * 0.115926;
+            }
+            return buffer;
+          }
+
+          function calculateShepardGain(freq) {
+            if (freq <= 0) return 0;
+            const dist = Math.log2(freq / SHEPARD_CENTER_FREQ);
+            return Math.max(0, Math.exp(-0.5 * Math.pow(dist / SHEPARD_SIGMA, 2)));
+          }
+
+          function startBreathAudio() {
+            if (!cuesEnabled) return;
+            initAudio();
+            if (!audioCtx) return;
+
+            if (!breathMasterGain) {
+              breathMasterGain = audioCtx.createGain();
+              breathMasterGain.gain.setValueAtTime(0.001, audioCtx.currentTime);
+              breathMasterGain.gain.linearRampToValueAtTime(1.0, audioCtx.currentTime + 0.1);
+              breathMasterGain.connect(audioCtx.destination);
+            }
+
+            if (!noiseSource) {
+              if (!noiseBuffer) {
+                noiseBuffer = createPinkNoiseBuffer(audioCtx, 6);
+              }
+              noiseSource = audioCtx.createBufferSource();
+              noiseSource.buffer = noiseBuffer;
+              noiseSource.loop = true;
+
+              // 1. Natural Breath Formant Noise Path (Airy base layer)
+              formantFilter = audioCtx.createBiquadFilter();
+              formantFilter.type = 'bandpass';
+              formantFilter.Q.value = 1.6;
+
+              formantGain = audioCtx.createGain();
+              formantGain.gain.value = 0;
+
+              noiseSource.connect(formantFilter);
+              formantFilter.connect(formantGain);
+              formantGain.connect(breathMasterGain);
+
+              // 2. Shepard Resonant Noise Filter Bank (Pure Noise Pitch Illusion)
+              shepardNoiseMasterGain = audioCtx.createGain();
+              shepardNoiseMasterGain.gain.value = 0;
+              shepardNoiseMasterGain.connect(breathMasterGain);
+
+              shepardFilterNodes = [];
+              for (let i = 0; i < SHEPARD_BANDS; i++) {
+                const bpf = audioCtx.createBiquadFilter();
+                bpf.type = 'bandpass';
+                bpf.Q.value = 3.2; // Resonant band over noise
+
+                const bg = audioCtx.createGain();
+                bg.gain.value = 0;
+
+                noiseSource.connect(bpf);
+                bpf.connect(bg);
+                bg.connect(shepardNoiseMasterGain);
+
+                shepardFilterNodes.push({ filter: bpf, gain: bg });
+              }
+
+              noiseSource.start();
+            }
+          }
+
+          function stopBreathAudio(immediate = false) {
+            if (!breathMasterGain || !audioCtx) return;
+            const now = audioCtx.currentTime;
+            breathMasterGain.gain.cancelScheduledValues(now);
+            breathMasterGain.gain.setValueAtTime(breathMasterGain.gain.value, now);
+
+            if (immediate) {
+              breathMasterGain.gain.setValueAtTime(0.001, now);
+              cleanupBreathNodes();
+            } else {
+              breathMasterGain.gain.linearRampToValueAtTime(0.001, now + 0.08);
+              setTimeout(() => {
+                if (!isRunning || currentPhase !== 'PACE' || !cuesEnabled) {
+                  cleanupBreathNodes();
+                }
+              }, 100);
+            }
+          }
+
+          function cleanupBreathNodes() {
+            try {
+              if (noiseSource) {
+                noiseSource.stop();
+                noiseSource.disconnect();
+                noiseSource = null;
+              }
+              shepardFilterNodes.forEach(node => {
+                try {
+                  node.filter.disconnect();
+                  node.gain.disconnect();
+                } catch (e) {}
+              });
+              shepardFilterNodes = [];
+              if (formantFilter) {
+                formantFilter.disconnect();
+                formantFilter = null;
+              }
+              if (formantGain) {
+                formantGain.disconnect();
+                formantGain = null;
+              }
+              if (shepardNoiseMasterGain) {
+                shepardNoiseMasterGain.disconnect();
+                shepardNoiseMasterGain = null;
+              }
+              if (breathMasterGain) {
+                breathMasterGain.disconnect();
+                breathMasterGain = null;
+              }
+            } catch (e) {}
+          }
+
+          // --- Crisp Tactile Transition Click ---
+          function playClick(isTop = true) {
+            if (!cuesEnabled) return;
+            initAudio();
+            if (!audioCtx) return;
+            try {
+              const now = audioCtx.currentTime;
+              const osc = audioCtx.createOscillator();
+              const g = audioCtx.createGain();
+
+              // Top of inhale: crisp high tick (1800 -> 350 Hz)
+              // Bottom of exhale: warm grounding knock (1100 -> 200 Hz)
+              const startFreq = isTop ? 1800 : 1100;
+              const endFreq = isTop ? 350 : 200;
+
+              osc.type = 'triangle';
+              osc.frequency.setValueAtTime(startFreq, now);
+              osc.frequency.exponentialRampToValueAtTime(endFreq, now + 0.018);
+
+              g.gain.setValueAtTime(0.24, now);
+              g.gain.exponentialRampToValueAtTime(0.0001, now + 0.022);
+
+              osc.connect(g);
+              g.connect(audioCtx.destination);
+              osc.start(now);
+              osc.stop(now + 0.025);
+            } catch (e) {}
+          }
+
+          function playBeep(freq = 440, duration = 0.15, type = 'sine') {
+            if (!cuesEnabled) return;
+            try {
+              initAudio();
+              if (!audioCtx) return;
+              const osc = audioCtx.createOscillator();
+              const gain = audioCtx.createGain();
+              osc.type = type;
+              osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+              gain.gain.setValueAtTime(0.08, audioCtx.currentTime);
+              gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
+              osc.connect(gain);
+              gain.connect(audioCtx.destination);
+              osc.start();
+              osc.stop(audioCtx.currentTime + duration);
+            } catch (e) {}
+          }
+
+          // --- Resonance Frequency Estimation Formula (Hasuo et al., 2023) ---
+          function calculateEstimatedBpm(heightCm, sex) {
+            let est = (sex === 'female')
+              ? (15.88 - (0.06 * heightCm))
+              : (17.90 - (0.07 * heightCm));
+
+            est = Math.max(4.5, Math.min(6.5, est));
+            return (Math.round(est * 20) / 20).toFixed(2);
+          }
+
+          function updateCycleHint(bpm) {
+            if (!cycleSecHint) return;
+            const dur = (60.0 / bpm).toFixed(1);
+            const cycleWord = s.cycle_prefix ? s.cycle_prefix.toLowerCase() : 'cycle';
+            cycleSecHint.textContent = `${dur}s ${cycleWord}`;
+          }
+
+          function updateActivePresetChip(bpmVal) {
+            const num = parseFloat(bpmVal);
+            presetChips.forEach(chip => {
+              const chipBpm = parseFloat(chip.dataset.bpm);
+              if (Math.abs(num - chipBpm) < 0.01) {
+                chip.classList.add('active');
+              } else {
+                chip.classList.remove('active');
+              }
+            });
+          }
+
+          function updateEstimate(autoApply = true) {
+            const h = parseFloat(userHeightSlider.value);
+            const sVal = userSexSelect.value;
+            heightValText.textContent = h;
+            userHeightNum.value = h;
+
+            const estBpm = calculateEstimatedBpm(h, sVal);
+            const sSex = (sVal === 'female') ? (s.female || 'Female') : (s.male || 'Male');
+            const baseTxt = s.baseline_rf || 'Estimated';
+            const unitTxt = s.bpm_unit || 'BPM';
+            estimatedTag.textContent = `${baseTxt}: ${estBpm} ${unitTxt} (${h}cm, ${sSex})`;
+            if (autoApply) {
+              targetBpmInput.value = estBpm;
+              updateCycleHint(parseFloat(estBpm));
+              updateActivePresetChip(estBpm);
+            }
+          }
+
+          // --- Segmented Sex Control ---
+          function setSex(s) {
+            userSexSelect.value = s;
+            if (s === 'male') {
+              sexMaleBtn.classList.add('active');
+              sexFemaleBtn.classList.remove('active');
+            } else {
+              sexFemaleBtn.classList.add('active');
+              sexMaleBtn.classList.remove('active');
+            }
+            updateEstimate(true);
+          }
+
+          sexMaleBtn.addEventListener('click', () => setSex('male'));
+          sexFemaleBtn.addEventListener('click', () => setSex('female'));
+
+          // --- Quick Cadence Preset Chips ---
+          presetChips.forEach(chip => {
+            chip.addEventListener('click', () => {
+              const bpm = parseFloat(chip.dataset.bpm);
+              targetBpmInput.value = bpm.toFixed(2);
+              updateCycleHint(bpm);
+              updateActivePresetChip(bpm);
+              triggerHaptic(20);
+            });
+          });
+
+          // --- Slider & Num Input Sync ---
+          userHeightSlider.addEventListener('input', () => updateEstimate(true));
+          userHeightNum.addEventListener('input', () => {
+            let val = parseFloat(userHeightNum.value);
+            if (!isNaN(val)) {
+              val = Math.max(130, Math.min(220, val));
+              userHeightSlider.value = val;
+              updateEstimate(true);
+            }
+          });
+
+          // Stepper Buttons (+ / - 0.05)
+          bpmMinusBtn.addEventListener('click', () => {
+            let val = parseFloat(targetBpmInput.value) || 5.50;
+            val = Math.max(3.50, val - 0.05);
+            targetBpmInput.value = val.toFixed(2);
+            updateCycleHint(val);
+            updateActivePresetChip(val);
+            triggerHaptic(15);
+          });
+          bpmPlusBtn.addEventListener('click', () => {
+            let val = parseFloat(targetBpmInput.value) || 5.50;
+            val = Math.min(9.00, val + 0.05);
+            targetBpmInput.value = val.toFixed(2);
+            updateCycleHint(val);
+            updateActivePresetChip(val);
+            triggerHaptic(15);
+          });
+
+          targetBpmInput.addEventListener('change', () => {
+            let val = parseFloat(targetBpmInput.value) || 5.50;
+            val = Math.max(3.50, Math.min(9.00, val));
+            targetBpmInput.value = val.toFixed(2);
+            updateCycleHint(val);
+            updateActivePresetChip(val);
+          });
+
+          // --- Formatting Helpers ---
+          function formatMMSS(sec) {
+            const m = Math.floor(sec / 60).toString().padStart(2, '0');
+            const s = Math.floor(sec % 60).toString().padStart(2, '0');
+            return `${m}:${s}`;
+          }
+
+          // --- Pacer State Transitions ---
+          function setPhase(phase, playCues = false) {
+            currentPhase = phase;
+            phaseStartTime = performance.now();
+
+            if (currentPhase === 'REST') {
+              phaseRemainingSec = PHASE_REST_SEC;
+              phaseDisplay.textContent = `${s.rest_baseline_title || 'Rest'} (${formatMMSS(phaseRemainingSec)})`;
+              phaseDisplay.classList.remove('paced');
+              cycleDisplay.textContent = s.free_breathing || s.breathe_naturally || 'Resting';
+
+              if (watchDirective) {
+                watchDirective.className = 'watch-directive rest';
+                watchDirective.textContent = (s.rest_baseline_title || 'REST BASELINE').toUpperCase();
+              }
+              if (watchHint) {
+                watchHint.textContent = s.breathe_naturally || 'Breathe naturally';
+                watchHint.style.color = '#94a3b8';
+              }
+              if (watchBarFill) {
+                watchBarFill.style.width = '0%';
+              }
+              const bpm = parseFloat(targetBpmInput.value) || 5.50;
+              if (watchCadence) {
+                const nextTxt = s.next_prefix || 'Next';
+                const rPrefix = s.round_prefix || 'R';
+                const centerTxt = s.leg_center || 'Center';
+                watchCadence.textContent = `${nextTxt}: ${rPrefix}1 ${centerTxt} ${bpm.toFixed(2)}`;
+                watchCadence.style.color = '#22c55e';
+              }
+              if (watchTelemetry) {
+                const hrTxt = s.hr_label || 'HR';
+                const secLeftTxt = s.seconds_left || 's left';
+                watchTelemetry.textContent = `${hrTxt}: 72 | ${phaseRemainingSec} ${secLeftTxt}`;
+              }
+
+              if (playCues) {
+                playBeep(330, 0.3);
+                triggerHaptic([80, 50, 80]);
+              }
+            } else {
+              phaseRemainingSec = PHASE_PACE_SEC;
+              phaseDisplay.textContent = `Paced (${formatMMSS(phaseRemainingSec)})`;
+              phaseDisplay.classList.add('paced');
+              cycleDisplay.textContent = `${s.cycle_prefix || 'Cycle'} 1`;
+
+              if (watchDirective) {
+                watchDirective.className = 'watch-directive';
+                watchDirective.textContent = s.pacer_inhale || 'BREATHE IN';
+              }
+              if (watchHint) {
+                watchHint.textContent = INHALE_HINTS[somaticHintIndex % INHALE_HINTS.length];
+                watchHint.style.color = '#ffffff';
+              }
+              const bpm = parseFloat(targetBpmInput.value) || 5.00;
+              if (watchCadence) {
+                const rPrefix = s.round_prefix || 'R';
+                const centerTxt = s.leg_center || 'Center';
+                const unitTxt = s.bpm_unit || 'BPM';
+                watchCadence.textContent = `${rPrefix}${roundNumber} ${centerTxt}: ${bpm.toFixed(2)} ${unitTxt}`;
+                watchCadence.style.color = '#00ffff';
+              }
+              if (watchTelemetry) {
+                const hrTxt = s.hr_label || 'HR';
+                const secLeftTxt = s.seconds_left || 's left';
+                watchTelemetry.textContent = `${hrTxt}: 76 | ${phaseRemainingSec} ${secLeftTxt}`;
+              }
+
+              if (playCues) {
+                playBeep(660, 0.4);
+                triggerHaptic([100, 60, 100]);
+              }
+            }
+          }
+
+          function advancePhase() {
+            if (currentPhase === 'REST') {
+              setPhase('PACE', true);
+            } else {
+              roundNumber++;
+              const rTxt = s.round_prefix ? `${s.round_prefix} ` : 'Round ';
+              roundDisplay.textContent = `${rTxt}${roundNumber}`;
+              setPhase('REST', true);
+            }
+          }
+
+          // --- Pacer Animation Loop ---
+          let lastInhaleState = false;
+          function updatePacerVisual(timestamp) {
+            if (!isRunning) return;
+
+            if (currentPhase === 'REST') {
+              stopBreathAudio();
+              if (watchDirective) {
+                watchDirective.className = 'watch-directive rest';
+                watchDirective.textContent = (s.rest_baseline_title || 'REST BASELINE').toUpperCase();
+              }
+              if (watchHint) {
+                watchHint.textContent = s.breathe_naturally || 'Breathe naturally';
+                watchHint.style.color = '#94a3b8';
+              }
+              if (watchBarFill) {
+                watchBarFill.style.width = '0%';
+              }
+              const bpm = parseFloat(targetBpmInput.value) || 5.50;
+              if (watchCadence) {
+                const nextTxt = s.next_prefix || 'Next';
+                const rPrefix = s.round_prefix || 'R';
+                const centerTxt = s.leg_center || 'Center';
+                watchCadence.textContent = `${nextTxt}: ${rPrefix}1 ${centerTxt} ${bpm.toFixed(2)}`;
+                watchCadence.style.color = '#22c55e';
+              }
+              if (watchTelemetry) {
+                const hrTxt = s.hr_label || 'HR';
+                const secLeftTxt = s.seconds_left || 's left';
+                watchTelemetry.textContent = `${hrTxt}: 72 | ${phaseRemainingSec} ${secLeftTxt}`;
+              }
+            } else {
+              startBreathAudio();
+              const bpm = parseFloat(targetBpmInput.value) || 5.50;
+              const cycleDurationMs = (60.0 / bpm) * 1000;
+              const totalCyclesInPhase = Math.floor(PHASE_PACE_SEC / (60.0 / bpm));
+
+              const elapsedInPhase = (PHASE_PACE_SEC - phaseRemainingSec) * 1000;
+              const cycleElapsed = (timestamp - phaseStartTime) % cycleDurationMs;
+              const cycleProgress = cycleElapsed / cycleDurationMs;
+
+              const isInhale = cycleProgress < 0.40;
+
+              // 1. Sine-shaped swell factor [0.0 to 1.0] (Cosine easing curve)
+              let phaseFactor;
+              let phaseProgress;
+              if (isInhale) {
+                phaseProgress = cycleProgress / 0.40;
+                phaseFactor = 0.5 - 0.5 * Math.cos(phaseProgress * Math.PI);
+              } else {
+                phaseProgress = (cycleProgress - 0.40) / 0.60;
+                phaseFactor = 0.5 + 0.5 * Math.cos(phaseProgress * Math.PI);
+              }
+
+              // 2. 4-Count Micro-Swell Amplitude Modulation (User can count 1..2..3..4)
+              const beatIndex = Math.min(4, Math.floor(phaseProgress * 4) + 1);
+              const pulseSine = Math.sin(phaseProgress * 4 * Math.PI);
+              const pulseModulation = 0.78 + 0.22 * Math.abs(pulseSine);
+
+              // 3. Progress bar fill fraction matching Garmin AtemPacerApp.mc:
+              // Inhaling: fills 0 -> 100%
+              // Exhaling: drains 100% -> 0%
+              const fillFraction = isInhale ? phaseProgress : (1.0 - phaseProgress);
+              const fillPct = (fillFraction * 100).toFixed(1);
+              if (watchBarFill) {
+                watchBarFill.style.width = `${fillPct}%`;
+              }
+
+              // Simulated Heart Rate with natural Respiratory Sinus Arrhythmia (RSA):
+              // Inhale: HR rises gently (~78-80 bpm). Exhale: HR lowers gently (~73-74 bpm).
+              const simHR = Math.round(74 + 5 * phaseFactor);
+
+              if (isInhale) {
+                if (watchDirective) {
+                  watchDirective.className = 'watch-directive';
+                  watchDirective.textContent = s.pacer_inhale || 'BREATHE IN';
+                }
+                if (watchBarFill) {
+                  watchBarFill.className = 'watch-bar-fill';
+                }
+                if (watchHint) {
+                  watchHint.textContent = INHALE_HINTS[somaticHintIndex % INHALE_HINTS.length];
+                  watchHint.style.color = '#ffffff';
+                }
+
+                if (!lastInhaleState) {
+                  playClick(false); // Bottom of breath click (Exhale -> Inhale transition)
+                  triggerHaptic(50);
+                  lastInhaleState = true;
+                }
+              } else {
+                if (watchDirective) {
+                  watchDirective.className = 'watch-directive exhale';
+                  watchDirective.textContent = s.pacer_exhale || 'BREATHE OUT';
+                }
+                if (watchBarFill) {
+                  watchBarFill.className = 'watch-bar-fill exhale';
+                }
+                if (watchHint) {
+                  watchHint.textContent = EXHALE_HINTS[somaticHintIndex % EXHALE_HINTS.length];
+                  watchHint.style.color = '#ffffff';
+                }
+
+                if (lastInhaleState) {
+                  playClick(true); // Peak of breath click (Inhale -> Exhale transition)
+                  triggerHaptic([30, 40, 30]);
+                  lastInhaleState = false;
+                  somaticHintIndex++; // Advance somatic hint on each breath cycle
+                }
+              }
+
+              if (watchCadence) {
+                const rPrefix = s.round_prefix || 'R';
+                const centerTxt = s.leg_center || 'Center';
+                const unitTxt = s.bpm_unit || 'BPM';
+                watchCadence.textContent = `${rPrefix}${roundNumber} ${centerTxt}: ${bpm.toFixed(2)} ${unitTxt}`;
+                watchCadence.style.color = '#00ffff';
+              }
+              if (watchTelemetry) {
+                const hrTxt = s.hr_label || 'HR';
+                const secLeftTxt = s.seconds_left || 's left';
+                watchTelemetry.textContent = `${hrTxt}: ${simHR} | ${phaseRemainingSec} ${secLeftTxt}`;
+              }
+
+              // 4. Real-Time Organic Noise-Based Shepard Acoustics Synthesis
+              if (cuesEnabled && audioCtx && audioCtx.state === 'running') {
+                const now = audioCtx.currentTime;
+
+                // A. Base Breath Formant (Nasal Inhale vs Pursed-Lips Exhale)
+                if (formantGain && formantFilter) {
+                  let formantFreq, baseNoiseVol;
+                  if (isInhale) {
+                    formantFreq = 750 + (1600 - 750) * phaseFactor;
+                    baseNoiseVol = (0.05 + 0.28 * phaseFactor) * pulseModulation;
+                    formantFilter.Q.setValueAtTime(1.8, now);
+                  } else {
+                    formantFreq = 260 + (600 - 260) * phaseFactor;
+                    baseNoiseVol = (0.04 + 0.24 * phaseFactor) * pulseModulation;
+                    formantFilter.Q.setValueAtTime(1.2, now);
+                  }
+                  formantFilter.frequency.setValueAtTime(formantFreq, now);
+                  formantGain.gain.setValueAtTime(baseNoiseVol, now);
+                }
+
+                // B. Shepard Resonant Filter Bank on Noise (NO SINE TONES!)
+                if (shepardNoiseMasterGain && shepardFilterNodes.length > 0) {
+                  const masterShepardVol = (0.08 + 0.34 * phaseFactor) * pulseModulation;
+                  shepardNoiseMasterGain.gain.setValueAtTime(masterShepardVol, now);
+
+                  for (let i = 0; i < SHEPARD_BANDS; i++) {
+                    const freq = SHEPARD_BASE_FREQ * Math.pow(2, i + phaseFactor);
+                    const g = calculateShepardGain(freq);
+                    shepardFilterNodes[i].filter.frequency.setValueAtTime(freq, now);
+                    shepardFilterNodes[i].gain.gain.setValueAtTime(g, now);
+                  }
+                }
+              }
+
+              const currentCycle = Math.min(totalCyclesInPhase, Math.floor(elapsedInPhase / cycleDurationMs) + 1);
+              const cycleWord = s.cycle_prefix || 'Breath';
+              cycleDisplay.textContent = `${cycleWord} ${currentCycle} / ${totalCyclesInPhase}`;
+            }
+
+            animFrameId = requestAnimationFrame(updatePacerVisual);
+          }
+
+          // --- Clock Tick (Every Second) ---
+          function tick() {
+            totalElapsedSec++;
+            phaseRemainingSec--;
+
+            totalTimeDisplay.textContent = formatMMSS(totalElapsedSec);
+            if (phaseCountdown) phaseCountdown.textContent = formatMMSS(phaseRemainingSec);
+
+            if (phaseRemainingSec <= 0) {
+              advancePhase();
+            }
+          }
+
+          // --- Session Control Actions ---
+          function startSession() {
+            if (isRunning) return;
+            initAudio();
+            requestWakeLock();
+            isRunning = true;
+            btnStartPause.classList.add('paused');
+            btnStartPauseText.textContent = s.session_paused || 'Pause Session';
+
+            if (!timerInterval) {
+              if (!phaseStartTime) phaseStartTime = performance.now();
+              timerInterval = setInterval(tick, 1000);
+              animFrameId = requestAnimationFrame(updatePacerVisual);
+            }
+          }
+
+          function pauseSession() {
+            if (!isRunning) return;
+            isRunning = false;
+            releaseWakeLock();
+            btnStartPause.classList.remove('paused');
+            btnStartPauseText.textContent = s.start_continue ? s.start_continue.replace(/[[\]]/g, '') : 'Resume Session';
+            stopBreathAudio();
+
+            if (watchDirective) {
+              watchDirective.className = 'watch-directive rest';
+              watchDirective.textContent = (s.session_paused || 'PAUSED').toUpperCase();
+            }
+            if (watchHint) {
+              watchHint.textContent = s.start_continue ? s.start_continue.replace(/[[\]]/g, '') : 'Session paused';
+              watchHint.style.color = '#fbbf24';
+            }
+
+            clearInterval(timerInterval);
+            cancelAnimationFrame(animFrameId);
+            timerInterval = null;
+            animFrameId = null;
+          }
+
+          function resetSession() {
+            pauseSession();
+            stopBreathAudio(true);
+            roundNumber = 1;
+            totalElapsedSec = 0;
+            const rPrefix = s.round_prefix ? `${s.round_prefix} ` : 'Round ';
+            roundDisplay.textContent = `${rPrefix}1`;
+            totalTimeDisplay.textContent = '00:00';
+            btnStartPause.classList.remove('paused');
+            btnStartPauseText.textContent = s.start_begin ? s.start_begin.replace(/[[\]]/g, '') : 'Start Session';
+            setPhase('REST', false);
+            if (phaseCountdown) phaseCountdown.textContent = '02:00';
+
+            if (watchDirective) {
+              watchDirective.className = 'watch-directive';
+              watchDirective.textContent = s.AppName || 'PEAK FREQUENCY';
+            }
+            if (watchHint) {
+              watchHint.textContent = s.prompt || 'Tap Start Below';
+              watchHint.style.color = '#e2e8f0';
+            }
+            if (watchBarFill) {
+              watchBarFill.style.width = '0%';
+            }
+            const bpm = parseFloat(targetBpmInput.value) || 5.50;
+            if (watchCadence) {
+              const rTxt = s.round_prefix || 'R';
+              const centerTxt = s.leg_center || 'Center';
+              const unitTxt = s.bpm_unit || 'BPM';
+              watchCadence.textContent = `${rTxt}1 ${centerTxt}: ${bpm.toFixed(2)} ${unitTxt}`;
+              watchCadence.style.color = '#00ffff';
+            }
+            if (watchTelemetry) {
+              const hrTxt = s.hr_label || 'HR';
+              const secLeftTxt = s.seconds_left || 's left';
+              watchTelemetry.textContent = `${hrTxt}: -- | 120 ${secLeftTxt}`;
+            }
+            triggerHaptic(25);
+          }
+
+          btnStartPause.addEventListener('click', () => {
+            initAudio();
+            if (isRunning) {
+              pauseSession();
+            } else {
+              startSession();
+            }
+          });
+
+          btnReset.addEventListener('click', resetSession);
+
+          btnSkipPhase.addEventListener('click', () => {
+            initAudio();
+            advancePhase();
+            if (phaseCountdown) phaseCountdown.textContent = formatMMSS(phaseRemainingSec);
+          });
+
+          btnAudioToggle.addEventListener('click', () => {
+            initAudio();
+            cuesEnabled = !cuesEnabled;
+            audioIcon.textContent = cuesEnabled ? `🔊 ${s.sound_on || 'Cues ON'}` : `🔇 ${s.sound_off || 'Cues Muted'}`;
+            if (cuesEnabled) {
+              triggerHaptic(40);
+              playClick(false);
+              if (isRunning && currentPhase === 'PACE') {
+                startBreathAudio();
+              }
+            } else {
+              stopBreathAudio();
+            }
+          });
+
+          // Document visibility change (pause wake lock if user switches apps)
+          document.addEventListener('visibilitychange', () => {
+            if (document.visibilityState === 'visible' && isRunning) {
+              requestWakeLock();
+            }
+          });
+
+          // --- UI Update on Language Switch ---
+          function updateWatchDisplay() {
+            const bpm = parseFloat(targetBpmInput.value) || 5.50;
+            const rPrefix = s.round_prefix ? `${s.round_prefix} ` : 'Round ';
+            roundDisplay.textContent = `${rPrefix}${roundNumber}`;
+
+            if (!isRunning && totalElapsedSec === 0) {
+              if (watchDirective) {
+                watchDirective.className = 'watch-directive';
+                watchDirective.textContent = s.AppName || 'PEAK FREQUENCY';
+              }
+              if (watchHint) {
+                watchHint.textContent = s.prompt || 'Tap Start Below';
+                watchHint.style.color = '#e2e8f0';
+              }
+              if (watchCadence) {
+                const rTxt = s.round_prefix || 'R';
+                const centerTxt = s.leg_center || 'Center';
+                const unitTxt = s.bpm_unit || 'BPM';
+                watchCadence.textContent = `${rTxt}1 ${centerTxt}: ${bpm.toFixed(2)} ${unitTxt}`;
+                watchCadence.style.color = '#00ffff';
+              }
+              if (watchTelemetry) {
+                const hrTxt = s.hr_label || 'HR';
+                const secLeftTxt = s.seconds_left || 's left';
+                watchTelemetry.textContent = `${hrTxt}: -- | 120 ${secLeftTxt}`;
+              }
+              phaseDisplay.textContent = `${s.rest_baseline_title || 'Rest'} (2:00)`;
+              cycleDisplay.textContent = s.breathe_naturally || 'Resting';
+            } else if (!isRunning && totalElapsedSec > 0) {
+              if (watchDirective) {
+                watchDirective.className = 'watch-directive rest';
+                watchDirective.textContent = (s.session_paused || 'PAUSED').toUpperCase();
+              }
+              if (watchHint) {
+                watchHint.textContent = s.start_continue ? s.start_continue.replace(/[[\]]/g, '') : 'Session paused';
+                watchHint.style.color = '#fbbf24';
+              }
+            } else if (currentPhase === 'REST') {
+              if (watchDirective) {
+                watchDirective.className = 'watch-directive rest';
+                watchDirective.textContent = (s.rest_baseline_title || 'REST BASELINE').toUpperCase();
+              }
+              if (watchHint) {
+                watchHint.textContent = s.breathe_naturally || 'Breathe naturally';
+                watchHint.style.color = '#94a3b8';
+              }
+              if (watchCadence) {
+                const nextTxt = s.next_prefix || 'Next';
+                const rTxt = s.round_prefix || 'R';
+                const centerTxt = s.leg_center || 'Center';
+                watchCadence.textContent = `${nextTxt}: ${rTxt}1 ${centerTxt} ${bpm.toFixed(2)}`;
+                watchCadence.style.color = '#22c55e';
+              }
+              if (watchTelemetry) {
+                const hrTxt = s.hr_label || 'HR';
+                const secLeftTxt = s.seconds_left || 's left';
+                watchTelemetry.textContent = `${hrTxt}: 72 | ${phaseRemainingSec} ${secLeftTxt}`;
+              }
+              phaseDisplay.textContent = `${s.rest_baseline_title || 'Rest'} (${formatMMSS(phaseRemainingSec)})`;
+              cycleDisplay.textContent = s.free_breathing || s.breathe_naturally || 'Resting';
+            } else {
+              // Active pacing phase
+              if (watchCadence) {
+                const rTxt = s.round_prefix || 'R';
+                const centerTxt = s.leg_center || 'Center';
+                const unitTxt = s.bpm_unit || 'BPM';
+                watchCadence.textContent = `${rTxt}${roundNumber} ${centerTxt}: ${bpm.toFixed(2)} ${unitTxt}`;
+                watchCadence.style.color = '#00ffff';
+              }
+              if (watchTelemetry) {
+                const hrTxt = s.hr_label || 'HR';
+                const secLeftTxt = s.seconds_left || 's left';
+                watchTelemetry.textContent = `${hrTxt}: 76 | ${phaseRemainingSec} ${secLeftTxt}`;
+              }
+              phaseDisplay.textContent = `Paced (${formatMMSS(phaseRemainingSec)})`;
+            }
+          }
+
+          function setLanguage(lang) {
+            if (!window.PEAK_I18N || !window.PEAK_I18N[lang]) {
+              lang = 'en';
+            }
+            currentLang = lang;
+            try {
+              localStorage.setItem('peakfrequency_lang', lang);
+            } catch (e) {}
+
+            document.documentElement.lang = lang;
+            if (globalLangSelect && globalLangSelect.value !== lang) globalLangSelect.value = lang;
+            if (demoLangSelect && demoLangSelect.value !== lang) demoLangSelect.value = lang;
+
+            s = window.PEAK_I18N[lang].strings || {};
+
+            // 1. Refresh Somatic Coaching Hints array
+            INHALE_HINTS = [
+              s.hint_in_1 || 'Easily into belly',
+              s.hint_in_2 || 'Through nose',
+              s.hint_in_3 || 'Normal, shallow',
+              s.hint_in_4 || 'Quiet, relaxed',
+              s.hint_in_5 || 'Belly out',
+              s.hint_in_6 || 'Chest still'
+            ];
+            EXHALE_HINTS = [
+              s.hint_out_1 || 'Pursed lips',
+              s.hint_out_2 || 'Stay shallow',
+              s.hint_out_3 || 'Relax shoulders',
+              s.hint_out_4 || 'Relax jaw',
+              s.hint_out_5 || 'Gently',
+              s.hint_out_6 || 'Without force'
+            ];
+
+            // 2. Refresh Form Elements
+            if (sexMaleBtn) sexMaleBtn.textContent = `♂ ${s.male || 'Male'}`;
+            if (sexFemaleBtn) sexFemaleBtn.textContent = `♀ ${s.female || 'Female'}`;
+            if (userSexSelect && userSexSelect.options.length >= 2) {
+              userSexSelect.options[0].text = s.male || 'Male';
+              userSexSelect.options[1].text = s.female || 'Female';
+            }
+            if (lblTargetCadence) lblTargetCadence.textContent = s.target_cadence || 'Target Cadence';
+
+            // 3. Technique Guidance Rules (Garmin Stage 3 pre-pacing prompts)
+            if (techHeaderTitle) {
+              const nextRuleTxt = s.down_next_rule ? s.down_next_rule.replace(/[[\]]/g, '') : 'Next Rule';
+              techHeaderTitle.textContent = `${nextRuleTxt} — ${s.tutorial_video || 'Technique Guidance'}`;
+            }
+            if (techRatioTitle) techRatioTitle.textContent = s.ratio_title || 'Breath Ratio';
+            if (techRatioDir) {
+              const dir = s.ratio_directive || '40% Inhale \n 60% Out';
+              techRatioDir.innerHTML = dir.replace(/\n/g, '<br>');
+            }
+            if (techFlowTitle) techFlowTitle.textContent = s.flow_title || 'Continuous Flow';
+            if (techFlowDir) techFlowDir.textContent = s.flow_directive || 'No Breath Holds';
+            if (techEffortTitle) techEffortTitle.textContent = s.effort_title || 'Effort & Pace';
+            if (techEffortDir) techEffortDir.textContent = s.effort_directive || 'Breathe Gently';
+            if (techSignalTitle) techSignalTitle.textContent = s.telemetry_title || 'Setup & Signal';
+            if (techSignalDir) techSignalDir.textContent = s.telemetry_directive || 'Sit Still & Upright';
+
+            // 4. Action Buttons
+            if (audioIcon) {
+              audioIcon.textContent = cuesEnabled ? `🔊 ${s.sound_on || 'Cues ON'}` : `🔇 ${s.sound_off || 'Cues Muted'}`;
+            }
+            if (btnStartPauseText) {
+              if (!isRunning) {
+                btnStartPauseText.textContent = (totalElapsedSec === 0)
+                  ? (s.start_begin ? s.start_begin.replace(/[[\]]/g, '') : 'Start Session')
+                  : (s.start_continue ? s.start_continue.replace(/[[\]]/g, '') : 'Resume Session');
+              } else {
+                btnStartPauseText.textContent = s.session_paused || 'Pause Session';
+              }
+            }
+
+            // 5. Store Copy Tabs synchronization
+            if (lang === 'de') {
+              const deTab = document.querySelector('.tab-btn[data-tab="tab-de"]');
+              if (deTab) deTab.click();
+            } else if (lang === 'en') {
+              const enTab = document.querySelector('.tab-btn[data-tab="tab-en"]');
+              if (enTab) enTab.click();
+            }
+
+            // 6. Update Estimates & Watch Visuals
+            const bpm = parseFloat(targetBpmInput.value) || 5.50;
+            updateCycleHint(bpm);
+            updateEstimate(false);
+            updateWatchDisplay();
+          }
+
+          // Listeners for Language Switchers
+          if (globalLangSelect) {
+            globalLangSelect.addEventListener('change', (e) => {
+              setLanguage(e.target.value);
+            });
+          }
+          if (demoLangSelect) {
+            demoLangSelect.addEventListener('change', (e) => {
+              setLanguage(e.target.value);
+            });
+          }
+
+          // --- Init ---
+          let savedLang = 'en';
+          try {
+            savedLang = localStorage.getItem('peakfrequency_lang') ||
+              (navigator.language ? navigator.language.slice(0, 2).toLowerCase() : 'en');
+          } catch (e) {}
+          if (!window.PEAK_I18N || !window.PEAK_I18N[savedLang]) {
+            savedLang = 'en';
+          }
+          setLanguage(savedLang);
+        })();
+      </script>
     </div>
   </section>
 
@@ -670,7 +2619,8 @@
     <div class="container">
       <div class="section-header">
         <h2>Why Resonance Breathing?</h2>
-        <p>Your cardiovascular system possesses an intrinsic resonance frequency governed by the baroreflex loop. One generic cadence does not fit all bodies.</p>
+        <p>Your cardiovascular system possesses an intrinsic resonance frequency governed by the baroreflex loop. One
+          generic cadence does not fit all bodies.</p>
       </div>
 
       <div class="grid">
@@ -678,7 +2628,8 @@
           <div class="card-icon">🫀</div>
           <h3>0° Phase Synchrony</h3>
           <p>
-            When breathing at your resonant cadence (~0.1 Hz / 4.5–6.5 BPM), inhalation-driven tachycardia and exhalation-driven bradycardia align in exact synchrony, dramatically amplifying vagal tone.
+            When breathing at your resonant cadence (~0.1 Hz / 4.5–6.5 BPM), inhalation-driven tachycardia and
+            exhalation-driven bradycardia align in exact synchrony, dramatically amplifying vagal tone.
           </p>
         </div>
 
@@ -686,7 +2637,8 @@
           <div class="card-icon">📏</div>
           <h3>Anatomical Anchor (Hasuo 2023)</h3>
           <p>
-            Vascular transit delay correlates directly with arterial length. Peak Frequency auto-calculates your personalized starting anchor using your height and biological sex from your Garmin user profile.
+            Vascular transit delay correlates directly with arterial length. Peak Frequency auto-calculates your
+            personalized starting anchor using your height and biological sex from your Garmin user profile.
           </p>
         </div>
 
@@ -694,7 +2646,8 @@
           <div class="card-icon">📈</div>
           <h3>Baroreflex Gain Amplification</h3>
           <p>
-            Empirical research by Dr. Paul Lehrer demonstrates that resonance pacing stimulates the baroreceptors at their natural oscillation frequency, training autonomic flexibility and recovery.
+            Empirical research by Dr. Paul Lehrer demonstrates that resonance pacing stimulates the baroreceptors at
+            their natural oscillation frequency, training autonomic flexibility and recovery.
           </p>
         </div>
       </div>
@@ -706,32 +2659,37 @@
     <div class="container">
       <div class="section-header">
         <h2>The Lehrer 2-Round Calibration Protocol</h2>
-        <p>How Peak Frequency systematically discovers your precise physiological resonance cadence in under 12 minutes.</p>
+        <p>How Peak Frequency systematically discovers your precise physiological resonance cadence in under 12 minutes.
+        </p>
       </div>
 
       <div class="steps">
         <div class="step-card">
           <div class="step-num">00</div>
           <h3>Rest Baseline</h3>
-          <p>2 minutes of spontaneous natural breathing. Establishes baseline resting heart rate and baseline HRV metrics without guidance.</p>
+          <p>2 minutes of spontaneous natural breathing. Establishes baseline resting heart rate and baseline HRV
+            metrics without guidance.</p>
         </div>
 
         <div class="step-card">
           <div class="step-num">01</div>
           <h3>Round 1: Coarse Scan</h3>
-          <p>Tests 3 cadences (Center, +0.25 BPM, -0.25 BPM) with 1-minute settling and 2-minute recording legs to detect peak HRV delta.</p>
+          <p>Tests 3 cadences (Center, +0.25 BPM, -0.25 BPM) with 1-minute settling and 2-minute recording legs to
+            detect peak HRV delta.</p>
         </div>
 
         <div class="step-card">
           <div class="step-num">02</div>
           <h3>Round 2: Fine Tuning</h3>
-          <p>Narrows around Round 1's winning frequency with micro-increments of ±0.125 BPM to isolate your definitive resonance peak.</p>
+          <p>Narrows around Round 1's winning frequency with micro-increments of ±0.125 BPM to isolate your definitive
+            resonance peak.</p>
         </div>
 
         <div class="step-card">
           <div class="step-num">03</div>
           <h3>Resonance Lock</h3>
-          <p>The optimal cadence locks permanently into watch memory for daily 40/60 resonance training, accompanied by live synchrony graphs.</p>
+          <p>The optimal cadence locks permanently into watch memory for daily 40/60 resonance training, accompanied by
+            live synchrony graphs.</p>
         </div>
       </div>
     </div>
@@ -749,37 +2707,43 @@
         <div class="card">
           <div class="card-icon">🧘</div>
           <h3>Minimal Somatic Prompts</h3>
-          <p>Replaces distracting medical jargon with instant physical cues: <em>"Belly out"</em>, <em>"Pursed lips"</em>, <em>"Relax jaw"</em>, <em>"Without force"</em>.</p>
+          <p>Replaces distracting medical jargon with instant physical cues: <em>"Belly out"</em>, <em>"Pursed
+              lips"</em>, <em>"Relax jaw"</em>, <em>"Without force"</em>.</p>
         </div>
 
         <div class="card">
           <div class="card-icon">🏃</div>
           <h3>3D Motion Detection</h3>
-          <p>Onboard accelerometer filters wrist tremor while catching fidgeting. Displays a subtle <em>"Stay still"</em> prompt without disrupting timing or HRV recording.</p>
+          <p>Onboard accelerometer filters wrist tremor while catching fidgeting. Displays a subtle <em>"Stay
+              still"</em> prompt without disrupting timing or HRV recording.</p>
         </div>
 
         <div class="card">
           <div class="card-icon">⚡</div>
           <h3>AMOLED Low-Power Mode</h3>
-          <p>Intelligent 3-second keep-alive refresh and sleep mode prevents display burn-in on Forerunner 965 and Venu/Vivoactive without dropping breath tracking.</p>
+          <p>Intelligent 3-second keep-alive refresh and sleep mode prevents display burn-in on Forerunner 965 and
+            Venu/Vivoactive without dropping breath tracking.</p>
         </div>
 
         <div class="card">
           <div class="card-icon">🌍</div>
           <h3>14 European Languages</h3>
-          <p>Full native translations in English, German, Italian, Hungarian, French, Spanish, Dutch, Portuguese, Polish, Swedish, Norwegian, Danish, Finnish, and Czech.</p>
+          <p>Full native translations in English, German, Italian, Hungarian, French, Spanish, Dutch, Portuguese,
+            Polish, Swedish, Norwegian, Danish, Finnish, and Czech.</p>
         </div>
 
         <div class="card">
           <div class="card-icon">🔒</div>
           <h3>100% Private & Offline</h3>
-          <p>Zero internet permissions (<code>Communications</code>). All biofeedback runs strictly in volatile RAM. No servers, no tracking, no ads.</p>
+          <p>Zero internet permissions (<code>Communications</code>). All biofeedback runs strictly in volatile RAM. No
+            servers, no tracking, no ads.</p>
         </div>
 
         <div class="card">
           <div class="card-icon">📊</div>
           <h3>Native FIT & RR Intervals</h3>
-          <p>Exports standard Garmin activities with high-precision beat-to-beat (<code>rr_interval</code>) developer fields compatible with Runalyze and Kubios.</p>
+          <p>Exports standard Garmin activities with high-precision beat-to-beat (<code>rr_interval</code>) developer
+            fields compatible with Runalyze and Kubios.</p>
         </div>
       </div>
     </div>
@@ -803,58 +2767,89 @@
         </div>
 
         <div class="store-content active" id="tab-en">App Title:
-Peak Frequency — HRV Resonance Breath Pacer
+          Peak Frequency — HRV Resonance Breath Pacer
 
-Short Description:
-Discover your individual cardiovascular resonance frequency with precision HRV biofeedback and somatic breath pacing.
+          Short Description:
+          Discover your individual cardiovascular resonance frequency with precision HRV biofeedback and somatic breath
+          pacing.
 
-Full Description:
-Peak Frequency is a precision breathwork tool designed for endurance athletes, biohackers, and stress-regulation practitioners. Based on the gold-standard protocol developed by Dr. Paul Lehrer and physiological research by Hasuo et al. (2023) and Vaschillo et al. (2006), it identifies the exact breathing cadence where your heart rate and respiration lock into 0° phase synchrony—maximizing heart rate variability (HRV) and baroreflex gain.
+          Full Description:
+          Peak Frequency is a precision breathwork tool designed for endurance athletes, biohackers, and
+          stress-regulation practitioners. Based on the gold-standard protocol developed by Dr. Paul Lehrer and
+          physiological research by Hasuo et al. (2023) and Vaschillo et al. (2006), it identifies the exact breathing
+          cadence where your heart rate and respiration lock into 0° phase synchrony—maximizing heart rate variability
+          (HRV) and baroreflex gain.
 
-Unlike generic breath pacers that force you into arbitrary breathing rates, Peak Frequency empirically tests and calibrates your individual resonant cadence through a systematic 2-round assessment.
+          Unlike generic breath pacers that force you into arbitrary breathing rates, Peak Frequency empirically tests
+          and calibrates your individual resonant cadence through a systematic 2-round assessment.
 
-Key Features:
-• Personalized Physiological Anchor: Starting cadence auto-calculated from height and biological sex (Hasuo et al., 2023).
-• 2-Round Bracketed Calibration: Coarse scan (±0.25 BPM) followed by precision fine-tuning (±0.125 BPM).
-• Live Phase Synchrony: Respiration sine wave overlaid onto heart rate curve with phase lag and delta HR metrics.
-• Somatic Athletic Cues: Immediate physical prompts without confusing jargon ("Belly out", "Pursed lips", "Relax jaw").
-• AMOLED Battery Guard: Automatic low-power pacing mode and burn-in prevention.
-• Real-Time Motion Detection: Wrist accelerometer filter prompts "Stay still" during restlessness without interrupting cycles.
-• 100% Private & On-Device: Zero network permissions, no external servers, no tracking.
-• FIT & RR-Interval Export: Saves native Garmin activities with beat-to-beat intervals for Runalyze, Kubios, and GoldenCheetah.
+          Key Features:
+          • Personalized Physiological Anchor: Starting cadence auto-calculated from height and biological sex (Hasuo et
+          al., 2023).
+          • 2-Round Bracketed Calibration: Coarse scan (±0.25 BPM) followed by precision fine-tuning (±0.125 BPM).
+          • Live Phase Synchrony: Respiration sine wave overlaid onto heart rate curve with phase lag and delta HR
+          metrics.
+          • Somatic Athletic Cues: Immediate physical prompts without confusing jargon ("Belly out", "Pursed lips",
+          "Relax jaw").
+          • AMOLED Battery Guard: Automatic low-power pacing mode and burn-in prevention.
+          • Real-Time Motion Detection: Wrist accelerometer filter prompts "Stay still" during restlessness without
+          interrupting cycles.
+          • 100% Private & On-Device: Zero network permissions, no external servers, no tracking.
+          • FIT & RR-Interval Export: Saves native Garmin activities with beat-to-beat intervals for Runalyze, Kubios,
+          and GoldenCheetah.
 
-Hardware & Setup:
-• Chest strap (Garmin HRM-Pro, Polar H10) recommended for highest millisecond RR precision. Optical HR fully supported with adaptive smoothing.
+          Hardware & Setup:
+          • Chest strap (Garmin HRM-Pro, Polar H10) recommended for highest millisecond RR precision. Optical HR fully
+          supported with adaptive smoothing.
 
-Important Disclaimer (Not a Medical Device):
-This application is designed solely for fitness, breathwork training, and general informational / wellness reference purposes. It is not a medical device and is not intended to diagnose, treat, cure, mitigate, or prevent any disease, illness, or medical condition. It does not replace the advice of a medical professional. Always consult a qualified physician or healthcare provider regarding any health concerns or before starting any new breathing or exercise program.</div>
+          Important Disclaimer (Not a Medical Device):
+          This application is designed solely for fitness, breathwork training, and general informational / wellness
+          reference purposes. It is not a medical device and is not intended to diagnose, treat, cure, mitigate, or
+          prevent any disease, illness, or medical condition. It does not replace the advice of a medical professional.
+          Always consult a qualified physician or healthcare provider regarding any health concerns or before starting
+          any new breathing or exercise program.</div>
 
         <div class="store-content" id="tab-de">App-Titel:
-Peak Frequency — Resonanzfrequenz Atem-Pacer
+          Peak Frequency — Resonanzfrequenz Atem-Pacer
 
-Kurzbeschreibung:
-Finde deine persönliche kardiovaskuläre Resonanzfrequenz mit wissenschaftlichem HRV-Biofeedback und somatischer Atemführung.
+          Kurzbeschreibung:
+          Finde deine persönliche kardiovaskuläre Resonanzfrequenz mit wissenschaftlichem HRV-Biofeedback und
+          somatischer Atemführung.
 
-Vollständige Beschreibung:
-Peak Frequency ist ein Präzisions-Atemwerkzeug für Ausdauerathleten, Biohacker und gezieltes Nervensystem-Training. Basierend auf dem Goldstandard-Protokoll von Dr. Paul Lehrer und den physiologischen Forschungen von Hasuo et al. (2023) sowie Vaschillo et al. (2006) ermittelt die App exakt jene Atemfrequenz, bei der Herzfrequenz und Atmung in Phasensynchronie schwingen—für maximale Herzfrequenzvariabilität (HRV) und optimale Baroreflex-Sensitivität.
+          Vollständige Beschreibung:
+          Peak Frequency ist ein Präzisions-Atemwerkzeug für Ausdauerathleten, Biohacker und gezieltes
+          Nervensystem-Training. Basierend auf dem Goldstandard-Protokoll von Dr. Paul Lehrer und den physiologischen
+          Forschungen von Hasuo et al. (2023) sowie Vaschillo et al. (2006) ermittelt die App exakt jene Atemfrequenz,
+          bei der Herzfrequenz und Atmung in Phasensynchronie schwingen—für maximale Herzfrequenzvariabilität (HRV) und
+          optimale Baroreflex-Sensitivität.
 
-Im Gegensatz zu starren Standard-Apps ermittelt Peak Frequency deine individuelle Frequenz über einen 2-stufigen, empirisch kalibrierten Test.
+          Im Gegensatz zu starren Standard-Apps ermittelt Peak Frequency deine individuelle Frequenz über einen
+          2-stufigen, empirisch kalibrierten Test.
 
-Wichtigste Funktionen:
-• Personalisierter Start-Anker: Automatische Berechnung der Ausgangsfrequenz anhand von Körpergröße und biologischem Geschlecht (Hasuo et al., 2023).
-• 2-Runden-Kalibrierung: Grobsuche (±0,25 BPM) gefolgt von hochpräziser Feinabstimmung (±0,125 BPM).
-• Phasensynchronie & Wellenform-Analyse: Direkte Gegenüberstellung von Atem- und HF-Kurve inklusive Phasenverschiebung (ms).
-• Somatische Athleten-Impulse: Klare, minimalistische Hinweise („In den Bauch“, „Lippen spitzen“, „Kiefer locker“).
-• AMOLED-Stromsparmodus: Display-Schutz vor Einbrennen bei minimalem Akkuverbrauch.
-• Echtzeit-Bewegungserkennung: Beschleunigungssensor erinnert mit „Ruhig sitzen“ an eine ruhige Haltung.
-• 100 % Lokal & Privat: Keine Internetberechtigung, keine Server, keine Tracker.
-• Volle FIT- & RR-Aufzeichnung: Speichert reguläre Garmin-Trainings mit echtem Schlag-zu-Schlag-Intervall (rr_interval) für Runalyze und Kubios.
+          Wichtigste Funktionen:
+          • Personalisierter Start-Anker: Automatische Berechnung der Ausgangsfrequenz anhand von Körpergröße und
+          biologischem Geschlecht (Hasuo et al., 2023).
+          • 2-Runden-Kalibrierung: Grobsuche (±0,25 BPM) gefolgt von hochpräziser Feinabstimmung (±0,125 BPM).
+          • Phasensynchronie & Wellenform-Analyse: Direkte Gegenüberstellung von Atem- und HF-Kurve inklusive
+          Phasenverschiebung (ms).
+          • Somatische Athleten-Impulse: Klare, minimalistische Hinweise („In den Bauch“, „Lippen spitzen“, „Kiefer
+          locker“).
+          • AMOLED-Stromsparmodus: Display-Schutz vor Einbrennen bei minimalem Akkuverbrauch.
+          • Echtzeit-Bewegungserkennung: Beschleunigungssensor erinnert mit „Ruhig sitzen“ an eine ruhige Haltung.
+          • 100 % Lokal & Privat: Keine Internetberechtigung, keine Server, keine Tracker.
+          • Volle FIT- & RR-Aufzeichnung: Speichert reguläre Garmin-Trainings mit echtem Schlag-zu-Schlag-Intervall
+          (rr_interval) für Runalyze und Kubios.
 
-Sensor-Empfehlung:
-• Brustgurt (Garmin HRM-Pro, Polar H10) für maximale RR-Präzision empfohlen. Optischer Pulssensor wird mit adaptiver Glättung voll unterstützt.
+          Sensor-Empfehlung:
+          • Brustgurt (Garmin HRM-Pro, Polar H10) für maximale RR-Präzision empfohlen. Optischer Pulssensor wird mit
+          adaptiver Glättung voll unterstützt.
 
-Wichtiger Hinweis (Kein Medizinprodukt):
-Diese Anwendung dient ausschließlich Fitness-, Atemtrainings- sowie allgemeinen Informations- und Wellness-Zwecken. Sie ist kein Medizinprodukt und nicht zur Diagnose, Behandlung, Linderung, Heilung oder Vorbeugung von Krankheiten oder medizinischen Zuständen bestimmt. Die App ersetzt weder eine ärztliche Untersuchung noch den Rat eines qualifizierten Mediziners. Wende dich bei gesundheitlichen Beschwerden oder vor Aufnahme eines neuen Trainingsprogramms stets an einen Arzt.</div>
+          Wichtiger Hinweis (Kein Medizinprodukt):
+          Diese Anwendung dient ausschließlich Fitness-, Atemtrainings- sowie allgemeinen Informations- und
+          Wellness-Zwecken. Sie ist kein Medizinprodukt und nicht zur Diagnose, Behandlung, Linderung, Heilung oder
+          Vorbeugung von Krankheiten oder medizinischen Zuständen bestimmt. Die App ersetzt weder eine ärztliche
+          Untersuchung noch den Rat eines qualifizierten Mediziners. Wende dich bei gesundheitlichen Beschwerden oder
+          vor Aufnahme eines neuen Trainingsprogramms stets an einen Arzt.</div>
       </div>
     </div>
   </section>
@@ -869,146 +2864,51 @@ Diese Anwendung dient ausschließlich Fitness-, Atemtrainings- sowie allgemeinen
         <div style="display: flex; gap: 1.5rem;">
           <a href="privacy_policy.html">Privacy Policy</a>
           <a href="tutorial_redirect.html">Video Guide</a>
-          <a href="https://github.com/mesw/PeakFrequency" target="_blank" rel="noopener noreferrer">GitHub Repository</a>
+          <a href="https://github.com/mesw/PeakFrequency" target="_blank" rel="noopener noreferrer">GitHub
+            Repository</a>
         </div>
       </div>
-      <div style="font-size: 0.8rem; color: var(--text-muted); line-height: 1.5; border-top: 1px solid var(--border-subtle); padding-top: 1rem;">
-        <strong>Disclaimer:</strong> This application and website are intended solely for general informational, fitness, and wellness reference purposes. Not a medical device. Not intended for diagnosis, treatment, cure, or prevention of any disease or medical condition. Does not replace professional medical advice.
+      <div
+        style="font-size: 0.8rem; color: var(--text-muted); line-height: 1.5; border-top: 1px solid var(--border-subtle); padding-top: 1rem;">
+        <strong>Disclaimer:</strong> This application and website are intended solely for general informational,
+        fitness, and wellness reference purposes. Not a medical device. Not intended for diagnosis, treatment, cure, or
+        prevention of any disease or medical condition. Does not replace professional medical advice.
       </div>
     </div>
   </footer>
 
-  <!-- Interactive Pacer Logic (Faithful Garmin Connect IQ UI Simulation) -->
+  <!-- Connect IQ Store Descriptions Tab Switcher & Clipboard -->
   <script>
-    const directive = document.getElementById('pacer-directive');
-    const hint = document.getElementById('pacer-hint');
-    const barFill = document.getElementById('pacer-bar');
-    const cadence = document.getElementById('pacer-cadence');
-    const telemetry = document.getElementById('pacer-telemetry');
-    const toggleBtn = document.getElementById('btn-toggle-pacer');
-
-    // 5.00 BPM Protocol = 12.0s Cycle (40% Inhale = 4.8s / 60% Exhale = 7.2s)
-    const CYCLE_MS = 12000;
-    const INHALE_MS = 4800;
-    const EXHALE_MS = 7200;
-
-    // Authentic Somatic Coaching Cues from Garmin AtemPacerApp
-    const inHints = [
-      "Easily into belly",
-      "Through nose",
-      "Normal, shallow",
-      "Quiet, relaxed",
-      "Belly out",
-      "Chest still"
-    ];
-
-    const outHints = [
-      "Pursed lips",
-      "Stay shallow",
-      "Relax shoulders",
-      "Relax jaw",
-      "Gently",
-      "Without force"
-    ];
-
-    let isRunning = true;
-    let startTime = performance.now();
-    let pauseTime = 0;
-    const stageTotalSec = 120; // 2-minute recording leg
-
-    function updatePacer(now) {
-      if (!isRunning) return;
-
-      const elapsed = (now - startTime) % CYCLE_MS;
-      const cycleIndex = Math.floor((now - startTime) / CYCLE_MS);
-      const isInhaling = elapsed < INHALE_MS;
-
-      // Realistic Stage Countdown (e.g. 118s -> 0s)
-      const sessionElapsedSec = Math.floor((now - startTime) / 1000) % stageTotalSec;
-      const stageRemSec = Math.max(0, stageTotalSec - sessionElapsedSec);
-
-      // Physiological Respiratory Sinus Arrhythmia (RSA) simulation in range 60-80 BPM:
-      // HR rises on inhale (from ~62 up to ~78 bpm) and falls on exhale (from ~78 down to ~62 bpm)
-      const minHR = 62;
-      const maxHR = 78;
-      let hr;
-      if (isInhaling) {
-        const inFrac = elapsed / INHALE_MS;
-        hr = Math.round(minHR + (maxHR - minHR) * Math.sin((inFrac * Math.PI) / 2));
-      } else {
-        const outElapsed = elapsed - INHALE_MS;
-        const outFrac = outElapsed / EXHALE_MS;
-        hr = Math.round(maxHR - (maxHR - minHR) * (1 - Math.cos(outFrac * Math.PI)) / 2);
-      }
-
-      if (isInhaling) {
-        const phaseProgress = Math.min(1.0, Math.max(0.0, elapsed / INHALE_MS));
-        const fillPercent = phaseProgress * 100;
-
-        directive.textContent = 'BREATHE IN';
-        directive.style.color = '#00ffff';
-
-        hint.textContent = inHints[cycleIndex % inHints.length];
-        hint.style.color = '#ccffff';
-
-        barFill.style.width = fillPercent + '%';
-        barFill.style.backgroundColor = '#00ffff';
-      } else {
-        const exhaleElapsed = elapsed - INHALE_MS;
-        const phaseProgress = Math.min(1.0, Math.max(0.0, exhaleElapsed / EXHALE_MS));
-        // On exhale, fill descends from 100% down to 0%
-        const fillPercent = (1.0 - phaseProgress) * 100;
-
-        directive.textContent = 'BREATHE OUT';
-        directive.style.color = '#ffaa00';
-
-        hint.textContent = outHints[cycleIndex % outHints.length];
-        hint.style.color = '#ffe8b8';
-
-        barFill.style.width = fillPercent + '%';
-        barFill.style.backgroundColor = '#ffaa00';
-      }
-
-      telemetry.textContent = `HR: ${hr} | ${stageRemSec} s left`;
-
-      requestAnimationFrame(updatePacer);
-    }
-
-    requestAnimationFrame(updatePacer);
-
-    toggleBtn.addEventListener('click', () => {
-      isRunning = !isRunning;
-      toggleBtn.innerText = isRunning ? 'Pause Pacer' : 'Resume Pacer';
-      if (isRunning) {
-        startTime += (performance.now() - pauseTime);
-        requestAnimationFrame(updatePacer);
-      } else {
-        pauseTime = performance.now();
-      }
-    });
-
-    // Tab switcher
     const tabBtns = document.querySelectorAll('.tab-btn');
     const storeContents = document.querySelectorAll('.store-content');
     const copyBtn = document.getElementById('btn-copy');
 
-    tabBtns.forEach(btn => {
-      btn.addEventListener('click', () => {
-        tabBtns.forEach(b => b.classList.remove('active'));
-        storeContents.forEach(c => c.classList.remove('active'));
-        btn.classList.add('active');
-        document.getElementById(btn.dataset.tab).classList.add('active');
+    if (tabBtns && storeContents) {
+      tabBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+          tabBtns.forEach(b => b.classList.remove('active'));
+          storeContents.forEach(c => c.classList.remove('active'));
+          btn.classList.add('active');
+          const target = document.getElementById(btn.dataset.tab);
+          if (target) {
+            target.classList.add('active');
+          }
+        });
       });
-    });
+    }
 
-    copyBtn.addEventListener('click', () => {
-      const activeContent = document.querySelector('.store-content.active');
-      navigator.clipboard.writeText(activeContent.innerText).then(() => {
-        const originalText = copyBtn.innerText;
-        copyBtn.innerText = 'Copied!';
-        setTimeout(() => { copyBtn.innerText = originalText; }, 2000);
+    if (copyBtn) {
+      copyBtn.addEventListener('click', () => {
+        const activeContent = document.querySelector('.store-content.active');
+        if (!activeContent) return;
+        navigator.clipboard.writeText(activeContent.innerText).then(() => {
+          const originalText = copyBtn.innerText;
+          copyBtn.innerText = 'Copied!';
+          setTimeout(() => { copyBtn.innerText = originalText; }, 2000);
+        }).catch(() => {});
       });
-    });
+    }
   </script>
 </body>
+
 </html>
