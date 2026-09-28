@@ -773,6 +773,107 @@
               </div>
             </div>
           </div>
+
+          <!-- Live ANT+ Monitoring & Dual Waveform Superimposed Graph Card -->
+          <div class="demo-card ant-graph-card" id="antGraphCard">
+            <div class="ant-card-header">
+              <div class="ant-title-group">
+                <div class="ant-title-row">
+                  <span class="ant-badge" id="antBadge">ANT+ WebUSB</span>
+                  <h3 id="antCardHeading">Live ANT+ Monitoring &amp; Superimposed Waveform</h3>
+                </div>
+                <p class="ant-subtitle" id="antSubtitle">Real-time beat-by-beat RR interval deframing &amp; 0° respiration phase synchrony</p>
+              </div>
+              <div class="ant-actions-row">
+                <button type="button" class="btn-ant-connect" id="btnConnectAnt">
+                  <span id="btnConnectAntText">🔌 Connect ANT+ Stick</span>
+                </button>
+                <button type="button" class="btn-ant-simulate" id="btnSimulateAnt">
+                  <span id="btnSimulateText">⚡ Live Simulation</span>
+                </button>
+                <button type="button" class="btn-ant-export" id="btnExportJsonl" title="Export RR &amp; Respiration Session Log as JSONL">
+                  <span>📥 Export JSONL</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Real-Time Metric Badges -->
+            <div class="ant-metrics-bar">
+              <div class="ant-metric-pill">
+                <span class="metric-lbl" id="lblHrTitle">Heart Rate</span>
+                <span class="metric-num hr-num" id="valHR">-- <small>BPM</small></span>
+              </div>
+              <div class="ant-metric-pill">
+                <span class="metric-lbl" id="lblRrTitle">RR Interval</span>
+                <span class="metric-num rr-num" id="valRR">-- <small>ms</small></span>
+              </div>
+              <div class="ant-metric-pill">
+                <span class="metric-lbl" id="lblRmssdTitle">RMSSD</span>
+                <span class="metric-num rmssd-num" id="valRMSSD">-- <small>ms</small></span>
+              </div>
+              <div class="ant-metric-pill">
+                <span class="metric-lbl" id="lblPhaseTitle">Phase Coherence</span>
+                <span class="metric-num phase-num" id="valPhaseLag">-- <small>ms lag</small></span>
+              </div>
+            </div>
+
+            <!-- Stream Status / Debug Terminal Line -->
+            <div class="ant-debug-bar">
+              <span class="status-indicator" id="antStatusDot"></span>
+              <span id="lblAntStatus">ANT+ Status: Ready for Garmin USB stick or Live Simulation</span>
+            </div>
+
+            <!-- Primary Hero Graph: Breathing Curve Superimposed with RR Signal -->
+            <div class="graph-container">
+              <div class="graph-header">
+                <div class="graph-title-row">
+                  <span class="graph-icon">📈</span>
+                  <h4 id="graphSyncTitle">HR vs Resp (Resonance Phase Synchrony)</h4>
+                </div>
+                <div class="graph-legend">
+                  <span class="legend-item"><span class="legend-line cyan"></span> <span id="legendBreath">Cyan: Respiration (Paced)</span></span>
+                  <span class="legend-item"><span class="legend-line red"></span> <span id="legendRR">Red: RR Interval / HR</span></span>
+                </div>
+              </div>
+              <div class="canvas-wrapper">
+                <canvas id="syncCanvas" width="700" height="210" class="live-canvas"></canvas>
+                <div class="canvas-watermark" id="canvasWatermark">RESONANCE PHASE SYNCHRONY • 0° LOCK</div>
+              </div>
+            </div>
+
+            <!-- Secondary Multi-Metric Sparklines (HR, RR, RMSSD) -->
+            <div class="sparklines-grid">
+              <div class="sparkline-card">
+                <div class="sparkline-label">
+                  <span class="sparkline-color hr"></span>
+                  <span id="sparkHrLabel">Heart Rate (40–160 BPM)</span>
+                </div>
+                <canvas id="sparkHrCanvas" width="220" height="75" class="spark-canvas"></canvas>
+              </div>
+              <div class="sparkline-card">
+                <div class="sparkline-label">
+                  <span class="sparkline-color rr"></span>
+                  <span id="sparkRrLabel">RR Intervals (300–1500 ms)</span>
+                </div>
+                <canvas id="sparkRrCanvas" width="220" height="75" class="spark-canvas"></canvas>
+              </div>
+              <div class="sparkline-card">
+                <div class="sparkline-label">
+                  <span class="sparkline-color rmssd"></span>
+                  <span id="sparkRmssdLabel">RMSSD Vagotonia (0–120 ms)</span>
+                </div>
+                <canvas id="sparkRmssdCanvas" width="220" height="75" class="spark-canvas"></canvas>
+              </div>
+            </div>
+
+            <!-- Windows Zadig / WebUSB Connection Hint -->
+            <div class="ant-setup-hint">
+              <details>
+                <summary>ℹ️ Windows Driver Setup for Garmin USB Sticks (Zadig / WinUSB)</summary>
+                <p>On Windows, Garmin USB-m / USB2 sticks use a locked driver by default. To enable direct WebUSB access in Chrome/Edge, open <a href="https://zadig.akeo.ie/" target="_blank" rel="noopener">Zadig</a>, select <em>Options → List All Devices</em>, select your ANT USB stick, choose <strong>WinUSB</strong> as target driver, and click <em>Replace Driver</em>. (Mac &amp; Linux connect out-of-the-box).</p>
+              </details>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -1506,6 +1607,364 @@
           white-space: pre-line;
         }
 
+        /* ANT+ Live Graphs & Superimposed Waveform Card */
+        .ant-graph-card {
+          margin-top: 1.25rem;
+          display: flex;
+          flex-direction: column;
+          gap: 1.25rem;
+        }
+
+        .ant-card-header {
+          display: flex;
+          justify-content: space-between;
+          align-items: flex-start;
+          flex-wrap: wrap;
+          gap: 1rem;
+          padding-bottom: 1rem;
+          border-bottom: 1px solid #1e293b;
+        }
+
+        .ant-title-group {
+          display: flex;
+          flex-direction: column;
+          gap: 0.35rem;
+        }
+
+        .ant-title-row {
+          display: flex;
+          align-items: center;
+          gap: 0.65rem;
+          flex-wrap: wrap;
+        }
+
+        .ant-badge {
+          font-size: 0.72rem;
+          font-weight: 800;
+          letter-spacing: 0.05em;
+          text-transform: uppercase;
+          color: #10b981;
+          background: rgba(16, 185, 129, 0.12);
+          border: 1px solid rgba(16, 185, 129, 0.3);
+          border-radius: 6px;
+          padding: 0.2rem 0.55rem;
+        }
+
+        .ant-card-header h3 {
+          font-size: 1.15rem;
+          font-weight: 800;
+          color: #f1f5f9;
+          margin: 0;
+        }
+
+        .ant-subtitle {
+          font-size: 0.84rem;
+          color: #94a3b8;
+          margin: 0;
+        }
+
+        .ant-actions-row {
+          display: flex;
+          gap: 0.55rem;
+          flex-wrap: wrap;
+        }
+
+        .btn-ant-connect,
+        .btn-ant-simulate,
+        .btn-ant-export {
+          padding: 0.55rem 0.95rem;
+          border-radius: 10px;
+          font-size: 0.82rem;
+          font-weight: 700;
+          cursor: pointer;
+          transition: all 0.18s ease;
+          display: flex;
+          align-items: center;
+          gap: 0.4rem;
+          user-select: none;
+        }
+
+        .btn-ant-connect {
+          background: #0284c7;
+          color: #ffffff;
+          border: 1px solid #0ea5e9;
+          box-shadow: 0 2px 12px rgba(2, 132, 199, 0.35);
+        }
+
+        .btn-ant-connect:hover {
+          background: #0369a1;
+        }
+
+        .btn-ant-connect.active {
+          background: #10b981;
+          border-color: #34d399;
+          color: #064e3b;
+          box-shadow: 0 2px 12px rgba(16, 185, 129, 0.4);
+        }
+
+        .btn-ant-simulate {
+          background: #1e293b;
+          color: #cbd5e1;
+          border: 1px solid #334155;
+        }
+
+        .btn-ant-simulate:hover {
+          background: #334155;
+          color: #f8fafc;
+        }
+
+        .btn-ant-simulate.active {
+          background: rgba(245, 158, 11, 0.18);
+          border-color: #f59e0b;
+          color: #fbbf24;
+        }
+
+        .btn-ant-export {
+          background: transparent;
+          color: #94a3b8;
+          border: 1px solid #334155;
+        }
+
+        .btn-ant-export:hover {
+          color: #f1f5f9;
+          border-color: #64748b;
+        }
+
+        /* Metrics bar */
+        .ant-metrics-bar {
+          display: grid;
+          grid-template-columns: repeat(4, 1fr);
+          gap: 0.75rem;
+        }
+
+        .ant-metric-pill {
+          background: #0b1120;
+          border: 1px solid #1e293b;
+          border-radius: 12px;
+          padding: 0.75rem 0.85rem;
+          display: flex;
+          flex-direction: column;
+          gap: 0.2rem;
+        }
+
+        .metric-lbl {
+          font-size: 0.72rem;
+          font-weight: 600;
+          color: #94a3b8;
+          text-transform: uppercase;
+          letter-spacing: 0.04em;
+        }
+
+        .metric-num {
+          font-size: 1.25rem;
+          font-weight: 800;
+          font-family: 'JetBrains Mono', monospace;
+          line-height: 1.1;
+        }
+
+        .metric-num small {
+          font-size: 0.75rem;
+          font-weight: 600;
+          color: #94a3b8;
+          font-family: inherit;
+        }
+
+        .hr-num { color: #f43f5e; }
+        .rr-num { color: #00e5ff; }
+        .rmssd-num { color: #10b981; }
+        .phase-num { color: #fbbf24; }
+
+        .ant-debug-bar {
+          font-family: 'JetBrains Mono', monospace;
+          font-size: 0.76rem;
+          color: #94a3b8;
+          background: #090d16;
+          border: 1px solid #1a2234;
+          border-radius: 8px;
+          padding: 0.45rem 0.75rem;
+          display: flex;
+          align-items: center;
+          gap: 0.5rem;
+          overflow-x: auto;
+          white-space: nowrap;
+        }
+
+        .status-indicator {
+          width: 8px;
+          height: 8px;
+          border-radius: 50%;
+          background: #64748b;
+          flex-shrink: 0;
+          transition: background-color 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .status-indicator.active {
+          background: #10b981;
+          box-shadow: 0 0 10px #10b981;
+        }
+
+        .status-indicator.sim {
+          background: #f59e0b;
+          box-shadow: 0 0 10px #f59e0b;
+        }
+
+        /* Superimposed Hero Graph */
+        .graph-container {
+          background: #090d16;
+          border: 1px solid #1f2a3e;
+          border-radius: 14px;
+          padding: 1rem 1.15rem;
+          display: flex;
+          flex-direction: column;
+          gap: 0.75rem;
+        }
+
+        .graph-header {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          flex-wrap: wrap;
+          gap: 0.5rem;
+        }
+
+        .graph-title-row {
+          display: flex;
+          align-items: center;
+          gap: 0.5rem;
+        }
+
+        .graph-title-row h4 {
+          font-size: 0.95rem;
+          font-weight: 700;
+          color: #f1f5f9;
+          margin: 0;
+        }
+
+        .graph-legend {
+          display: flex;
+          align-items: center;
+          gap: 1.25rem;
+          font-size: 0.76rem;
+          font-weight: 600;
+        }
+
+        .legend-item {
+          display: flex;
+          align-items: center;
+          gap: 0.4rem;
+          color: #cbd5e1;
+        }
+
+        .legend-line {
+          width: 16px;
+          height: 3px;
+          border-radius: 2px;
+        }
+
+        .legend-line.cyan {
+          background: #00e5ff;
+          box-shadow: 0 0 8px rgba(0, 229, 255, 0.6);
+        }
+
+        .legend-line.red {
+          background: #ff3366;
+          box-shadow: 0 0 8px rgba(255, 51, 102, 0.6);
+        }
+
+        .canvas-wrapper {
+          position: relative;
+          width: 100%;
+          border-radius: 10px;
+          overflow: hidden;
+          background: #05080f;
+          border: 1px solid #151d2c;
+        }
+
+        .live-canvas {
+          width: 100%;
+          height: 210px;
+          display: block;
+        }
+
+        .canvas-watermark {
+          position: absolute;
+          bottom: 8px;
+          right: 12px;
+          font-family: 'JetBrains Mono', monospace;
+          font-size: 0.65rem;
+          color: rgba(255, 255, 255, 0.15);
+          letter-spacing: 0.08em;
+          user-select: none;
+          pointer-events: none;
+        }
+
+        /* Sparklines Grid */
+        .sparklines-grid {
+          display: grid;
+          grid-template-columns: repeat(3, 1fr);
+          gap: 0.75rem;
+        }
+
+        .sparkline-card {
+          background: #090d16;
+          border: 1px solid #1f2a3e;
+          border-radius: 12px;
+          padding: 0.65rem 0.75rem;
+          display: flex;
+          flex-direction: column;
+          gap: 0.35rem;
+        }
+
+        .sparkline-label {
+          display: flex;
+          align-items: center;
+          gap: 0.4rem;
+          font-size: 0.72rem;
+          font-weight: 700;
+          color: #94a3b8;
+          text-transform: uppercase;
+          letter-spacing: 0.03em;
+        }
+
+        .sparkline-color {
+          width: 8px;
+          height: 8px;
+          border-radius: 2px;
+        }
+
+        .sparkline-color.hr { background: #f43f5e; }
+        .sparkline-color.rr { background: #00e5ff; }
+        .sparkline-color.rmssd { background: #10b981; }
+
+        .spark-canvas {
+          width: 100%;
+          height: 75px;
+          display: block;
+          border-radius: 6px;
+          background: #05080f;
+        }
+
+        .ant-setup-hint {
+          font-size: 0.8rem;
+          color: #94a3b8;
+        }
+
+        .ant-setup-hint summary {
+          cursor: pointer;
+          font-weight: 600;
+          color: #38bdf8;
+          user-select: none;
+        }
+
+        .ant-setup-hint p {
+          margin-top: 0.5rem;
+          line-height: 1.45;
+          padding: 0.65rem 0.85rem;
+          background: #090d16;
+          border: 1px solid #1a2234;
+          border-radius: 8px;
+        }
+
         /* Mobile Adjustments */
         @media (max-width: 640px) {
           .demo-section {
@@ -1531,6 +1990,23 @@
           .technique-grid {
             grid-template-columns: repeat(2, 1fr);
             gap: 0.65rem;
+          }
+
+          .ant-metrics-bar {
+            grid-template-columns: repeat(2, 1fr);
+          }
+
+          .sparklines-grid {
+            grid-template-columns: 1fr;
+          }
+
+          .ant-actions-row {
+            width: 100%;
+          }
+
+          .btn-ant-connect, .btn-ant-simulate, .btn-ant-export {
+            flex: 1 1 auto;
+            justify-content: center;
           }
 
           .watch-chassis-wrap {
@@ -2243,7 +2719,8 @@
               if (watchTelemetry) {
                 const hrTxt = s.hr_label || 'HR';
                 const secLeftTxt = s.seconds_left || 's left';
-                watchTelemetry.textContent = `${hrTxt}: ${simHR} | ${phaseRemainingSec} ${secLeftTxt}`;
+                const activeHR = ((typeof antRunning !== 'undefined' && antRunning) || (typeof isSimulatingAnt !== 'undefined' && isSimulatingAnt)) && currentHR > 0 ? currentHR : simHR;
+                watchTelemetry.textContent = `${hrTxt}: ${activeHR} | ${phaseRemainingSec} ${secLeftTxt}`;
               }
 
               // 4. Real-Time Organic Noise-Based Shepard Acoustics Synthesis
@@ -2314,6 +2791,9 @@
               if (!phaseStartTime) phaseStartTime = performance.now();
               timerInterval = setInterval(tick, 1000);
               animFrameId = requestAnimationFrame(updatePacerVisual);
+            }
+            if (typeof ensureAntAnimLoopRunning === 'function') {
+              ensureAntAnimLoopRunning();
             }
           }
 
@@ -2498,6 +2978,956 @@
             }
           }
 
+          // =========================================================================
+          // LIVE ANT+ MONITORING & SUPERIMPOSED WAVEFORM (PURE JS / WEBUSB / 60 FPS)
+          // =========================================================================
+
+          // --- ANT+ & Protocol Constants ---
+          const ANT_VID = 0x0FCF; // Garmin / Dynastream USB Sticks (USB2, USB-m)
+          const ANT_PUBLIC_NETWORK_KEY = [0xB9, 0xA5, 0x21, 0xFB, 0xBD, 0x72, 0xC3, 0x45];
+          const HRM_DEVICE_TYPE = 120;
+          const HRM_CHANNEL_PERIOD = 8070; // ~4.06 Hz
+          const HRM_RF_FREQ = 57; // 2457 MHz
+
+          // --- DOM References for ANT+ Monitoring ---
+          const antBadge = document.getElementById('antBadge');
+          const antCardHeading = document.getElementById('antCardHeading');
+          const antSubtitle = document.getElementById('antSubtitle');
+          const btnConnectAnt = document.getElementById('btnConnectAnt');
+          const btnConnectAntText = document.getElementById('btnConnectAntText');
+          const btnSimulateAnt = document.getElementById('btnSimulateAnt');
+          const btnSimulateText = document.getElementById('btnSimulateText');
+          const btnExportJsonl = document.getElementById('btnExportJsonl');
+          const valHR = document.getElementById('valHR');
+          const valRR = document.getElementById('valRR');
+          const valRMSSD = document.getElementById('valRMSSD');
+          const valPhaseLag = document.getElementById('valPhaseLag');
+          const lblHrTitle = document.getElementById('lblHrTitle');
+          const lblRrTitle = document.getElementById('lblRrTitle');
+          const lblRmssdTitle = document.getElementById('lblRmssdTitle');
+          const lblPhaseTitle = document.getElementById('lblPhaseTitle');
+          const antStatusDot = document.getElementById('antStatusDot');
+          const lblAntStatus = document.getElementById('lblAntStatus');
+          const graphSyncTitle = document.getElementById('graphSyncTitle');
+          const legendBreath = document.getElementById('legendBreath');
+          const legendRR = document.getElementById('legendRR');
+          const canvasWatermark = document.getElementById('canvasWatermark');
+          const sparkHrLabel = document.getElementById('sparkHrLabel');
+          const sparkRrLabel = document.getElementById('sparkRrLabel');
+          const sparkRmssdLabel = document.getElementById('sparkRmssdLabel');
+
+          // Canvases
+          const syncCanvas = document.getElementById('syncCanvas');
+          const syncCtx = syncCanvas ? syncCanvas.getContext('2d') : null;
+          const sparkHrCanvas = document.getElementById('sparkHrCanvas');
+          const sparkHrCtx = sparkHrCanvas ? sparkHrCanvas.getContext('2d') : null;
+          const sparkRrCanvas = document.getElementById('sparkRrCanvas');
+          const sparkRrCtx = sparkRrCanvas ? sparkRrCanvas.getContext('2d') : null;
+          const sparkRmssdCanvas = document.getElementById('sparkRmssdCanvas');
+          const sparkRmssdCtx = sparkRmssdCanvas ? sparkRmssdCanvas.getContext('2d') : null;
+
+          // --- State Variables ---
+          let antDevice = null;
+          let antRunning = false;
+          let isSimulatingAnt = false;
+          let simInterval = null;
+          let inBuffer = [];
+          let prevBeatCount = null;
+          let prevEventTime = null;
+
+          // Biometrics Histories
+          const HISTORY_LEN = 160;
+          const hrHistory = [];
+          const rrHistory = [];
+          const rmssdHistory = [];
+          const rrWindow = []; // Rolling 30 beats for RMSSD calculation
+          const sessionLogs = []; // Session history for JSONL export
+
+          // Rolling Synchronized Respiration & RR Plot Buffer
+          // Stores samples: { t, resp, hr, rr, isBeat }
+          const SYNC_HISTORY_LEN = 140;
+          const syncWaveformBuffer = [];
+
+          // Current biometrics readouts
+          let currentHR = 0;
+          let currentRR = 0;
+          let currentRMSSD = 0;
+          let currentPhaseLagMs = 0;
+          let currentPhaseDeg = 0;
+
+          // HiDPI Scaling Helper for razor-sharp rendering on Retina / 4K displays
+          function setupCanvasDpi(canvas, ctx, logicalW, logicalH) {
+            if (!canvas || !ctx) return;
+            const dpr = window.devicePixelRatio || 1;
+            canvas.width = logicalW * dpr;
+            canvas.height = logicalH * dpr;
+            ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+          }
+
+          if (syncCanvas && syncCtx) setupCanvasDpi(syncCanvas, syncCtx, 700, 210);
+          if (sparkHrCanvas && sparkHrCtx) setupCanvasDpi(sparkHrCanvas, sparkHrCtx, 220, 75);
+          if (sparkRrCanvas && sparkRrCtx) setupCanvasDpi(sparkRrCanvas, sparkRrCtx, 220, 75);
+          if (sparkRmssdCanvas && sparkRmssdCtx) setupCanvasDpi(sparkRmssdCanvas, sparkRmssdCtx, 220, 75);
+
+          window.addEventListener('resize', () => {
+            if (syncCanvas && syncCtx) setupCanvasDpi(syncCanvas, syncCtx, 700, 210);
+            if (sparkHrCanvas && sparkHrCtx) setupCanvasDpi(sparkHrCanvas, sparkHrCtx, 220, 75);
+            if (sparkRrCanvas && sparkRrCtx) setupCanvasDpi(sparkRrCanvas, sparkRrCtx, 220, 75);
+            if (sparkRmssdCanvas && sparkRmssdCtx) setupCanvasDpi(sparkRmssdCanvas, sparkRmssdCtx, 220, 75);
+            renderAntVisuals();
+          });
+
+          function updateAntStatus(text, color = '#ffd600', isLive = false) {
+            if (lblAntStatus) {
+              lblAntStatus.textContent = text;
+              lblAntStatus.style.color = color;
+            }
+            if (antStatusDot) {
+              antStatusDot.style.background = isLive ? '#00ff66' : (color === '#ff3366' ? '#ff3366' : '#ffd600');
+              if (isLive) {
+                antStatusDot.classList.add('live');
+              } else {
+                antStatusDot.classList.remove('live');
+              }
+            }
+          }
+
+          // --- ANT+ Packet Construction & WebUSB Commands ---
+          function buildAntPacket(msgId, data) {
+            const length = data.length;
+            const packet = [0xA4, length, msgId, ...data];
+            let checksum = 0;
+            for (let i = 0; i < packet.length; i++) {
+              checksum ^= packet[i];
+            }
+            packet.push(checksum);
+            return new Uint8Array(packet);
+          }
+
+          async function sendAntCmd(msgId, data) {
+            if (!antDevice || !antDevice.opened) return;
+            const packet = buildAntPacket(msgId, data);
+            await antDevice.transferOut(1, packet);
+          }
+
+          const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+          async function initAntChannel() {
+            // 1. Reset System (0x4A)
+            await sendAntCmd(0x4A, [0x00]);
+            await sleep(500);
+
+            // 2. Set Network Key (0x46)
+            await sendAntCmd(0x46, [0x00, ...ANT_PUBLIC_NETWORK_KEY]);
+            await sleep(50);
+
+            // 3. Assign Channel 0 as Bidirectional Slave Receive (0x42)
+            await sendAntCmd(0x42, [0x00, 0x00, 0x00]);
+            await sleep(50);
+
+            // 4. Set Channel ID: Dev 0, DevType 120 (HRM), TransType 0 (0x51)
+            await sendAntCmd(0x51, [0x00, 0x00, 0x00, HRM_DEVICE_TYPE, 0x00]);
+            await sleep(50);
+
+            // 5. Set RF Frequency: 2457 MHz (0x45)
+            await sendAntCmd(0x45, [0x00, HRM_RF_FREQ]);
+            await sleep(50);
+
+            // 6. Set Channel Period: 8070 counts (~4.06 Hz) (0x43)
+            await sendAntCmd(0x43, [0x00, HRM_CHANNEL_PERIOD & 0xFF, (HRM_CHANNEL_PERIOD >> 8) & 0xFF]);
+            await sleep(50);
+
+            // 7. Set Search Timeout: 255 = Infinite Search (0x44)
+            await sendAntCmd(0x44, [0x00, 255]);
+            await sleep(50);
+
+            // 8. Open Channel (0x4B)
+            await sendAntCmd(0x4B, [0x00]);
+          }
+
+          // --- WebUSB Device Connection ---
+          async function connectAntDongle() {
+            if (!navigator.usb) {
+              updateAntStatus(
+                currentLang === 'de'
+                  ? 'WebUSB wird in diesem Browser nicht unterstützt! Bitte Google Chrome oder Microsoft Edge nutzen.'
+                  : 'WebUSB is not supported in this browser! Please use Google Chrome or Microsoft Edge.',
+                '#ff3366',
+                false
+              );
+              return;
+            }
+
+            if (antRunning && antDevice) {
+              // Disconnect
+              antRunning = false;
+              try {
+                await antDevice.close();
+              } catch (e) {}
+              antDevice = null;
+              if (btnConnectAntText) {
+                btnConnectAntText.textContent = currentLang === 'de' ? '🔌 ANT+ Stick verbinden' : '🔌 Connect ANT+ Stick';
+              }
+              if (btnConnectAnt) btnConnectAnt.classList.remove('active');
+              updateAntStatus(
+                currentLang === 'de' ? 'ANT+ Stick getrennt.' : 'ANT+ Stick disconnected.',
+                '#94a3b8',
+                false
+              );
+              return;
+            }
+
+            // Stop simulation if running
+            if (isSimulatingAnt) stopAntSimulation();
+
+            updateAntStatus(
+              currentLang === 'de'
+                ? 'Bitte ANT+ USB-Stick im Browser-Popup auswählen...'
+                : 'Please select ANT+ USB Stick in browser popup...',
+              '#00e5ff',
+              false
+            );
+
+            try {
+              const options = {
+                filters: [{ vendorId: ANT_VID }]
+              };
+              antDevice = await navigator.usb.requestDevice(options);
+
+              updateAntStatus(
+                `Öffne ANT+ Stick (${antDevice.productName || 'Garmin USB Stick'})...`,
+                '#00e5ff',
+                false
+              );
+
+              await antDevice.open();
+              if (antDevice.configuration === null) {
+                await antDevice.selectConfiguration(1);
+              }
+              await antDevice.claimInterface(0);
+
+              // Initialize ANT Radio Channel
+              await initAntChannel();
+              antRunning = true;
+
+              if (btnConnectAntText) {
+                btnConnectAntText.textContent = currentLang === 'de' ? '✓ ANT+ Verbunden' : '✓ ANT+ Connected';
+              }
+              if (btnConnectAnt) btnConnectAnt.classList.add('active');
+
+              updateAntStatus(
+                currentLang === 'de'
+                  ? 'ANT+ aktiv! Suche HRM-Brustgurt auf 2457 MHz...'
+                  : 'ANT+ active! Searching for HRM strap on 2457 MHz...',
+                '#00ff66',
+                true
+              );
+
+              // Launch continuous packet deframing loop
+              readAntUsbLoop();
+              ensureAntAnimLoopRunning();
+            } catch (err) {
+              console.error('ANT+ WebUSB Connection Error:', err);
+              antRunning = false;
+              const msg = err.message || err.toString();
+              if (msg.includes('No device selected') || msg.includes('cancelled')) {
+                updateAntStatus(
+                  currentLang === 'de' ? 'Auswahl abgebrochen.' : 'Device pairing cancelled.',
+                  '#94a3b8',
+                  false
+                );
+              } else {
+                updateAntStatus(
+                  currentLang === 'de'
+                    ? `WebUSB Fehler: ${msg}. Auf Windows ggf. WinUSB via Zadig aktivieren.`
+                    : `WebUSB Error: ${msg}. If on Windows, install WinUSB via Zadig.`,
+                  '#ff3366',
+                  false
+                );
+              }
+            }
+          }
+
+          // --- Asynchronous USB Byte Stream Reader & Deframer ---
+          async function readAntUsbLoop() {
+            while (antRunning && antDevice && antDevice.opened) {
+              try {
+                const res = await antDevice.transferIn(1, 64);
+                if (res.status !== 'ok' || !res.data || res.data.byteLength === 0) {
+                  await sleep(10);
+                  continue;
+                }
+
+                const view = res.data;
+                for (let i = 0; i < view.byteLength; i++) {
+                  inBuffer.push(view.getUint8(i));
+                }
+
+                // Packet deframing loop
+                while (inBuffer.length >= 4) {
+                  if (inBuffer[0] !== 0xA4) {
+                    inBuffer.shift(); // Discard non-sync byte
+                    continue;
+                  }
+
+                  const msgLen = inBuffer[1];
+                  const totalPacketLen = msgLen + 4; // SYNC + LEN + ID + DATA + CHK
+                  if (inBuffer.length < totalPacketLen) {
+                    break; // Wait for complete packet
+                  }
+
+                  const packet = inBuffer.splice(0, totalPacketLen);
+
+                  // Validate XOR Checksum
+                  let chk = 0;
+                  for (let i = 0; i < packet.length; i++) {
+                    chk ^= packet[i];
+                  }
+                  if (chk !== 0) {
+                    continue; // Corrupt packet checksum mismatch
+                  }
+
+                  const msgId = packet[2];
+                  const payload = packet.slice(3, -1);
+
+                  // 0x4E = MESG_BROADCAST_DATA_ID
+                  if (msgId === 0x4E && payload.length >= 9) {
+                    // payload[0] = Channel number (0)
+                    // payload[1..8] = 8-byte ANT+ HRM Broadcast payload
+                    const antData = payload.slice(1, 9);
+                    onAntPayload(antData);
+                  }
+                }
+              } catch (e) {
+                if (antRunning) {
+                  console.warn('[ANT+ Stream Error]', e);
+                  await sleep(40);
+                }
+              }
+            }
+          }
+
+          // --- Lehrer / OpenANT Rollover Arithmetic for RR Intervals ---
+          function onAntPayload(data) {
+            const now = performance.now() / 1000.0;
+            const eventTime = data[4] | (data[5] << 8);
+            const beatCount = data[6];
+            const hr = data[7];
+            let rrMs = 0;
+
+            if (prevBeatCount !== null && prevEventTime !== null) {
+              const beatDiff = (beatCount - prevBeatCount) & 0xFF;
+              if (beatDiff > 0) {
+                const timeDiff = (eventTime - prevEventTime) & 0xFFFF;
+                const rawRrMs = (timeDiff * 1000.0 / 1024.0) / beatDiff;
+                if (rawRrMs >= 300.0 && rawRrMs <= 1500.0) {
+                  rrMs = rawRrMs;
+                }
+              }
+            }
+
+            prevBeatCount = beatCount;
+            prevEventTime = eventTime;
+
+            if (hr > 0 || rrMs > 0) {
+              updateAntStatus(
+                `ANT+ Sync OK | BeatCount: ${beatCount} | EventTime: ${eventTime} | RR: ${rrMs > 0 ? rrMs.toFixed(1) + ' ms' : '--'}`,
+                '#00ff66',
+                true
+              );
+            }
+
+            processMetrics(hr, rrMs, now);
+          }
+
+          // --- Live Simulation Engine (4.06 Hz Authentic ANT+ HRM with RSA) ---
+          let simBeatCount = 0;
+          let simEventTime = 0;
+          let simStartTime = 0;
+
+          function startAntSimulation() {
+            if (isSimulatingAnt) return;
+            if (antRunning && antDevice) {
+              connectAntDongle(); // Disconnect real hardware
+            }
+
+            isSimulatingAnt = true;
+            simBeatCount = 0;
+            simEventTime = 0;
+            simStartTime = performance.now() / 1000.0;
+
+            if (btnSimulateText) {
+              btnSimulateText.textContent = currentLang === 'de' ? '⏹ Simulation stoppen' : '⏹ Stop Simulation';
+            }
+            if (btnSimulateAnt) btnSimulateAnt.classList.add('active');
+
+            updateAntStatus(
+              currentLang === 'de'
+                ? '⚡ Live-Simulation aktiv: 4.06 Hz ANT+ Datenstrom mit Resonanz-RSA'
+                : '⚡ Live Simulation active: 4.06 Hz ANT+ stream with Resonance RSA',
+              '#00ff66',
+              true
+            );
+
+            // ANT+ HRM transmits every ~246.3 ms (~4.06 Hz)
+            const PACKET_INTERVAL_MS = 246;
+            let lastBeatEventSec = performance.now() / 1000.0;
+
+            simInterval = setInterval(() => {
+              const now = performance.now() / 1000.0;
+              const bpmTarget = parseFloat(targetBpmInput.value) || 5.50;
+              const cyclePeriod = 60.0 / bpmTarget;
+              const inhaleDur = cyclePeriod * 0.40;
+              const exhaleDur = cyclePeriod * 0.60;
+
+              // Respiration phase factoring
+              const tCycle = (now - simStartTime) % cyclePeriod;
+              let lungVol = 0;
+              if (tCycle < inhaleDur) {
+                // Inhale: rises 0 -> 1
+                lungVol = 0.5 * (1.0 - Math.cos(Math.PI * (tCycle / inhaleDur)));
+              } else {
+                // Exhale: falls 1 -> 0
+                lungVol = 0.5 * (1.0 + Math.cos(Math.PI * ((tCycle - inhaleDur) / exhaleDur)));
+              }
+
+              // Physiological Respiratory Sinus Arrhythmia (RSA):
+              // In resonance, HR oscillates between ~70 (trough) and ~84 (crest) with ~80ms baroreflex inertia
+              const baseHR = 76;
+              const deltaHR = 7.5; // ±7.5 BPM oscillation
+              // Natural beat jitter (±0.8 BPM noise)
+              const noiseBpm = (Math.random() - 0.5) * 1.5;
+              const currentSimHR = Math.round(baseHR + deltaHR * (lungVol * 2.0 - 1.0) + noiseBpm);
+
+              // RR interval in seconds
+              const instantRRSec = 60.0 / currentSimHR;
+
+              // Check if a heartbeat occurred
+              if (now - lastBeatEventSec >= instantRRSec) {
+                lastBeatEventSec = now;
+                simBeatCount = (simBeatCount + 1) & 0xFF;
+                // ANT+ event time in 1/1024-second units (rollover at 65536)
+                const eventDelta1024 = Math.round(instantRRSec * 1024.0);
+                simEventTime = (simEventTime + eventDelta1024) & 0xFFFF;
+              }
+
+              // Synthesize 8-byte ANT+ HRM packet payload:
+              // Bytes 0-3: Page/Manufacturer/Serial
+              // Bytes 4-5: Heart Beat Event Time (LSB, MSB)
+              // Byte 6: Heart Beat Count
+              // Byte 7: Computed Heart Rate (BPM)
+              const simPayload = [
+                0x00, 0xFF, 0xFF, 0x01,
+                simEventTime & 0xFF,
+                (simEventTime >> 8) & 0xFF,
+                simBeatCount,
+                currentSimHR
+              ];
+
+              onAntPayload(simPayload);
+            }, PACKET_INTERVAL_MS);
+
+            ensureAntAnimLoopRunning();
+          }
+
+          function stopAntSimulation() {
+            if (!isSimulatingAnt) return;
+            isSimulatingAnt = false;
+            if (simInterval) {
+              clearInterval(simInterval);
+              simInterval = null;
+            }
+
+            if (btnSimulateText) {
+              btnSimulateText.textContent = currentLang === 'de' ? '⚡ Live-Simulation' : '⚡ Live Simulation';
+            }
+            if (btnSimulateAnt) btnSimulateAnt.classList.remove('active');
+
+            updateAntStatus(
+              currentLang === 'de'
+                ? 'Simulation angehalten. Bereit für ANT+ USB-Stick oder Simulation.'
+                : 'Simulation stopped. Ready for ANT+ USB Stick or Simulation.',
+              '#ffd600',
+              false
+            );
+          }
+
+          function toggleAntSimulation() {
+            if (isSimulatingAnt) {
+              stopAntSimulation();
+            } else {
+              startAntSimulation();
+            }
+          }
+
+          // --- Real-Time Biometrics & DSP Coherence Processing ---
+          function processMetrics(hr, rrMs, timestamp) {
+            if (hr > 0) {
+              currentHR = hr;
+              hrHistory.push(hr);
+              if (hrHistory.length > HISTORY_LEN) hrHistory.shift();
+              if (valHR) valHR.innerHTML = `${hr} <small>BPM</small>`;
+            }
+
+            let isNewBeat = false;
+            if (rrMs > 0) {
+              isNewBeat = true;
+              currentRR = rrMs;
+              rrHistory.push(rrMs);
+              if (rrHistory.length > HISTORY_LEN) rrHistory.shift();
+              if (valRR) valRR.innerHTML = `${rrMs.toFixed(1)} <small>ms</small>`;
+
+              // Rolling 30-beat window for RMSSD Vagotonia calculation
+              rrWindow.push(rrMs);
+              if (rrWindow.length > 30) rrWindow.shift();
+
+              if (rrWindow.length >= 2) {
+                let sumSqDiff = 0;
+                for (let i = 0; i < rrWindow.length - 1; i++) {
+                  const diff = rrWindow[i + 1] - rrWindow[i];
+                  sumSqDiff += diff * diff;
+                }
+                currentRMSSD = Math.sqrt(sumSqDiff / (rrWindow.length - 1));
+              } else {
+                currentRMSSD = 0;
+              }
+
+              rmssdHistory.push(currentRMSSD);
+              if (rmssdHistory.length > HISTORY_LEN) rmssdHistory.shift();
+              if (valRMSSD) valRMSSD.innerHTML = `${currentRMSSD.toFixed(1)} <small>ms</small>`;
+            }
+
+            // Target breath cadence
+            const bpmTarget = parseFloat(targetBpmInput.value) || 5.50;
+            const cyclePeriod = 60.0 / bpmTarget;
+            const inhaleDur = cyclePeriod * 0.40;
+            const exhaleDur = cyclePeriod * 0.60;
+
+            // Instantaneous Respiration lung volume [-1.0, +1.0]
+            const tCycle = timestamp % cyclePeriod;
+            let respVolume = 0;
+            if (tCycle < inhaleDur) {
+              respVolume = 0.5 * (1.0 - Math.cos(Math.PI * (tCycle / inhaleDur)));
+            } else {
+              respVolume = 0.5 * (1.0 + Math.cos(Math.PI * ((tCycle - inhaleDur) / exhaleDur)));
+            }
+            const respNormalized = respVolume * 2.0 - 1.0; // [-1.0 .. +1.0]
+
+            // Append to synchronized waveform history
+            syncWaveformBuffer.push({
+              t: timestamp,
+              resp: respNormalized,
+              hr: currentHR,
+              rr: currentRR,
+              isBeat: isNewBeat
+            });
+            if (syncWaveformBuffer.length > SYNC_HISTORY_LEN) {
+              syncWaveformBuffer.shift();
+            }
+
+            // Estimate Phase Synchrony & Lag (Cross-correlation of HR detrend with Respiration)
+            if (syncWaveformBuffer.length >= 30) {
+              estimatePhaseLag(bpmTarget);
+            }
+
+            // Record session log for JSONL export
+            sessionLogs.push({
+              timestamp: Math.round(timestamp * 1000) / 1000,
+              hr: currentHR,
+              rr_ms: Math.round(currentRR * 10) / 10,
+              rmssd: Math.round(currentRMSSD * 10) / 10,
+              target_bpm: bpmTarget,
+              protocol_state: isRunning ? currentPhase : 'MONITOR',
+              respiration_vol: Math.round(respVolume * 1000) / 1000,
+              phase_lag_ms: Math.round(currentPhaseLagMs)
+            });
+
+            // Keep sessionLogs bounded to last 20,000 records (~1.3 hours) to prevent memory leaks
+            if (sessionLogs.length > 20000) sessionLogs.shift();
+          }
+
+          // Cross-correlation between HR oscillation and Respiration wave
+          function estimatePhaseLag(bpmTarget) {
+            const N = syncWaveformBuffer.length;
+            if (N < 20) return;
+
+            let sumHR = 0;
+            for (let i = 0; i < N; i++) sumHR += syncWaveformBuffer[i].hr;
+            const meanHR = sumHR / N;
+
+            // Search lags in range -12 to +12 samples (~ ±3 seconds)
+            const MAX_LAG = 12;
+            let bestLag = 0;
+            let maxCorr = -Infinity;
+
+            for (let lag = -MAX_LAG; lag <= MAX_LAG; lag++) {
+              let corr = 0;
+              let count = 0;
+              for (let i = 0; i < N; i++) {
+                const j = i + lag;
+                if (j >= 0 && j < N) {
+                  const hrDetrend = syncWaveformBuffer[j].hr - meanHR;
+                  const resp = syncWaveformBuffer[i].resp;
+                  corr += hrDetrend * resp;
+                  count++;
+                }
+              }
+              if (count > 0) {
+                corr /= count;
+                if (corr > maxCorr) {
+                  maxCorr = corr;
+                  bestLag = lag;
+                }
+              }
+            }
+
+            // Sample interval: average dt in buffer
+            const dt = (syncWaveformBuffer[N - 1].t - syncWaveformBuffer[0].t) / (N - 1);
+            const lagSec = bestLag * dt;
+            currentPhaseLagMs = Math.round(lagSec * 1000);
+
+            // Phase degree
+            const targetFreqHz = bpmTarget / 60.0;
+            let deg = Math.abs(lagSec * targetFreqHz * 360.0) % 360.0;
+            if (deg > 180.0) deg = 360.0 - deg;
+            currentPhaseDeg = Math.round(deg);
+
+            if (valPhaseLag) {
+              const sign = currentPhaseLagMs >= 0 ? '+' : '';
+              if (currentPhaseDeg <= 25) {
+                valPhaseLag.innerHTML = `<span style="color:#00ff66;">${currentPhaseLagMs} ms (0° Sync)</span>`;
+              } else {
+                valPhaseLag.innerHTML = `${sign}${currentPhaseLagMs} <small>ms (${currentPhaseDeg}°)</small>`;
+              }
+            }
+          }
+
+          // --- JSONL Session Exporter ---
+          function exportJsonl() {
+            if (sessionLogs.length === 0) {
+              alert(
+                currentLang === 'de'
+                  ? 'Keine Messdaten vorhanden. Bitte zuerst ANT+ verbinden oder Simulation starten!'
+                  : 'No session data recorded yet. Please connect ANT+ or run simulation first!'
+              );
+              return;
+            }
+
+            const lines = sessionLogs.map((entry) => JSON.stringify(entry));
+            const jsonlContent = lines.join('\n');
+            const blob = new Blob([jsonlContent], { type: 'application/jsonlines;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `peakfrequency_ant_session_${Math.floor(Date.now() / 1000)}.jsonl`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+          }
+
+          // =========================================================================
+          // 60 FPS GRAPH RENDERING ENGINE (SUPERIMPOSED BREATH + RR / SPARKLINES)
+          // =========================================================================
+          let antAnimFrameId = null;
+
+          function ensureAntAnimLoopRunning() {
+            if (!antAnimFrameId) {
+              antAnimFrameId = requestAnimationFrame(antVisualLoop);
+            }
+          }
+
+          function antVisualLoop() {
+            renderAntVisuals();
+            // Continue loop as long as either real ANT+, simulation, or watch session is running
+            if (antRunning || isSimulatingAnt || isRunning) {
+              antAnimFrameId = requestAnimationFrame(antVisualLoop);
+            } else {
+              antAnimFrameId = null;
+            }
+          }
+
+          function renderAntVisuals() {
+            renderSuperimposedCanvas();
+            renderSparklines();
+          }
+
+          // --- Hero Canvas: Paced Breathing Waveform Superimposed with RR Signal ---
+          function renderSuperimposedCanvas() {
+            if (!syncCanvas || !syncCtx) return;
+
+            const w = 700;
+            const h = 210;
+            const ctx = syncCtx;
+
+            ctx.clearRect(0, 0, w, h);
+
+            // Dark AMOLED container background
+            ctx.fillStyle = '#0c0d12';
+            ctx.fillRect(0, 0, w, h);
+
+            // Horizontal grid guidelines
+            const yTop = 32;
+            const yMid = 110;
+            const yBottom = 188;
+
+            ctx.lineWidth = 1;
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.06)';
+            ctx.beginPath();
+            ctx.moveTo(35, yTop); ctx.lineTo(w - 20, yTop);
+            ctx.moveTo(35, yBottom); ctx.lineTo(w - 20, yBottom);
+            ctx.stroke();
+
+            // Zero baseline
+            ctx.strokeStyle = 'rgba(0, 229, 255, 0.14)';
+            ctx.beginPath();
+            ctx.setLineDash([4, 4]);
+            ctx.moveTo(35, yMid); ctx.lineTo(w - 20, yMid);
+            ctx.stroke();
+            ctx.setLineDash([]);
+
+            // Axis labels
+            ctx.fillStyle = '#64748b';
+            ctx.font = 'bold 10px monospace';
+            ctx.textAlign = 'left';
+            ctx.fillText('INHALE ▲', 10, yTop + 3);
+            ctx.fillText('EXHALE ▼', 10, yBottom + 3);
+
+            // Live Phase Coherence Badge in top right of canvas
+            if (currentPhaseDeg <= 25 && (antRunning || isSimulatingAnt)) {
+              ctx.fillStyle = 'rgba(0, 255, 102, 0.12)';
+              ctx.strokeStyle = '#00ff66';
+              ctx.lineWidth = 1;
+              ctx.beginPath();
+              if (ctx.roundRect) ctx.roundRect(w - 215, 8, 195, 20, 4);
+              else ctx.rect(w - 215, 8, 195, 20);
+              ctx.fill();
+              ctx.stroke();
+
+              ctx.fillStyle = '#00ff66';
+              ctx.font = 'bold 10px sans-serif';
+              ctx.textAlign = 'center';
+              ctx.fillText('● 0° PHASE LOCK (RESONANCE)', w - 117, 22);
+            } else if (antRunning || isSimulatingAnt) {
+              ctx.fillStyle = 'rgba(245, 158, 11, 0.12)';
+              ctx.strokeStyle = '#f59e0b';
+              ctx.lineWidth = 1;
+              ctx.beginPath();
+              if (ctx.roundRect) ctx.roundRect(w - 180, 8, 160, 20, 4);
+              else ctx.rect(w - 180, 8, 160, 20);
+              ctx.fill();
+              ctx.stroke();
+
+              ctx.fillStyle = '#f59e0b';
+              ctx.font = 'bold 10px sans-serif';
+              ctx.textAlign = 'center';
+              ctx.fillText(`HRV PACING • ${currentPhaseLagMs} ms LAG`, w - 100, 22);
+            }
+
+            const N = syncWaveformBuffer.length;
+            const xStart = 55;
+            const plotW = w - 80;
+
+            if (N < 2) {
+              // Idle preview baseline
+              ctx.fillStyle = '#334155';
+              ctx.font = '12px sans-serif';
+              ctx.textAlign = 'center';
+              ctx.fillText(
+                currentLang === 'de'
+                  ? 'Warte auf ANT+ HRM Signal oder Simulation...'
+                  : 'Waiting for ANT+ HRM signal or simulation...',
+                w / 2,
+                yMid + 4
+              );
+              return;
+            }
+
+            // --- 1. Draw Paced Respiration Waveform (Cyan #00e5ff) ---
+            ctx.save();
+            ctx.beginPath();
+            const stepX = plotW / (SYNC_HISTORY_LEN - 1);
+
+            // Plot respiration points
+            for (let i = 0; i < N; i++) {
+              const px = xStart + (SYNC_HISTORY_LEN - N + i) * stepX;
+              // resp is [-1.0 .. +1.0] where +1.0 is peak inhale (yTop), -1.0 is full exhale (yBottom)
+              const py = yMid - syncWaveformBuffer[i].resp * (yMid - yTop);
+              if (i === 0) ctx.moveTo(px, py);
+              else ctx.lineTo(px, py);
+            }
+
+            // Gradient under-fill
+            const lastPx = xStart + (SYNC_HISTORY_LEN - 1) * stepX;
+            const firstPx = xStart + (SYNC_HISTORY_LEN - N) * stepX;
+            ctx.lineTo(lastPx, yBottom);
+            ctx.lineTo(firstPx, yBottom);
+            ctx.closePath();
+
+            const cyanGrad = ctx.createLinearGradient(0, yTop, 0, yBottom);
+            cyanGrad.addColorStop(0, 'rgba(0, 229, 255, 0.18)');
+            cyanGrad.addColorStop(1, 'rgba(0, 229, 255, 0.00)');
+            ctx.fillStyle = cyanGrad;
+            ctx.fill();
+
+            // Stroke the respiration curve with soft glow
+            ctx.beginPath();
+            for (let i = 0; i < N; i++) {
+              const px = xStart + (SYNC_HISTORY_LEN - N + i) * stepX;
+              const py = yMid - syncWaveformBuffer[i].resp * (yMid - yTop);
+              if (i === 0) ctx.moveTo(px, py);
+              else ctx.lineTo(px, py);
+            }
+            ctx.strokeStyle = '#00e5ff';
+            ctx.lineWidth = 2.5;
+            ctx.shadowColor = '#00e5ff';
+            ctx.shadowBlur = 6;
+            ctx.stroke();
+            ctx.restore();
+
+            // --- 2. Draw Superimposed RR Signal / Heart Rate Curve (Coral-Red #ff3366) ---
+            // Calculate dynamic min/max HR in the visible buffer
+            let minHR = Infinity;
+            let maxHR = -Infinity;
+            for (let i = 0; i < N; i++) {
+              const hVal = syncWaveformBuffer[i].hr;
+              if (hVal > 0) {
+                if (hVal < minHR) minHR = hVal;
+                if (hVal > maxHR) maxHR = hVal;
+              }
+            }
+            if (!isFinite(minHR) || minHR === maxHR) {
+              minHR = currentHR > 0 ? currentHR - 10 : 60;
+              maxHR = currentHR > 0 ? currentHR + 10 : 90;
+            }
+            // Add padding so curve doesn't clip
+            minHR -= 1.5;
+            maxHR += 1.5;
+            const hrRange = Math.max(4.0, maxHR - minHR);
+
+            ctx.save();
+            ctx.strokeStyle = '#ff3366';
+            ctx.lineWidth = 2.5;
+            ctx.shadowColor = '#ff3366';
+            ctx.shadowBlur = 8;
+            ctx.beginPath();
+
+            const heartBeatPoints = [];
+
+            for (let i = 0; i < N; i++) {
+              const pt = syncWaveformBuffer[i];
+              const px = xStart + (SYNC_HISTORY_LEN - N + i) * stepX;
+              // Normalize HR: high HR -> top (yTop), low HR -> bottom (yBottom)
+              const normHR = (pt.hr - minHR) / hrRange;
+              const py = yBottom - Math.max(0.05, Math.min(0.95, normHR)) * (yBottom - yTop);
+
+              if (i === 0) ctx.moveTo(px, py);
+              else ctx.lineTo(px, py);
+
+              if (pt.isBeat) {
+                heartBeatPoints.push({ x: px, y: py });
+              }
+            }
+            ctx.stroke();
+            ctx.restore();
+
+            // Draw beat event indicator nodes (white core, red border)
+            for (let i = 0; i < heartBeatPoints.length; i++) {
+              const b = heartBeatPoints[i];
+              ctx.beginPath();
+              ctx.arc(b.x, b.y, 3.5, 0, 2 * Math.PI);
+              ctx.fillStyle = '#ffffff';
+              ctx.fill();
+              ctx.strokeStyle = '#ff3366';
+              ctx.lineWidth = 1.8;
+              ctx.stroke();
+            }
+
+            // Real-Time Playhead Hairline at the trailing right edge
+            const currentHeadX = xStart + (SYNC_HISTORY_LEN - 1) * stepX;
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.4)';
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.moveTo(currentHeadX, yTop);
+            ctx.lineTo(currentHeadX, yBottom);
+            ctx.stroke();
+
+            // Trailing readout watermark
+            if (currentHR > 0) {
+              ctx.fillStyle = '#ff3366';
+              ctx.font = 'bold 11px monospace';
+              ctx.textAlign = 'right';
+              ctx.fillText(`HR: ${currentHR} BPM | RR: ${currentRR.toFixed(0)} ms`, currentHeadX - 8, yBottom - 6);
+            }
+          }
+
+          // --- Secondary Multi-Metric Sparklines (HR, RR, RMSSD) ---
+          function renderSparklines() {
+            drawSparkline(sparkHrCtx, sparkHrCanvas, hrHistory, 40, 160, '#ff3366', `${currentHR} BPM`);
+            drawSparkline(sparkRrCtx, sparkRrCanvas, rrHistory, 300, 1500, '#00e5ff', `${currentRR.toFixed(1)} ms`);
+            drawSparkline(sparkRmssdCtx, sparkRmssdCanvas, rmssdHistory, 0, 120, '#00ff66', `${currentRMSSD.toFixed(1)} ms`);
+          }
+
+          function drawSparkline(ctx, canvas, data, vMin, vMax, color, labelText) {
+            if (!ctx || !canvas) return;
+            const w = 220;
+            const h = 75;
+
+            ctx.clearRect(0, 0, w, h);
+
+            // Sparkline background & subtle grid
+            ctx.fillStyle = '#0f1118';
+            ctx.fillRect(0, 0, w, h);
+
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.05)';
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.moveTo(8, h / 2); ctx.lineTo(w - 8, h / 2);
+            ctx.stroke();
+
+            // Overlay current value
+            if (data.length > 0 && labelText) {
+              ctx.fillStyle = color;
+              ctx.font = 'bold 11px monospace';
+              ctx.textAlign = 'right';
+              ctx.fillText(labelText, w - 8, 14);
+            }
+
+            if (data.length < 2) return;
+
+            // Plot curve
+            const padX = 8;
+            const padY = 16;
+            const plotW = w - padX * 2;
+            const plotH = h - padY * 2;
+            const stepX = plotW / (HISTORY_LEN - 1);
+            const startOffset = HISTORY_LEN - data.length;
+
+            ctx.save();
+            ctx.strokeStyle = color;
+            ctx.lineWidth = 1.8;
+            ctx.beginPath();
+
+            for (let i = 0; i < data.length; i++) {
+              const val = data[i];
+              const norm = Math.max(0, Math.min(1, (val - vMin) / (vMax - vMin)));
+              const px = padX + (startOffset + i) * stepX;
+              const py = (h - padY) - norm * plotH;
+              if (i === 0) ctx.moveTo(px, py);
+              else ctx.lineTo(px, py);
+            }
+            ctx.stroke();
+            ctx.restore();
+          }
+
+          // --- Bind ANT+ Action Listeners ---
+          if (btnConnectAnt) btnConnectAnt.addEventListener('click', connectAntDongle);
+          if (btnSimulateAnt) btnSimulateAnt.addEventListener('click', toggleAntSimulation);
+          if (btnExportJsonl) btnExportJsonl.addEventListener('click', exportJsonl);
+
+          // Initial visual paint
+          renderAntVisuals();
+
           function setLanguage(lang) {
             if (!window.PEAK_I18N || !window.PEAK_I18N[lang]) {
               lang = 'en';
@@ -2571,7 +4001,51 @@
               }
             }
 
-            // 5. Store Copy Tabs synchronization
+            // 5. ANT+ Monitoring & Superimposed Graph i18n
+            if (antBadge) antBadge.textContent = 'ANT+ WebUSB';
+            if (antCardHeading) {
+              antCardHeading.textContent = lang === 'de'
+                ? 'Live ANT+ Monitoring & Phasensynchronie'
+                : 'Live ANT+ Monitoring & Superimposed Waveform';
+            }
+            if (antSubtitle) {
+              antSubtitle.textContent = lang === 'de'
+                ? 'Echtzeit-RR-Intervall-Deframing & 0°-Resonanz-Phasensynchronie'
+                : 'Real-time beat-by-beat RR interval deframing & 0° respiration phase synchrony';
+            }
+            if (btnConnectAntText && !antRunning) {
+              btnConnectAntText.textContent = lang === 'de' ? '🔌 ANT+ Stick verbinden' : '🔌 Connect ANT+ Stick';
+            }
+            if (btnSimulateText && !isSimulatingAnt) {
+              btnSimulateText.textContent = lang === 'de' ? '⚡ Live-Simulation' : '⚡ Live Simulation';
+            }
+            if (lblHrTitle) lblHrTitle.textContent = s.hr_label || (lang === 'de' ? 'Herzfrequenz' : 'Heart Rate');
+            if (lblRrTitle) lblRrTitle.textContent = lang === 'de' ? 'RR-Intervall' : 'RR Interval';
+            if (lblRmssdTitle) lblRmssdTitle.textContent = 'RMSSD';
+            if (lblPhaseTitle) lblPhaseTitle.textContent = lang === 'de' ? 'Phasenkohärenz' : 'Phase Coherence';
+            if (graphSyncTitle) {
+              const baseTitle = s.hr_vs_resp || 'HR vs Resp';
+              const subTitle = lang === 'de' ? 'Resonanz-Phasensynchronie' : 'Resonance Phase Synchrony';
+              graphSyncTitle.textContent = `${baseTitle} (${subTitle})`;
+            }
+            if (legendBreath) {
+              legendBreath.textContent = lang === 'de' ? 'Cyan: Atmung (Paced)' : 'Cyan: Respiration (Paced)';
+            }
+            if (legendRR) {
+              legendRR.textContent = lang === 'de' ? 'Rot: RR-Intervall / HF' : 'Red: RR Interval / HR';
+            }
+            if (sparkHrLabel) {
+              sparkHrLabel.textContent = (s.hr_label || 'Heart Rate') + ' (40–160 BPM)';
+            }
+            if (sparkRrLabel) {
+              sparkRrLabel.textContent = (lang === 'de' ? 'RR-Intervalle' : 'RR Intervals') + ' (300–1500 ms)';
+            }
+            if (sparkRmssdLabel) {
+              sparkRmssdLabel.textContent = 'RMSSD Vagotonia (0–120 ms)';
+            }
+            renderAntVisuals();
+
+            // 6. Store Copy Tabs synchronization
             if (lang === 'de') {
               const deTab = document.querySelector('.tab-btn[data-tab="tab-de"]');
               if (deTab) deTab.click();
