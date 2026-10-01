@@ -91,9 +91,10 @@
     .brand-icon {
       width: 28px;
       height: 28px;
-      border-radius: 50%;
-      background: linear-gradient(135deg, var(--cyan), #0077ff);
-      box-shadow: 0 0 16px var(--cyan-glow);
+      border-radius: 6px;
+      display: block;
+      object-fit: contain;
+      box-shadow: 0 0 12px var(--cyan-glow);
     }
 
     .nav-links {
@@ -136,7 +137,8 @@
       transition: all 0.2s ease;
     }
 
-    .lang-select-nav:hover, .lang-select-nav:focus {
+    .lang-select-nav:hover,
+    .lang-select-nav:focus {
       border-color: var(--cyan);
       background-color: rgba(0, 229, 255, 0.08);
       outline: none;
@@ -520,7 +522,7 @@
   <!-- Navbar -->
   <nav class="navbar">
     <div class="brand">
-      <div class="brand-icon"></div>
+      <img src="assets/logo.svg" onerror="this.src='assets/app_icon_512x512.png'" alt="Peak Frequency Logo" class="brand-icon" width="28" height="28">
       <span>Peak Frequency</span>
     </div>
     <div class="nav-links">
@@ -528,7 +530,7 @@
       <a href="#protocol">Protocol</a>
       <a href="#features">Features</a>
       <a href="#store-copy">Store Copy</a>
-      <a href="privacy_policy.html">Privacy Policy</a>
+      <a href="privacy_policy.html" id="navPrivacyPolicy">Privacy Policy</a>
       <a href="https://github.com/mesw/PeakFrequency" target="_blank" rel="noopener noreferrer">GitHub</a>
     </div>
     <div class="nav-actions">
@@ -558,20 +560,20 @@
   <!-- Hero Section -->
   <section class="hero">
     <div class="container">
-      <div class="badge">Garmin Connect IQ Watch App • Pending Review</div>
-      <h1>Find Your Resonant Breath.<br><span>Maximize Heart Rate Variability.</span></h1>
-      <p>
+      <div class="badge">Garmin Connect IQ Watch App • Available Now</div>
+      <h1><span id="heroTitleMain">Find Your Resonant Breath.</span><br><span id="heroTitleSub">Maximize Heart Rate Variability.</span></h1>
+      <p id="heroDesc">
         A precision HRV biofeedback breath pacer for Garmin watches. Calibrate and lock into your individual resonance
         frequency with zero friction.
       </p>
 
       <div class="hero-actions">
         <a href="https://apps.garmin.com/apps/174cda32-a42a-43b4-8b07-658ddda48d92?tid=0" class="btn btn-primary"
-          target="_blank" rel="noopener noreferrer">
+          id="btnGetConnectIq" target="_blank" rel="noopener noreferrer">
           Get on Connect IQ ↗
         </a>
-        <a href="#demo" class="btn btn-outline">Try Interactive Demo</a>
-        <a href="privacy_policy.html" class="btn btn-outline">Privacy Policy</a>
+        <a href="#demo" class="btn btn-outline" id="btnTryDemo">Try Interactive Demo</a>
+        <a href="privacy_policy.html" class="btn btn-outline" id="btnPrivacyPolicy">Privacy Policy</a>
       </div>
 
       <!-- Interactive Watch Pacer Simulation (Garmin UI Clone) -->
@@ -582,7 +584,7 @@
         <div class="demo-container">
           <div class="demo-header">
             <div class="demo-lang-selector-bar">
-              <label for="demoLangSelect">Watch Language:</label>
+              <label for="demoLangSelect" id="lblWatchLanguage">Watch Language:</label>
               <select id="demoLangSelect" class="demo-lang-select" aria-label="Select Demo Watch Language">
                 <option value="en">🇬🇧 English</option>
                 <option value="de">🇩🇪 Deutsch</option>
@@ -600,8 +602,8 @@
                 <option value="hu">🇭🇺 Magyar</option>
               </select>
             </div>
-            <h2>Interactive Resonance Frequency Pacer</h2>
-            <p class="subtitle">Experience the exact protocol from the Garmin Connect IQ app</p>
+            <h2 id="demoTitle">Interactive Resonance Frequency Pacer</h2>
+            <!-- <p class="subtitle" id="demoSubtitle">Experience the exact protocol from the Garmin Connect IQ app</p> -->
           </div>
 
           <!-- Parameter Setup Card -->
@@ -614,8 +616,10 @@
                   <span class="value-chip" id="heightBadge"><span id="heightVal">175</span> cm</span>
                 </div>
                 <div class="input-row">
-                  <input type="range" id="userHeight" min="130" max="220" value="175" class="slider" aria-label="Height in centimeters">
-                  <input type="number" id="userHeightNum" min="130" max="220" value="175" class="num-input" aria-label="Height number in centimeters">
+                  <input type="range" id="userHeight" min="130" max="220" value="175" class="slider"
+                    aria-label="Height in centimeters">
+                  <input type="number" id="userHeightNum" min="130" max="220" value="175" class="num-input"
+                    aria-label="Height number in centimeters">
                 </div>
               </div>
 
@@ -638,22 +642,23 @@
               <div class="form-group bpm-form-group">
                 <div class="form-label-row">
                   <label for="targetBpm" id="lblTargetCadence">Target Pacing Rate</label>
-                  <span class="value-chip chip-cyan" id="cycleSecHint">12.0s cycle</span>
+                  <span class="value-chip chip-cyan" id="cycleSecHint">10.6s cycle</span>
                 </div>
                 <div class="bpm-control-row">
                   <button type="button" class="step-btn" id="bpmMinus" aria-label="Decrease BPM by 0.05">−0.05</button>
                   <div class="bpm-input-wrapper">
-                    <input type="number" id="targetBpm" min="3.50" max="9.00" step="0.05" value="5.00" class="bpm-input" aria-label="Target BPM">
+                    <input type="number" id="targetBpm" min="3.50" max="9.00" step="0.05" value="5.65" class="bpm-input"
+                      aria-label="Target BPM">
                     <span class="bpm-unit">BPM</span>
                   </div>
                   <button type="button" class="step-btn" id="bpmPlus" aria-label="Increase BPM by 0.05">+0.05</button>
                 </div>
                 <!-- Quick Cadence Presets for 1-tap mobile selection -->
                 <div class="presets-row" role="group" aria-label="Quick Cadence Presets">
-                  <span class="presets-label">Presets:</span>
-                  <button type="button" class="preset-chip active" data-bpm="5.00">5.0</button>
+                  <span class="presets-label" id="lblPresets">Presets:</span>
+                  <button type="button" class="preset-chip" data-bpm="5.00">5.0</button>
                   <button type="button" class="preset-chip" data-bpm="5.50">5.5</button>
-                  <button type="button" class="preset-chip" data-bpm="5.65">5.65</button>
+                  <button type="button" class="preset-chip active" data-bpm="5.65">5.65</button>
                   <button type="button" class="preset-chip" data-bpm="6.00">6.0</button>
                   <button type="button" class="preset-chip" data-bpm="6.50">6.5</button>
                 </div>
@@ -667,9 +672,9 @@
                 stroke-width="2">
                 <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
               </svg>
-              <p><strong>Privacy Disclaimer:</strong> Your height and sex are processed entirely locally in your
+              <p><strong id="privacyDisclaimerTitle">Privacy Disclaimer:</strong> <span id="privacyDisclaimerBody">Your height and sex are processed entirely locally in your
                 browser. No data is stored, tracked, or transmitted. It is solely used to calculate your initial
-                estimated resonance frequency rate.</p>
+                estimated resonance frequency rate.</span></p>
             </div>
           </div>
 
@@ -678,19 +683,19 @@
             <!-- Session Telemetry (Mobile-Optimized Balanced Grid) -->
             <div class="telemetry-bar">
               <div class="telemetry-item">
-                <span class="telemetry-label">SESSION TIME</span>
+                <span class="telemetry-label" id="lblSessionTime">SESSION TIME</span>
                 <span class="telemetry-val" id="totalTimeDisplay">00:00</span>
               </div>
               <div class="telemetry-item">
-                <span class="telemetry-label">ROUND</span>
+                <span class="telemetry-label" id="lblRound">ROUND</span>
                 <span class="telemetry-val" id="roundDisplay">Round 1</span>
               </div>
               <div class="telemetry-item">
-                <span class="telemetry-label">PHASE</span>
+                <span class="telemetry-label" id="lblPhase">PHASE</span>
                 <span class="telemetry-val phase-badge" id="phaseDisplay">Rest (2:00)</span>
               </div>
               <div class="telemetry-item">
-                <span class="telemetry-label">BREATH CYCLE</span>
+                <span class="telemetry-label" id="lblBreathCycle">BREATH CYCLE</span>
                 <span class="telemetry-val" id="cycleDisplay">-- / --</span>
               </div>
             </div>
@@ -710,16 +715,16 @@
                   <!-- Line 2: Pacer Directive (BREATHE IN / BREATHE OUT) -->
                   <div class="watch-directive" id="watchDirective">BREATHE IN</div>
 
-                  <!-- Line 3: Horizontal Capsule Progress Bar -->
-                  <div class="watch-bar-track" id="watchBarTrack">
-                    <div class="watch-bar-fill" id="watchBarFill" style="width: 70%;"></div>
+                  <!-- Line 3: Horizontal Capsule Progress Bar (Hidden during idle & rest baseline) -->
+                  <div class="watch-bar-track" id="watchBarTrack" style="display: none;">
+                    <div class="watch-bar-fill" id="watchBarFill" style="width: 0%;"></div>
                   </div>
 
                   <!-- Line 4: Round & Target Cadence -->
-                  <div class="watch-cadence" id="watchCadence">R1 Center: 5.00 BPM</div>
+                  <div class="watch-cadence" id="watchCadence">R1 Center: 5.65 BPM</div>
 
                   <!-- Line 5: Live Telemetry (HR & Stage Seconds Left) -->
-                  <div class="watch-telemetry" id="watchTelemetry">HR: 78 | 8 s left</div>
+                  <div class="watch-telemetry" id="watchTelemetry">HR: -- | 120 s left</div>
                 </div>
               </div>
             </div>
@@ -731,24 +736,132 @@
               </button>
               <div class="secondary-actions">
                 <button type="button" class="btn-secondary" id="btnReset">Reset</button>
-                <button type="button" class="btn-outline" id="btnSkipPhase" title="Skip to next phase (Rest ↔ Paced)">Skip Phase</button>
+                <button type="button" class="btn-outline" id="btnSkipPhase"
+                  title="Skip to next phase (Rest ↔ Paced)">Skip Phase</button>
                 <button type="button" class="btn-icon" id="btnAudioToggle" title="Toggle audio and vibration cues">
                   <span id="audioIcon">🔊 Cues ON</span>
                 </button>
               </div>
-              <div class="cue-indicators">
-                <span class="cue-badge">📳 Haptics</span>
-                <span class="cue-badge">🔒 Screen Awake</span>
-                <span class="cue-badge">🌬️ Breath Acoustics & Clicks</span>
+            </div>
+
+            <!-- Integrated ANT+ Sensor Bar -->
+            <div class="ant-sensor-bar">
+              <div class="ant-sensor-actions">
+                <button type="button" class="btn-ant-connect" id="btnConnectAnt">
+                  <span id="btnConnectAntText">🔌 Connect ANT+ Stick</span>
+                </button>
+                <button type="button" class="btn-ant-simulate" id="btnSimulateAnt">
+                  <span id="btnSimulateText">⚡ Live Simulation</span>
+                </button>
+              </div>
+              <div class="ant-sensor-status" id="antStatusContainer">
+                <span class="status-indicator" id="antStatusDot"></span>
+                <span id="lblAntStatus" class="ant-status-text">ANT+ Status: Ready for ANT+ USB stick or Live
+                  Simulation</span>
               </div>
             </div>
 
-            <!-- Technique Guidance Rules (Garmin Stage 3 Pre-Pacing Prompts) -->
-            <div class="technique-rules-container">
-              <div class="tech-header">
-                <span class="tech-badge">Garmin Stage 3</span>
-                <h3 id="techHeaderTitle">Technique Guidance (Pre-Pacing Rules)</h3>
+            <!-- Windows Zadig / WebUSB Connection Hint (Always Visible) -->
+            <div class="ant-setup-hint">
+              <details>
+                <summary id="driverSetupSummary">ℹ️ Windows Driver Setup for ANT+ USB Sticks (Zadig / WinUSB)
+                </summary>
+                <p id="driverSetupDetails">On Windows, ANT+ USB sticks use a locked driver by default. To
+                  enable direct WebUSB access in Chrome/Edge, open <a href="https://zadig.akeo.ie/" target="_blank"
+                    rel="noopener">Zadig</a>, select <em>Options → List All Devices</em>, select your ANT USB stick,
+                  choose <strong>WinUSB</strong> as target driver, and click <em>Replace Driver</em>. (Mac &amp; Linux
+                  connect out-of-the-box).</p>
+              </details>
+            </div>
+
+            <!-- Collapsible Live ANT+ Charts & Biometrics Section (Hidden until connected) -->
+            <div class="ant-charts-collapse" id="antChartsCollapse" style="display: none;">
+              <!-- Header with Live Badge, Title, and Export Button -->
+              <div class="ant-charts-header">
+                <div class="ant-title-group">
+                  <div class="ant-title-row">
+                    <span class="ant-badge" id="antBadge">ANT+ WebUSB</span>
+                    <h4 id="antCardHeading">Live ANT+ Monitoring &amp; Superimposed Waveform</h4>
+                  </div>
+                  <p class="ant-subtitle" id="antSubtitle">Real-time beat-by-beat RR interval deframing &amp; 0°
+                    respiration phase synchrony</p>
+                </div>
+                <div class="ant-collapse-actions">
+                  <button type="button" class="btn-ant-export" id="btnExportJsonl"
+                    title="Export RR &amp; Respiration Session Log as JSONL">
+                    <span id="btnExportJsonlText">📥 Export JSONL</span>
+                  </button>
+                </div>
               </div>
+
+              <!-- Real-Time Metric Badges -->
+              <div class="ant-metrics-bar">
+                <div class="ant-metric-pill">
+                  <span class="metric-lbl" id="lblHrTitle">Heart Rate</span>
+                  <span class="metric-num hr-num" id="valHR">-- <small>BPM</small></span>
+                </div>
+                <div class="ant-metric-pill">
+                  <span class="metric-lbl" id="lblRrTitle">RR Interval</span>
+                  <span class="metric-num rr-num" id="valRR">-- <small>ms</small></span>
+                </div>
+                <div class="ant-metric-pill">
+                  <span class="metric-lbl" id="lblRmssdTitle">RMSSD</span>
+                  <span class="metric-num rmssd-num" id="valRMSSD">-- <small>ms</small></span>
+                </div>
+                <div class="ant-metric-pill">
+                  <span class="metric-lbl" id="lblPhaseTitle">Phase Coherence</span>
+                  <span class="metric-num phase-num" id="valPhaseLag">-- <small>ms lag</small></span>
+                </div>
+              </div>
+
+              <!-- Primary Hero Graph: Breathing Curve Superimposed with RR Signal -->
+              <div class="graph-container">
+                <div class="graph-header">
+                  <div class="graph-title-row">
+                    <span class="graph-icon">📈</span>
+                    <h4 id="graphSyncTitle">HR vs Resp (Resonance Phase Synchrony)</h4>
+                  </div>
+                  <div class="graph-legend">
+                    <span class="legend-item"><span class="legend-line cyan"></span> <span id="legendBreath">Cyan:
+                        Respiration (Paced)</span></span>
+                    <span class="legend-item"><span class="legend-line red"></span> <span id="legendRR">Red: RR Interval
+                        / HR</span></span>
+                  </div>
+                </div>
+                <div class="canvas-wrapper">
+                  <canvas id="syncCanvas" width="700" height="210" class="live-canvas"></canvas>
+                  <div class="canvas-watermark" id="canvasWatermark">RESONANCE PHASE SYNCHRONY • 0° LOCK</div>
+                </div>
+              </div>
+
+              <!-- Secondary Multi-Metric Sparklines (HR, RR, RMSSD) -->
+              <div class="sparklines-grid">
+                <div class="sparkline-card">
+                  <div class="sparkline-label">
+                    <span class="sparkline-color hr"></span>
+                    <span id="sparkHrLabel">Heart Rate (40–160 BPM)</span>
+                  </div>
+                  <canvas id="sparkHrCanvas" width="220" height="75" class="spark-canvas"></canvas>
+                </div>
+                <div class="sparkline-card">
+                  <div class="sparkline-label">
+                    <span class="sparkline-color rr"></span>
+                    <span id="sparkRrLabel">RR Intervals (300–1500 ms)</span>
+                  </div>
+                  <canvas id="sparkRrCanvas" width="220" height="75" class="spark-canvas"></canvas>
+                </div>
+                <div class="sparkline-card">
+                  <div class="sparkline-label">
+                    <span class="sparkline-color rmssd"></span>
+                    <span id="sparkRmssdLabel">RMSSD Vagotonia (0–120 ms)</span>
+                  </div>
+                  <canvas id="sparkRmssdCanvas" width="220" height="75" class="spark-canvas"></canvas>
+                </div>
+              </div>
+            </div>
+
+            <!-- Technique Guidance Rules -->
+            <div class="technique-rules-container">
               <div class="technique-grid">
                 <div class="tech-card">
                   <div class="tech-icon">⏳</div>
@@ -771,107 +884,6 @@
                   <div class="tech-val" id="techSignalDir">Sit Still &amp; Upright</div>
                 </div>
               </div>
-            </div>
-          </div>
-
-          <!-- Live ANT+ Monitoring & Dual Waveform Superimposed Graph Card -->
-          <div class="demo-card ant-graph-card" id="antGraphCard">
-            <div class="ant-card-header">
-              <div class="ant-title-group">
-                <div class="ant-title-row">
-                  <span class="ant-badge" id="antBadge">ANT+ WebUSB</span>
-                  <h3 id="antCardHeading">Live ANT+ Monitoring &amp; Superimposed Waveform</h3>
-                </div>
-                <p class="ant-subtitle" id="antSubtitle">Real-time beat-by-beat RR interval deframing &amp; 0° respiration phase synchrony</p>
-              </div>
-              <div class="ant-actions-row">
-                <button type="button" class="btn-ant-connect" id="btnConnectAnt">
-                  <span id="btnConnectAntText">🔌 Connect ANT+ Stick</span>
-                </button>
-                <button type="button" class="btn-ant-simulate" id="btnSimulateAnt">
-                  <span id="btnSimulateText">⚡ Live Simulation</span>
-                </button>
-                <button type="button" class="btn-ant-export" id="btnExportJsonl" title="Export RR &amp; Respiration Session Log as JSONL">
-                  <span>📥 Export JSONL</span>
-                </button>
-              </div>
-            </div>
-
-            <!-- Real-Time Metric Badges -->
-            <div class="ant-metrics-bar">
-              <div class="ant-metric-pill">
-                <span class="metric-lbl" id="lblHrTitle">Heart Rate</span>
-                <span class="metric-num hr-num" id="valHR">-- <small>BPM</small></span>
-              </div>
-              <div class="ant-metric-pill">
-                <span class="metric-lbl" id="lblRrTitle">RR Interval</span>
-                <span class="metric-num rr-num" id="valRR">-- <small>ms</small></span>
-              </div>
-              <div class="ant-metric-pill">
-                <span class="metric-lbl" id="lblRmssdTitle">RMSSD</span>
-                <span class="metric-num rmssd-num" id="valRMSSD">-- <small>ms</small></span>
-              </div>
-              <div class="ant-metric-pill">
-                <span class="metric-lbl" id="lblPhaseTitle">Phase Coherence</span>
-                <span class="metric-num phase-num" id="valPhaseLag">-- <small>ms lag</small></span>
-              </div>
-            </div>
-
-            <!-- Stream Status / Debug Terminal Line -->
-            <div class="ant-debug-bar">
-              <span class="status-indicator" id="antStatusDot"></span>
-              <span id="lblAntStatus">ANT+ Status: Ready for Garmin USB stick or Live Simulation</span>
-            </div>
-
-            <!-- Primary Hero Graph: Breathing Curve Superimposed with RR Signal -->
-            <div class="graph-container">
-              <div class="graph-header">
-                <div class="graph-title-row">
-                  <span class="graph-icon">📈</span>
-                  <h4 id="graphSyncTitle">HR vs Resp (Resonance Phase Synchrony)</h4>
-                </div>
-                <div class="graph-legend">
-                  <span class="legend-item"><span class="legend-line cyan"></span> <span id="legendBreath">Cyan: Respiration (Paced)</span></span>
-                  <span class="legend-item"><span class="legend-line red"></span> <span id="legendRR">Red: RR Interval / HR</span></span>
-                </div>
-              </div>
-              <div class="canvas-wrapper">
-                <canvas id="syncCanvas" width="700" height="210" class="live-canvas"></canvas>
-                <div class="canvas-watermark" id="canvasWatermark">RESONANCE PHASE SYNCHRONY • 0° LOCK</div>
-              </div>
-            </div>
-
-            <!-- Secondary Multi-Metric Sparklines (HR, RR, RMSSD) -->
-            <div class="sparklines-grid">
-              <div class="sparkline-card">
-                <div class="sparkline-label">
-                  <span class="sparkline-color hr"></span>
-                  <span id="sparkHrLabel">Heart Rate (40–160 BPM)</span>
-                </div>
-                <canvas id="sparkHrCanvas" width="220" height="75" class="spark-canvas"></canvas>
-              </div>
-              <div class="sparkline-card">
-                <div class="sparkline-label">
-                  <span class="sparkline-color rr"></span>
-                  <span id="sparkRrLabel">RR Intervals (300–1500 ms)</span>
-                </div>
-                <canvas id="sparkRrCanvas" width="220" height="75" class="spark-canvas"></canvas>
-              </div>
-              <div class="sparkline-card">
-                <div class="sparkline-label">
-                  <span class="sparkline-color rmssd"></span>
-                  <span id="sparkRmssdLabel">RMSSD Vagotonia (0–120 ms)</span>
-                </div>
-                <canvas id="sparkRmssdCanvas" width="220" height="75" class="spark-canvas"></canvas>
-              </div>
-            </div>
-
-            <!-- Windows Zadig / WebUSB Connection Hint -->
-            <div class="ant-setup-hint">
-              <details>
-                <summary>ℹ️ Windows Driver Setup for Garmin USB Sticks (Zadig / WinUSB)</summary>
-                <p>On Windows, Garmin USB-m / USB2 sticks use a locked driver by default. To enable direct WebUSB access in Chrome/Edge, open <a href="https://zadig.akeo.ie/" target="_blank" rel="noopener">Zadig</a>, select <em>Options → List All Devices</em>, select your ANT USB stick, choose <strong>WinUSB</strong> as target driver, and click <em>Replace Driver</em>. (Mac &amp; Linux connect out-of-the-box).</p>
-              </details>
             </div>
           </div>
         </div>
@@ -958,7 +970,8 @@
           transition: all 0.2s ease;
         }
 
-        .demo-lang-select:hover, .demo-lang-select:focus {
+        .demo-lang-select:hover,
+        .demo-lang-select:focus {
           border-color: #38bdf8;
           outline: none;
         }
@@ -1048,7 +1061,8 @@
           border: 1px solid #334155;
           color: #f8fafc;
           border-radius: 10px;
-          font-size: 16px; /* Prevents auto-zoom on iOS */
+          font-size: 16px;
+          /* Prevents auto-zoom on iOS */
           font-weight: 700;
           text-align: center;
         }
@@ -1269,7 +1283,7 @@
           border-radius: 50%;
           background: radial-gradient(circle at 45% 35%, #2a2f3d 0%, #1c202a 60%, #13161f 100%);
           border: 4px solid #282d3b;
-          box-shadow: 
+          box-shadow:
             0 16px 45px rgba(0, 0, 0, 0.85),
             inset 0 1px 2px rgba(255, 255, 255, 0.14),
             inset 0 -2px 6px rgba(0, 0, 0, 0.7);
@@ -1607,22 +1621,82 @@
           white-space: pre-line;
         }
 
-        /* ANT+ Live Graphs & Superimposed Waveform Card */
-        .ant-graph-card {
-          margin-top: 1.25rem;
+        /* Integrated ANT+ Sensor Bar */
+        .ant-sensor-bar {
+          width: 100%;
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          flex-wrap: wrap;
+          gap: 0.85rem;
+          padding: 0.85rem 1.1rem;
+          background: #090d16;
+          border: 1px solid #1f2a3e;
+          border-radius: 12px;
+          margin-top: 0.25rem;
+          box-sizing: border-box;
+        }
+
+        .ant-sensor-actions {
+          display: flex;
+          gap: 0.6rem;
+          flex-wrap: wrap;
+          align-items: center;
+        }
+
+        .ant-sensor-status {
+          display: flex;
+          align-items: center;
+          gap: 0.55rem;
+          font-family: 'JetBrains Mono', monospace;
+          font-size: 0.76rem;
+          color: #94a3b8;
+          max-width: 100%;
+        }
+
+        .ant-status-text {
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+        }
+
+        /* Collapsible Live ANT+ Charts & Biometrics Section */
+        .ant-charts-collapse {
+          width: 100%;
           display: flex;
           flex-direction: column;
           gap: 1.25rem;
+          margin-top: 0.5rem;
+          padding: 1.25rem 0 0.5rem 0;
+          border-top: 1px dashed #1e293b;
+          box-sizing: border-box;
+          animation: antFadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
-        .ant-card-header {
+        @keyframes antFadeIn {
+          from {
+            opacity: 0;
+            transform: translateY(-8px);
+          }
+
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+
+        .ant-charts-header {
           display: flex;
           justify-content: space-between;
           align-items: flex-start;
           flex-wrap: wrap;
           gap: 1rem;
-          padding-bottom: 1rem;
-          border-bottom: 1px solid #1e293b;
+          padding-bottom: 0.5rem;
+        }
+
+        .ant-collapse-actions {
+          display: flex;
+          align-items: center;
         }
 
         .ant-title-group {
@@ -1650,7 +1724,7 @@
           padding: 0.2rem 0.55rem;
         }
 
-        .ant-card-header h3 {
+        .ant-charts-header h4 {
           font-size: 1.15rem;
           font-weight: 800;
           color: #f1f5f9;
@@ -1661,12 +1735,6 @@
           font-size: 0.84rem;
           color: #94a3b8;
           margin: 0;
-        }
-
-        .ant-actions-row {
-          display: flex;
-          gap: 0.55rem;
-          flex-wrap: wrap;
         }
 
         .btn-ant-connect,
@@ -1769,10 +1837,21 @@
           font-family: inherit;
         }
 
-        .hr-num { color: #f43f5e; }
-        .rr-num { color: #00e5ff; }
-        .rmssd-num { color: #10b981; }
-        .phase-num { color: #fbbf24; }
+        .hr-num {
+          color: #f43f5e;
+        }
+
+        .rr-num {
+          color: #00e5ff;
+        }
+
+        .rmssd-num {
+          color: #10b981;
+        }
+
+        .phase-num {
+          color: #fbbf24;
+        }
 
         .ant-debug-bar {
           font-family: 'JetBrains Mono', monospace;
@@ -1932,9 +2011,17 @@
           border-radius: 2px;
         }
 
-        .sparkline-color.hr { background: #f43f5e; }
-        .sparkline-color.rr { background: #00e5ff; }
-        .sparkline-color.rmssd { background: #10b981; }
+        .sparkline-color.hr {
+          background: #f43f5e;
+        }
+
+        .sparkline-color.rr {
+          background: #00e5ff;
+        }
+
+        .sparkline-color.rmssd {
+          background: #10b981;
+        }
 
         .spark-canvas {
           width: 100%;
@@ -1992,6 +2079,30 @@
             gap: 0.65rem;
           }
 
+          .ant-sensor-bar {
+            flex-direction: column;
+            align-items: stretch;
+            gap: 0.65rem;
+            padding: 0.75rem;
+          }
+
+          .ant-sensor-actions {
+            width: 100%;
+          }
+
+          .ant-sensor-status {
+            justify-content: center;
+            font-size: 0.72rem;
+            white-space: normal;
+            text-align: center;
+          }
+
+          .ant-charts-header {
+            flex-direction: column;
+            align-items: stretch;
+            gap: 0.65rem;
+          }
+
           .ant-metrics-bar {
             grid-template-columns: repeat(2, 1fr);
           }
@@ -2000,11 +2111,9 @@
             grid-template-columns: 1fr;
           }
 
-          .ant-actions-row {
-            width: 100%;
-          }
-
-          .btn-ant-connect, .btn-ant-simulate, .btn-ant-export {
+          .btn-ant-connect,
+          .btn-ant-simulate,
+          .btn-ant-export {
             flex: 1 1 auto;
             justify-content: center;
           }
@@ -2070,11 +2179,23 @@
           let totalElapsedSec = 0;
           let phaseRemainingSec = PHASE_REST_SEC;
           let cuesEnabled = true;
+          let antRunning = false;
+          let isSimulatingAnt = false;
+          let currentHR = 0;
+
+          function getActiveHRDisplay() {
+            if ((antRunning || isSimulatingAnt) && currentHR > 0) {
+              return currentHR;
+            }
+            return '--';
+          }
 
           // Animation & Timer handles
           let timerInterval = null;
           let animFrameId = null;
           let phaseStartTime = null;
+          let lastAnimTimestamp = null;
+          let breathPhase = 0.0;
 
           // Screen Wake Lock API handle
           let wakeLock = null;
@@ -2113,10 +2234,27 @@
           // Internationalization (i18n) Selectors & Labels
           const globalLangSelect = document.getElementById('globalLangSelect');
           const demoLangSelect = document.getElementById('demoLangSelect');
+          const heroTitleMain = document.getElementById('heroTitleMain');
+          const heroTitleSub = document.getElementById('heroTitleSub');
+          const heroDesc = document.getElementById('heroDesc');
+          const demoTitle = document.getElementById('demoTitle');
+          const demoSubtitle = document.getElementById('demoSubtitle');
+          const btnGetConnectIq = document.getElementById('btnGetConnectIq');
+          const btnTryDemo = document.getElementById('btnTryDemo');
+          const btnPrivacyPolicy = document.getElementById('btnPrivacyPolicy');
+          const navPrivacyPolicy = document.getElementById('navPrivacyPolicy');
+          const footerPrivacyPolicy = document.getElementById('footerPrivacyPolicy');
+          const lblWatchLanguage = document.getElementById('lblWatchLanguage');
+          const lblUserHeight = document.getElementById('lblUserHeight');
           const lblUserSex = document.getElementById('lblUserSex');
           const lblTargetCadence = document.getElementById('lblTargetCadence');
-
-          const techHeaderTitle = document.getElementById('techHeaderTitle');
+          const lblPresets = document.getElementById('lblPresets');
+          const lblSessionTime = document.getElementById('lblSessionTime');
+          const lblRound = document.getElementById('lblRound');
+          const lblPhase = document.getElementById('lblPhase');
+          const lblBreathCycle = document.getElementById('lblBreathCycle');
+          const privacyDisclaimerTitle = document.getElementById('privacyDisclaimerTitle');
+          const privacyDisclaimerBody = document.getElementById('privacyDisclaimerBody');
           const techRatioTitle = document.getElementById('techRatioTitle');
           const techRatioDir = document.getElementById('techRatioDir');
           const techFlowTitle = document.getElementById('techFlowTitle');
@@ -2163,13 +2301,13 @@
                 wakeLock.addEventListener('release', () => {
                   wakeLock = null;
                 });
-              } catch (err) {}
+              } catch (err) { }
             }
           }
 
           function releaseWakeLock() {
             if (wakeLock) {
-              wakeLock.release().catch(() => {});
+              wakeLock.release().catch(() => { });
               wakeLock = null;
             }
           }
@@ -2180,7 +2318,7 @@
             if ('vibrate' in navigator) {
               try {
                 navigator.vibrate(pattern);
-              } catch (e) {}
+              } catch (e) { }
             }
           }
 
@@ -2205,10 +2343,10 @@
             if (!audioCtx) {
               try {
                 audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-              } catch (e) {}
+              } catch (e) { }
             }
             if (audioCtx && audioCtx.state === 'suspended') {
-              audioCtx.resume().catch(() => {});
+              audioCtx.resume().catch(() => { });
             }
           }
 
@@ -2325,7 +2463,7 @@
                 try {
                   node.filter.disconnect();
                   node.gain.disconnect();
-                } catch (e) {}
+                } catch (e) { }
               });
               shepardFilterNodes = [];
               if (formantFilter) {
@@ -2344,7 +2482,7 @@
                 breathMasterGain.disconnect();
                 breathMasterGain = null;
               }
-            } catch (e) {}
+            } catch (e) { }
           }
 
           // --- Crisp Tactile Transition Click ---
@@ -2373,7 +2511,7 @@
               g.connect(audioCtx.destination);
               osc.start(now);
               osc.stop(now + 0.025);
-            } catch (e) {}
+            } catch (e) { }
           }
 
           function playBeep(freq = 440, duration = 0.15, type = 'sine') {
@@ -2391,7 +2529,7 @@
               gain.connect(audioCtx.destination);
               osc.start();
               osc.stop(audioCtx.currentTime + duration);
-            } catch (e) {}
+            } catch (e) { }
           }
 
           // --- Resonance Frequency Estimation Formula (Hasuo et al., 2023) ---
@@ -2438,6 +2576,7 @@
               targetBpmInput.value = estBpm;
               updateCycleHint(parseFloat(estBpm));
               updateActivePresetChip(estBpm);
+              updateWatchDisplay();
             }
           }
 
@@ -2464,6 +2603,7 @@
               targetBpmInput.value = bpm.toFixed(2);
               updateCycleHint(bpm);
               updateActivePresetChip(bpm);
+              updateWatchDisplay();
               triggerHaptic(20);
             });
           });
@@ -2481,28 +2621,40 @@
 
           // Stepper Buttons (+ / - 0.05)
           bpmMinusBtn.addEventListener('click', () => {
-            let val = parseFloat(targetBpmInput.value) || 5.50;
+            let val = parseFloat(targetBpmInput.value) || 5.65;
             val = Math.max(3.50, val - 0.05);
             targetBpmInput.value = val.toFixed(2);
             updateCycleHint(val);
             updateActivePresetChip(val);
+            updateWatchDisplay();
             triggerHaptic(15);
           });
           bpmPlusBtn.addEventListener('click', () => {
-            let val = parseFloat(targetBpmInput.value) || 5.50;
+            let val = parseFloat(targetBpmInput.value) || 5.65;
             val = Math.min(9.00, val + 0.05);
             targetBpmInput.value = val.toFixed(2);
             updateCycleHint(val);
             updateActivePresetChip(val);
+            updateWatchDisplay();
             triggerHaptic(15);
           });
 
+          targetBpmInput.addEventListener('input', () => {
+            let val = parseFloat(targetBpmInput.value);
+            if (!isNaN(val)) {
+              updateCycleHint(val);
+              updateActivePresetChip(val);
+              updateWatchDisplay();
+            }
+          });
+
           targetBpmInput.addEventListener('change', () => {
-            let val = parseFloat(targetBpmInput.value) || 5.50;
+            let val = parseFloat(targetBpmInput.value) || 5.65;
             val = Math.max(3.50, Math.min(9.00, val));
             targetBpmInput.value = val.toFixed(2);
             updateCycleHint(val);
             updateActivePresetChip(val);
+            updateWatchDisplay();
           });
 
           // --- Formatting Helpers ---
@@ -2516,6 +2668,11 @@
           function setPhase(phase, playCues = false) {
             currentPhase = phase;
             phaseStartTime = performance.now();
+            lastAnimTimestamp = null;
+            if (phase === 'PACE') {
+              breathPhase = 0.0;
+              lastInhaleState = false;
+            }
 
             if (currentPhase === 'REST') {
               phaseRemainingSec = PHASE_REST_SEC;
@@ -2531,21 +2688,24 @@
                 watchHint.textContent = s.breathe_naturally || 'Breathe naturally';
                 watchHint.style.color = '#94a3b8';
               }
+              if (watchBarTrack) {
+                watchBarTrack.style.display = 'none';
+              }
               if (watchBarFill) {
                 watchBarFill.style.width = '0%';
               }
-              const bpm = parseFloat(targetBpmInput.value) || 5.50;
+              const bpm = parseFloat(targetBpmInput.value) || 5.65;
               if (watchCadence) {
                 const nextTxt = s.next_prefix || 'Next';
                 const rPrefix = s.round_prefix || 'R';
                 const centerTxt = s.leg_center || 'Center';
-                watchCadence.textContent = `${nextTxt}: ${rPrefix}1 ${centerTxt} ${bpm.toFixed(2)}`;
+                watchCadence.textContent = `${nextTxt}: ${rPrefix}${roundNumber} ${centerTxt} ${bpm.toFixed(2)}`;
                 watchCadence.style.color = '#22c55e';
               }
               if (watchTelemetry) {
                 const hrTxt = s.hr_label || 'HR';
                 const secLeftTxt = s.seconds_left || 's left';
-                watchTelemetry.textContent = `${hrTxt}: 72 | ${phaseRemainingSec} ${secLeftTxt}`;
+                watchTelemetry.textContent = `${hrTxt}: ${getActiveHRDisplay()} | ${Math.max(0, phaseRemainingSec)} ${secLeftTxt}`;
               }
 
               if (playCues) {
@@ -2558,6 +2718,9 @@
               phaseDisplay.classList.add('paced');
               cycleDisplay.textContent = `${s.cycle_prefix || 'Cycle'} 1`;
 
+              if (watchBarTrack) {
+                watchBarTrack.style.display = 'block';
+              }
               if (watchDirective) {
                 watchDirective.className = 'watch-directive';
                 watchDirective.textContent = s.pacer_inhale || 'BREATHE IN';
@@ -2566,7 +2729,7 @@
                 watchHint.textContent = INHALE_HINTS[somaticHintIndex % INHALE_HINTS.length];
                 watchHint.style.color = '#ffffff';
               }
-              const bpm = parseFloat(targetBpmInput.value) || 5.00;
+              const bpm = parseFloat(targetBpmInput.value) || 5.65;
               if (watchCadence) {
                 const rPrefix = s.round_prefix || 'R';
                 const centerTxt = s.leg_center || 'Center';
@@ -2577,7 +2740,7 @@
               if (watchTelemetry) {
                 const hrTxt = s.hr_label || 'HR';
                 const secLeftTxt = s.seconds_left || 's left';
-                watchTelemetry.textContent = `${hrTxt}: 76 | ${phaseRemainingSec} ${secLeftTxt}`;
+                watchTelemetry.textContent = `${hrTxt}: ${getActiveHRDisplay()} | ${Math.max(0, phaseRemainingSec)} ${secLeftTxt}`;
               }
 
               if (playCues) {
@@ -2603,6 +2766,12 @@
           function updatePacerVisual(timestamp) {
             if (!isRunning) return;
 
+            if (lastAnimTimestamp === null) {
+              lastAnimTimestamp = timestamp;
+            }
+            const dtMs = Math.min(100, Math.max(0, timestamp - lastAnimTimestamp));
+            lastAnimTimestamp = timestamp;
+
             if (currentPhase === 'REST') {
               stopBreathAudio();
               if (watchDirective) {
@@ -2613,31 +2782,38 @@
                 watchHint.textContent = s.breathe_naturally || 'Breathe naturally';
                 watchHint.style.color = '#94a3b8';
               }
+              if (watchBarTrack) {
+                watchBarTrack.style.display = 'none';
+              }
               if (watchBarFill) {
                 watchBarFill.style.width = '0%';
               }
-              const bpm = parseFloat(targetBpmInput.value) || 5.50;
+              const bpm = parseFloat(targetBpmInput.value) || 5.65;
               if (watchCadence) {
                 const nextTxt = s.next_prefix || 'Next';
                 const rPrefix = s.round_prefix || 'R';
                 const centerTxt = s.leg_center || 'Center';
-                watchCadence.textContent = `${nextTxt}: ${rPrefix}1 ${centerTxt} ${bpm.toFixed(2)}`;
+                watchCadence.textContent = `${nextTxt}: ${rPrefix}${roundNumber} ${centerTxt} ${bpm.toFixed(2)}`;
                 watchCadence.style.color = '#22c55e';
               }
               if (watchTelemetry) {
                 const hrTxt = s.hr_label || 'HR';
                 const secLeftTxt = s.seconds_left || 's left';
-                watchTelemetry.textContent = `${hrTxt}: 72 | ${phaseRemainingSec} ${secLeftTxt}`;
+                watchTelemetry.textContent = `${hrTxt}: ${getActiveHRDisplay()} | ${Math.max(0, phaseRemainingSec)} ${secLeftTxt}`;
               }
             } else {
+              if (watchBarTrack) {
+                watchBarTrack.style.display = 'block';
+              }
               startBreathAudio();
-              const bpm = parseFloat(targetBpmInput.value) || 5.50;
+              const bpm = parseFloat(targetBpmInput.value) || 5.65;
               const cycleDurationMs = (60.0 / bpm) * 1000;
-              const totalCyclesInPhase = Math.floor(PHASE_PACE_SEC / (60.0 / bpm));
+              const totalCyclesInPhase = Math.max(1, Math.floor(PHASE_PACE_SEC / (60.0 / bpm)));
 
               const elapsedInPhase = (PHASE_PACE_SEC - phaseRemainingSec) * 1000;
-              const cycleElapsed = (timestamp - phaseStartTime) % cycleDurationMs;
-              const cycleProgress = cycleElapsed / cycleDurationMs;
+              // Smooth, continuous phase integration: prevents any sudden jumping when BPM changes
+              breathPhase = (breathPhase + (dtMs / cycleDurationMs)) % 1.0;
+              const cycleProgress = breathPhase;
 
               const isInhale = cycleProgress < 0.40;
 
@@ -2665,10 +2841,6 @@
               if (watchBarFill) {
                 watchBarFill.style.width = `${fillPct}%`;
               }
-
-              // Simulated Heart Rate with natural Respiratory Sinus Arrhythmia (RSA):
-              // Inhale: HR rises gently (~78-80 bpm). Exhale: HR lowers gently (~73-74 bpm).
-              const simHR = Math.round(74 + 5 * phaseFactor);
 
               if (isInhale) {
                 if (watchDirective) {
@@ -2719,8 +2891,7 @@
               if (watchTelemetry) {
                 const hrTxt = s.hr_label || 'HR';
                 const secLeftTxt = s.seconds_left || 's left';
-                const activeHR = ((typeof antRunning !== 'undefined' && antRunning) || (typeof isSimulatingAnt !== 'undefined' && isSimulatingAnt)) && currentHR > 0 ? currentHR : simHR;
-                watchTelemetry.textContent = `${hrTxt}: ${activeHR} | ${phaseRemainingSec} ${secLeftTxt}`;
+                watchTelemetry.textContent = `${hrTxt}: ${getActiveHRDisplay()} | ${Math.max(0, phaseRemainingSec)} ${secLeftTxt}`;
               }
 
               // 4. Real-Time Organic Noise-Based Shepard Acoustics Synthesis
@@ -2771,10 +2942,20 @@
             phaseRemainingSec--;
 
             totalTimeDisplay.textContent = formatMMSS(totalElapsedSec);
-            if (phaseCountdown) phaseCountdown.textContent = formatMMSS(phaseRemainingSec);
+            if (phaseDisplay) {
+              const phaseName = (currentPhase === 'REST')
+                ? (s.rest_baseline_title || 'Rest')
+                : (s.paced_title || 'Paced');
+              phaseDisplay.textContent = `${phaseName} (${formatMMSS(Math.max(0, phaseRemainingSec))})`;
+            }
 
             if (phaseRemainingSec <= 0) {
-              advancePhase();
+              try {
+                advancePhase();
+              } catch (e) {
+                console.error('advancePhase error:', e);
+                phaseRemainingSec = (currentPhase === 'REST') ? PHASE_REST_SEC : PHASE_PACE_SEC;
+              }
             }
           }
 
@@ -2800,6 +2981,7 @@
           function pauseSession() {
             if (!isRunning) return;
             isRunning = false;
+            lastAnimTimestamp = null;
             releaseWakeLock();
             btnStartPause.classList.remove('paused');
             btnStartPauseText.textContent = s.start_continue ? s.start_continue.replace(/[[\]]/g, '') : 'Resume Session';
@@ -2825,13 +3007,15 @@
             stopBreathAudio(true);
             roundNumber = 1;
             totalElapsedSec = 0;
+            breathPhase = 0.0;
+            lastAnimTimestamp = null;
+            lastInhaleState = false;
             const rPrefix = s.round_prefix ? `${s.round_prefix} ` : 'Round ';
             roundDisplay.textContent = `${rPrefix}1`;
             totalTimeDisplay.textContent = '00:00';
             btnStartPause.classList.remove('paused');
             btnStartPauseText.textContent = s.start_begin ? s.start_begin.replace(/[[\]]/g, '') : 'Start Session';
             setPhase('REST', false);
-            if (phaseCountdown) phaseCountdown.textContent = '02:00';
 
             if (watchDirective) {
               watchDirective.className = 'watch-directive';
@@ -2841,10 +3025,13 @@
               watchHint.textContent = s.prompt || 'Tap Start Below';
               watchHint.style.color = '#e2e8f0';
             }
+            if (watchBarTrack) {
+              watchBarTrack.style.display = 'none';
+            }
             if (watchBarFill) {
               watchBarFill.style.width = '0%';
             }
-            const bpm = parseFloat(targetBpmInput.value) || 5.50;
+            const bpm = parseFloat(targetBpmInput.value) || 5.65;
             if (watchCadence) {
               const rTxt = s.round_prefix || 'R';
               const centerTxt = s.leg_center || 'Center';
@@ -2855,7 +3042,7 @@
             if (watchTelemetry) {
               const hrTxt = s.hr_label || 'HR';
               const secLeftTxt = s.seconds_left || 's left';
-              watchTelemetry.textContent = `${hrTxt}: -- | 120 ${secLeftTxt}`;
+              watchTelemetry.textContent = `${hrTxt}: ${getActiveHRDisplay()} | 120 ${secLeftTxt}`;
             }
             triggerHaptic(25);
           }
@@ -2874,7 +3061,6 @@
           btnSkipPhase.addEventListener('click', () => {
             initAudio();
             advancePhase();
-            if (phaseCountdown) phaseCountdown.textContent = formatMMSS(phaseRemainingSec);
           });
 
           btnAudioToggle.addEventListener('click', () => {
@@ -2901,7 +3087,7 @@
 
           // --- UI Update on Language Switch ---
           function updateWatchDisplay() {
-            const bpm = parseFloat(targetBpmInput.value) || 5.50;
+            const bpm = parseFloat(targetBpmInput.value) || 5.65;
             const rPrefix = s.round_prefix ? `${s.round_prefix} ` : 'Round ';
             roundDisplay.textContent = `${rPrefix}${roundNumber}`;
 
@@ -2914,6 +3100,12 @@
                 watchHint.textContent = s.prompt || 'Tap Start Below';
                 watchHint.style.color = '#e2e8f0';
               }
+              if (watchBarTrack) {
+                watchBarTrack.style.display = 'none';
+              }
+              if (watchBarFill) {
+                watchBarFill.style.width = '0%';
+              }
               if (watchCadence) {
                 const rTxt = s.round_prefix || 'R';
                 const centerTxt = s.leg_center || 'Center';
@@ -2924,7 +3116,8 @@
               if (watchTelemetry) {
                 const hrTxt = s.hr_label || 'HR';
                 const secLeftTxt = s.seconds_left || 's left';
-                watchTelemetry.textContent = `${hrTxt}: -- | 120 ${secLeftTxt}`;
+                const displayHR = getActiveHRDisplay();
+                watchTelemetry.textContent = `${hrTxt}: ${displayHR} | 120 ${secLeftTxt}`;
               }
               phaseDisplay.textContent = `${s.rest_baseline_title || 'Rest'} (2:00)`;
               cycleDisplay.textContent = s.breathe_naturally || 'Resting';
@@ -2937,31 +3130,6 @@
                 watchHint.textContent = s.start_continue ? s.start_continue.replace(/[[\]]/g, '') : 'Session paused';
                 watchHint.style.color = '#fbbf24';
               }
-            } else if (currentPhase === 'REST') {
-              if (watchDirective) {
-                watchDirective.className = 'watch-directive rest';
-                watchDirective.textContent = (s.rest_baseline_title || 'REST BASELINE').toUpperCase();
-              }
-              if (watchHint) {
-                watchHint.textContent = s.breathe_naturally || 'Breathe naturally';
-                watchHint.style.color = '#94a3b8';
-              }
-              if (watchCadence) {
-                const nextTxt = s.next_prefix || 'Next';
-                const rTxt = s.round_prefix || 'R';
-                const centerTxt = s.leg_center || 'Center';
-                watchCadence.textContent = `${nextTxt}: ${rTxt}1 ${centerTxt} ${bpm.toFixed(2)}`;
-                watchCadence.style.color = '#22c55e';
-              }
-              if (watchTelemetry) {
-                const hrTxt = s.hr_label || 'HR';
-                const secLeftTxt = s.seconds_left || 's left';
-                watchTelemetry.textContent = `${hrTxt}: 72 | ${phaseRemainingSec} ${secLeftTxt}`;
-              }
-              phaseDisplay.textContent = `${s.rest_baseline_title || 'Rest'} (${formatMMSS(phaseRemainingSec)})`;
-              cycleDisplay.textContent = s.free_breathing || s.breathe_naturally || 'Resting';
-            } else {
-              // Active pacing phase
               if (watchCadence) {
                 const rTxt = s.round_prefix || 'R';
                 const centerTxt = s.leg_center || 'Center';
@@ -2972,9 +3140,61 @@
               if (watchTelemetry) {
                 const hrTxt = s.hr_label || 'HR';
                 const secLeftTxt = s.seconds_left || 's left';
-                watchTelemetry.textContent = `${hrTxt}: 76 | ${phaseRemainingSec} ${secLeftTxt}`;
+                const displayHR = getActiveHRDisplay();
+                watchTelemetry.textContent = `${hrTxt}: ${displayHR} | ${Math.max(0, phaseRemainingSec)} ${secLeftTxt}`;
               }
-              phaseDisplay.textContent = `Paced (${formatMMSS(phaseRemainingSec)})`;
+              if (currentPhase === 'REST' && watchBarTrack) {
+                watchBarTrack.style.display = 'none';
+              }
+            } else if (currentPhase === 'REST') {
+              if (watchDirective) {
+                watchDirective.className = 'watch-directive rest';
+                watchDirective.textContent = (s.rest_baseline_title || 'REST BASELINE').toUpperCase();
+              }
+              if (watchHint) {
+                watchHint.textContent = s.breathe_naturally || 'Breathe naturally';
+                watchHint.style.color = '#94a3b8';
+              }
+              if (watchBarTrack) {
+                watchBarTrack.style.display = 'none';
+              }
+              if (watchBarFill) {
+                watchBarFill.style.width = '0%';
+              }
+              if (watchCadence) {
+                const nextTxt = s.next_prefix || 'Next';
+                const rTxt = s.round_prefix || 'R';
+                const centerTxt = s.leg_center || 'Center';
+                watchCadence.textContent = `${nextTxt}: ${rTxt}${roundNumber} ${centerTxt} ${bpm.toFixed(2)}`;
+                watchCadence.style.color = '#22c55e';
+              }
+              if (watchTelemetry) {
+                const hrTxt = s.hr_label || 'HR';
+                const secLeftTxt = s.seconds_left || 's left';
+                const displayHR = getActiveHRDisplay();
+                watchTelemetry.textContent = `${hrTxt}: ${displayHR} | ${Math.max(0, phaseRemainingSec)} ${secLeftTxt}`;
+              }
+              phaseDisplay.textContent = `${s.rest_baseline_title || 'Rest'} (${formatMMSS(Math.max(0, phaseRemainingSec))})`;
+              cycleDisplay.textContent = s.free_breathing || s.breathe_naturally || 'Resting';
+            } else {
+              // Active pacing phase
+              if (watchBarTrack) {
+                watchBarTrack.style.display = 'block';
+              }
+              if (watchCadence) {
+                const rTxt = s.round_prefix || 'R';
+                const centerTxt = s.leg_center || 'Center';
+                const unitTxt = s.bpm_unit || 'BPM';
+                watchCadence.textContent = `${rTxt}${roundNumber} ${centerTxt}: ${bpm.toFixed(2)} ${unitTxt}`;
+                watchCadence.style.color = '#00ffff';
+              }
+              if (watchTelemetry) {
+                const hrTxt = s.hr_label || 'HR';
+                const secLeftTxt = s.seconds_left || 's left';
+                const displayHR = getActiveHRDisplay();
+                watchTelemetry.textContent = `${hrTxt}: ${displayHR} | ${Math.max(0, phaseRemainingSec)} ${secLeftTxt}`;
+              }
+              phaseDisplay.textContent = `${s.paced_title || 'Paced'} (${formatMMSS(Math.max(0, phaseRemainingSec))})`;
             }
           }
 
@@ -2990,6 +3210,7 @@
           const HRM_RF_FREQ = 57; // 2457 MHz
 
           // --- DOM References for ANT+ Monitoring ---
+          const antChartsCollapse = document.getElementById('antChartsCollapse');
           const antBadge = document.getElementById('antBadge');
           const antCardHeading = document.getElementById('antCardHeading');
           const antSubtitle = document.getElementById('antSubtitle');
@@ -2998,6 +3219,8 @@
           const btnSimulateAnt = document.getElementById('btnSimulateAnt');
           const btnSimulateText = document.getElementById('btnSimulateText');
           const btnExportJsonl = document.getElementById('btnExportJsonl');
+          const btnExportJsonlText = document.getElementById('btnExportJsonlText');
+          const driverSetupSummary = document.getElementById('driverSetupSummary');
           const valHR = document.getElementById('valHR');
           const valRR = document.getElementById('valRR');
           const valRMSSD = document.getElementById('valRMSSD');
@@ -3028,8 +3251,6 @@
 
           // --- State Variables ---
           let antDevice = null;
-          let antRunning = false;
-          let isSimulatingAnt = false;
           let simInterval = null;
           let inBuffer = [];
           let prevBeatCount = null;
@@ -3049,7 +3270,6 @@
           const syncWaveformBuffer = [];
 
           // Current biometrics readouts
-          let currentHR = 0;
           let currentRR = 0;
           let currentRMSSD = 0;
           let currentPhaseLagMs = 0;
@@ -3076,6 +3296,26 @@
             if (sparkRmssdCanvas && sparkRmssdCtx) setupCanvasDpi(sparkRmssdCanvas, sparkRmssdCtx, 220, 75);
             renderAntVisuals();
           });
+
+          function setAntConnectedState(connected) {
+            if (!connected) {
+              currentHR = 0;
+              currentRR = 0;
+              if (valHR) valHR.innerHTML = '-- <small>BPM</small>';
+              if (valRR) valRR.innerHTML = '-- <small>ms</small>';
+              updateWatchDisplay();
+            }
+            if (antChartsCollapse) {
+              antChartsCollapse.style.display = connected ? 'flex' : 'none';
+            }
+            if (connected) {
+              if (syncCanvas && syncCtx) setupCanvasDpi(syncCanvas, syncCtx, 700, 210);
+              if (sparkHrCanvas && sparkHrCtx) setupCanvasDpi(sparkHrCanvas, sparkHrCtx, 220, 75);
+              if (sparkRrCanvas && sparkRrCtx) setupCanvasDpi(sparkRrCanvas, sparkRrCtx, 220, 75);
+              if (sparkRmssdCanvas && sparkRmssdCtx) setupCanvasDpi(sparkRmssdCanvas, sparkRmssdCtx, 220, 75);
+              renderAntVisuals();
+            }
+          }
 
           function updateAntStatus(text, color = '#ffd600', isLive = false) {
             if (lblAntStatus) {
@@ -3163,8 +3403,12 @@
               antRunning = false;
               try {
                 await antDevice.close();
-              } catch (e) {}
+              } catch (e) { }
               antDevice = null;
+              currentHR = 0;
+              currentRR = 0;
+              if (valHR) valHR.innerHTML = '-- <small>BPM</small>';
+              if (valRR) valRR.innerHTML = '-- <small>ms</small>';
               if (btnConnectAntText) {
                 btnConnectAntText.textContent = currentLang === 'de' ? '🔌 ANT+ Stick verbinden' : '🔌 Connect ANT+ Stick';
               }
@@ -3174,6 +3418,8 @@
                 '#94a3b8',
                 false
               );
+              setAntConnectedState(isSimulatingAnt);
+              updateWatchDisplay();
               return;
             }
 
@@ -3195,7 +3441,7 @@
               antDevice = await navigator.usb.requestDevice(options);
 
               updateAntStatus(
-                `Öffne ANT+ Stick (${antDevice.productName || 'Garmin USB Stick'})...`,
+                `Öffne ANT+ Stick (${antDevice.productName || 'ANT+ USB Stick'})...`,
                 '#00e5ff',
                 false
               );
@@ -3223,12 +3469,20 @@
                 true
               );
 
+              setAntConnectedState(true);
+
               // Launch continuous packet deframing loop
               readAntUsbLoop();
               ensureAntAnimLoopRunning();
             } catch (err) {
               console.error('ANT+ WebUSB Connection Error:', err);
               antRunning = false;
+              currentHR = 0;
+              currentRR = 0;
+              if (valHR) valHR.innerHTML = '-- <small>BPM</small>';
+              if (valRR) valRR.innerHTML = '-- <small>ms</small>';
+              setAntConnectedState(isSimulatingAnt);
+              updateWatchDisplay();
               const msg = err.message || err.toString();
               if (msg.includes('No device selected') || msg.includes('cancelled')) {
                 updateAntStatus(
@@ -3307,6 +3561,30 @@
             }
           }
 
+          if (navigator.usb) {
+            navigator.usb.addEventListener('disconnect', (event) => {
+              if (antDevice && event.device === antDevice) {
+                antRunning = false;
+                antDevice = null;
+                currentHR = 0;
+                currentRR = 0;
+                if (valHR) valHR.innerHTML = '-- <small>BPM</small>';
+                if (valRR) valRR.innerHTML = '-- <small>ms</small>';
+                if (btnConnectAntText) {
+                  btnConnectAntText.textContent = currentLang === 'de' ? '🔌 ANT+ Stick verbinden' : '🔌 Connect ANT+ Stick';
+                }
+                if (btnConnectAnt) btnConnectAnt.classList.remove('active');
+                updateAntStatus(
+                  currentLang === 'de' ? 'ANT+ Stick getrennt.' : 'ANT+ Stick disconnected.',
+                  '#94a3b8',
+                  false
+                );
+                setAntConnectedState(isSimulatingAnt);
+                updateWatchDisplay();
+              }
+            });
+          }
+
           // --- Lehrer / OpenANT Rollover Arithmetic for RR Intervals ---
           function onAntPayload(data) {
             const now = performance.now() / 1000.0;
@@ -3355,6 +3633,7 @@
             simBeatCount = 0;
             simEventTime = 0;
             simStartTime = performance.now() / 1000.0;
+            setAntConnectedState(true);
 
             if (btnSimulateText) {
               btnSimulateText.textContent = currentLang === 'de' ? '⏹ Simulation stoppen' : '⏹ Stop Simulation';
@@ -3372,23 +3651,26 @@
             // ANT+ HRM transmits every ~246.3 ms (~4.06 Hz)
             const PACKET_INTERVAL_MS = 246;
             let lastBeatEventSec = performance.now() / 1000.0;
+            let simLastTime = performance.now() / 1000.0;
+            let simLungPhase = 0.0;
 
             simInterval = setInterval(() => {
               const now = performance.now() / 1000.0;
-              const bpmTarget = parseFloat(targetBpmInput.value) || 5.50;
-              const cyclePeriod = 60.0 / bpmTarget;
-              const inhaleDur = cyclePeriod * 0.40;
-              const exhaleDur = cyclePeriod * 0.60;
+              const dtSim = Math.min(0.5, Math.max(0, now - simLastTime));
+              simLastTime = now;
 
-              // Respiration phase factoring
-              const tCycle = (now - simStartTime) % cyclePeriod;
+              const bpmTarget = parseFloat(targetBpmInput.value) || 5.65;
+              const cycleFreq = bpmTarget / 60.0;
+              simLungPhase = (simLungPhase + dtSim * cycleFreq) % 1.0;
+
+              // Respiration phase factoring with smooth continuous integration
               let lungVol = 0;
-              if (tCycle < inhaleDur) {
+              if (simLungPhase < 0.40) {
                 // Inhale: rises 0 -> 1
-                lungVol = 0.5 * (1.0 - Math.cos(Math.PI * (tCycle / inhaleDur)));
+                lungVol = 0.5 * (1.0 - Math.cos(Math.PI * (simLungPhase / 0.40)));
               } else {
                 // Exhale: falls 1 -> 0
-                lungVol = 0.5 * (1.0 + Math.cos(Math.PI * ((tCycle - inhaleDur) / exhaleDur)));
+                lungVol = 0.5 * (1.0 + Math.cos(Math.PI * ((simLungPhase - 0.40) / 0.60)));
               }
 
               // Physiological Respiratory Sinus Arrhythmia (RSA):
@@ -3433,6 +3715,10 @@
           function stopAntSimulation() {
             if (!isSimulatingAnt) return;
             isSimulatingAnt = false;
+            currentHR = 0;
+            currentRR = 0;
+            if (valHR) valHR.innerHTML = '-- <small>BPM</small>';
+            if (valRR) valRR.innerHTML = '-- <small>ms</small>';
             if (simInterval) {
               clearInterval(simInterval);
               simInterval = null;
@@ -3450,6 +3736,8 @@
               '#ffd600',
               false
             );
+            setAntConnectedState(antRunning);
+            updateWatchDisplay();
           }
 
           function toggleAntSimulation() {
@@ -3467,6 +3755,12 @@
               hrHistory.push(hr);
               if (hrHistory.length > HISTORY_LEN) hrHistory.shift();
               if (valHR) valHR.innerHTML = `${hr} <small>BPM</small>`;
+              if (watchTelemetry && !isRunning) {
+                const hrTxt = s.hr_label || 'HR';
+                const secLeftTxt = s.seconds_left || 's left';
+                const rem = totalElapsedSec === 0 ? 120 : Math.max(0, phaseRemainingSec);
+                watchTelemetry.textContent = `${hrTxt}: ${getActiveHRDisplay()} | ${rem} ${secLeftTxt}`;
+              }
             }
 
             let isNewBeat = false;
@@ -3498,18 +3792,15 @@
             }
 
             // Target breath cadence
-            const bpmTarget = parseFloat(targetBpmInput.value) || 5.50;
-            const cyclePeriod = 60.0 / bpmTarget;
-            const inhaleDur = cyclePeriod * 0.40;
-            const exhaleDur = cyclePeriod * 0.60;
+            const bpmTarget = parseFloat(targetBpmInput.value) || 5.65;
+            let currentPhaseNorm = (isRunning && currentPhase === 'PACE') ? breathPhase : ((timestamp * (bpmTarget / 60.0)) % 1.0);
 
-            // Instantaneous Respiration lung volume [-1.0, +1.0]
-            const tCycle = timestamp % cyclePeriod;
+            // Instantaneous Respiration lung volume [-1.0, +1.0] using smooth continuous breath phase
             let respVolume = 0;
-            if (tCycle < inhaleDur) {
-              respVolume = 0.5 * (1.0 - Math.cos(Math.PI * (tCycle / inhaleDur)));
+            if (currentPhaseNorm < 0.40) {
+              respVolume = 0.5 * (1.0 - Math.cos(Math.PI * (currentPhaseNorm / 0.40)));
             } else {
-              respVolume = 0.5 * (1.0 + Math.cos(Math.PI * ((tCycle - inhaleDur) / exhaleDur)));
+              respVolume = 0.5 * (1.0 + Math.cos(Math.PI * ((currentPhaseNorm - 0.40) / 0.60)));
             }
             const respNormalized = respVolume * 2.0 - 1.0; // [-1.0 .. +1.0]
 
@@ -3648,6 +3939,9 @@
           }
 
           function renderAntVisuals() {
+            if (antChartsCollapse && antChartsCollapse.style.display === 'none') {
+              return;
+            }
             renderSuperimposedCanvas();
             renderSparklines();
           }
@@ -3863,9 +4157,12 @@
 
           // --- Secondary Multi-Metric Sparklines (HR, RR, RMSSD) ---
           function renderSparklines() {
-            drawSparkline(sparkHrCtx, sparkHrCanvas, hrHistory, 40, 160, '#ff3366', `${currentHR} BPM`);
-            drawSparkline(sparkRrCtx, sparkRrCanvas, rrHistory, 300, 1500, '#00e5ff', `${currentRR.toFixed(1)} ms`);
-            drawSparkline(sparkRmssdCtx, sparkRmssdCanvas, rmssdHistory, 0, 120, '#00ff66', `${currentRMSSD.toFixed(1)} ms`);
+            const hrLabel = currentHR > 0 ? `${currentHR} BPM` : '-- BPM';
+            const rrLabel = currentRR > 0 ? `${currentRR.toFixed(1)} ms` : '-- ms';
+            const rmssdLabel = currentRMSSD > 0 ? `${currentRMSSD.toFixed(1)} ms` : '-- ms';
+            drawSparkline(sparkHrCtx, sparkHrCanvas, hrHistory, 40, 160, '#ff3366', hrLabel);
+            drawSparkline(sparkRrCtx, sparkRrCanvas, rrHistory, 300, 1500, '#00e5ff', rrLabel);
+            drawSparkline(sparkRmssdCtx, sparkRmssdCanvas, rmssdHistory, 0, 120, '#00ff66', rmssdLabel);
           }
 
           function drawSparkline(ctx, canvas, data, vMin, vMax, color, labelText) {
@@ -3925,8 +4222,8 @@
           if (btnSimulateAnt) btnSimulateAnt.addEventListener('click', toggleAntSimulation);
           if (btnExportJsonl) btnExportJsonl.addEventListener('click', exportJsonl);
 
-          // Initial visual paint
-          renderAntVisuals();
+          // Initial visual state (charts hidden until sensor connected)
+          setAntConnectedState(false);
 
           function setLanguage(lang) {
             if (!window.PEAK_I18N || !window.PEAK_I18N[lang]) {
@@ -3935,7 +4232,7 @@
             currentLang = lang;
             try {
               localStorage.setItem('peakfrequency_lang', lang);
-            } catch (e) {}
+            } catch (e) { }
 
             document.documentElement.lang = lang;
             if (globalLangSelect && globalLangSelect.value !== lang) globalLangSelect.value = lang;
@@ -3961,7 +4258,16 @@
               s.hint_out_6 || 'Without force'
             ];
 
-            // 2. Refresh Form Elements
+            // 2. Refresh Form Elements & Page Headers
+            if (heroTitleMain && s.hero_title_main) heroTitleMain.textContent = s.hero_title_main;
+            if (heroTitleSub && s.hero_title_sub) heroTitleSub.textContent = s.hero_title_sub;
+            if (heroDesc && s.hero_desc) heroDesc.textContent = s.hero_desc;
+            if (demoTitle && s.demo_title) demoTitle.textContent = s.demo_title;
+            if (demoSubtitle && s.demo_subtitle) demoSubtitle.textContent = s.demo_subtitle;
+            if (lblWatchLanguage && s.watch_language) lblWatchLanguage.textContent = s.watch_language;
+
+            if (lblUserHeight && s.height) lblUserHeight.textContent = s.height;
+            if (lblUserSex && s.biological_sex) lblUserSex.textContent = s.biological_sex;
             if (sexMaleBtn) sexMaleBtn.textContent = `♂ ${s.male || 'Male'}`;
             if (sexFemaleBtn) sexFemaleBtn.textContent = `♀ ${s.female || 'Female'}`;
             if (userSexSelect && userSexSelect.options.length >= 2) {
@@ -3969,12 +4275,32 @@
               userSexSelect.options[1].text = s.female || 'Female';
             }
             if (lblTargetCadence) lblTargetCadence.textContent = s.target_cadence || 'Target Cadence';
-
-            // 3. Technique Guidance Rules (Garmin Stage 3 pre-pacing prompts)
-            if (techHeaderTitle) {
-              const nextRuleTxt = s.down_next_rule ? s.down_next_rule.replace(/[[\]]/g, '') : 'Next Rule';
-              techHeaderTitle.textContent = `${nextRuleTxt} — ${s.tutorial_video || 'Technique Guidance'}`;
+            if (lblPresets && s.presets) lblPresets.textContent = s.presets;
+            if (privacyDisclaimerTitle) {
+              privacyDisclaimerTitle.textContent = s.privacy_disclaimer_title || 'Privacy Disclaimer:';
             }
+            if (privacyDisclaimerBody) {
+              privacyDisclaimerBody.textContent = s.privacy_disclaimer_body || 'Your height and sex are processed entirely locally in your browser. No data is stored, tracked, or transmitted. It is solely used to calculate your initial estimated resonance frequency rate.';
+            }
+
+            // Session telemetry labels
+            if (lblSessionTime && s.telemetry_session_time) lblSessionTime.textContent = s.telemetry_session_time;
+            if (lblRound && s.telemetry_round) lblRound.textContent = s.telemetry_round;
+            if (lblPhase && s.telemetry_phase) lblPhase.textContent = s.telemetry_phase;
+            if (lblBreathCycle && s.telemetry_breath_cycle) lblBreathCycle.textContent = s.telemetry_breath_cycle;
+
+            // Action Buttons
+            if (btnReset && s.btn_reset) btnReset.textContent = s.btn_reset;
+            if (btnSkipPhase && s.btn_skip_phase) btnSkipPhase.textContent = s.btn_skip_phase;
+
+            // Hero Buttons & Privacy Policy Links
+            if (btnGetConnectIq && s.btn_get_connect_iq) btnGetConnectIq.textContent = s.btn_get_connect_iq;
+            if (btnTryDemo && s.btn_try_demo) btnTryDemo.textContent = s.btn_try_demo;
+            if (btnPrivacyPolicy && s.btn_privacy_policy) btnPrivacyPolicy.textContent = s.btn_privacy_policy;
+            if (navPrivacyPolicy && s.btn_privacy_policy) navPrivacyPolicy.textContent = s.btn_privacy_policy;
+            if (footerPrivacyPolicy && s.btn_privacy_policy) footerPrivacyPolicy.textContent = s.btn_privacy_policy;
+
+            // 3. Technique Guidance Rules
             if (techRatioTitle) techRatioTitle.textContent = s.ratio_title || 'Breath Ratio';
             if (techRatioDir) {
               const dir = s.ratio_directive || '40% Inhale \n 60% Out';
@@ -4019,6 +4345,19 @@
             if (btnSimulateText && !isSimulatingAnt) {
               btnSimulateText.textContent = lang === 'de' ? '⚡ Live-Simulation' : '⚡ Live Simulation';
             }
+            if (btnExportJsonlText) {
+              btnExportJsonlText.textContent = lang === 'de' ? '📥 JSONL Exportieren' : '📥 Export JSONL';
+            }
+            if (driverSetupSummary) {
+              driverSetupSummary.textContent = lang === 'de'
+                ? 'ℹ️ Windows Treiber-Einrichtung für ANT+ USB-Sticks (Zadig / WinUSB)'
+                : 'ℹ️ Windows Driver Setup for ANT+ USB Sticks (Zadig / WinUSB)';
+            }
+            if (lblAntStatus && !antRunning && !isSimulatingAnt) {
+              lblAntStatus.textContent = lang === 'de'
+                ? 'ANT+ Status: Bereit für ANT+ USB-Stick oder Live-Simulation'
+                : 'ANT+ Status: Ready for ANT+ USB stick or Live Simulation';
+            }
             if (lblHrTitle) lblHrTitle.textContent = s.hr_label || (lang === 'de' ? 'Herzfrequenz' : 'Heart Rate');
             if (lblRrTitle) lblRrTitle.textContent = lang === 'de' ? 'RR-Intervall' : 'RR Interval';
             if (lblRmssdTitle) lblRmssdTitle.textContent = 'RMSSD';
@@ -4055,8 +4394,9 @@
             }
 
             // 6. Update Estimates & Watch Visuals
-            const bpm = parseFloat(targetBpmInput.value) || 5.50;
+            const bpm = parseFloat(targetBpmInput.value) || 5.65;
             updateCycleHint(bpm);
+            updateActivePresetChip(bpm);
             updateEstimate(false);
             updateWatchDisplay();
           }
@@ -4078,7 +4418,7 @@
           try {
             savedLang = localStorage.getItem('peakfrequency_lang') ||
               (navigator.language ? navigator.language.slice(0, 2).toLowerCase() : 'en');
-          } catch (e) {}
+          } catch (e) { }
           if (!window.PEAK_I18N || !window.PEAK_I18N[savedLang]) {
             savedLang = 'en';
           }
@@ -4336,7 +4676,7 @@
           <strong>Peak Frequency</strong> • Precision HRV Biofeedback for Garmin Connect IQ
         </div>
         <div style="display: flex; gap: 1.5rem;">
-          <a href="privacy_policy.html">Privacy Policy</a>
+          <a href="privacy_policy.html" id="footerPrivacyPolicy">Privacy Policy</a>
           <a href="tutorial_redirect.html">Video Guide</a>
           <a href="https://github.com/mesw/PeakFrequency" target="_blank" rel="noopener noreferrer">GitHub
             Repository</a>
@@ -4379,7 +4719,7 @@
           const originalText = copyBtn.innerText;
           copyBtn.innerText = 'Copied!';
           setTimeout(() => { copyBtn.innerText = originalText; }, 2000);
-        }).catch(() => {});
+        }).catch(() => { });
       });
     }
   </script>

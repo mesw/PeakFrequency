@@ -99,7 +99,24 @@
       "action_discard": "[BACK] Discard",
       "prompt": "Click the menu button",
       "menu_label_1": "Item 1",
-      "menu_label_2": "Item 2"
+      "menu_label_2": "Item 2",
+      "privacy_disclaimer_title": "Privacy Disclaimer:",
+      "privacy_disclaimer_body": "Your height and sex are processed entirely locally in your browser. No data is stored, tracked, or transmitted. It is solely used to calculate your initial estimated resonance frequency rate.",
+      "hero_title_main": "Find Your Resonant Breath.",
+      "hero_title_sub": "Maximize Heart Rate Variability.",
+      "hero_desc": "A precision HRV biofeedback breath pacer for Garmin watches. Calibrate and lock into your individual resonance frequency with zero friction.",
+      "demo_title": "Interactive Resonance Frequency Pacer",
+      "demo_subtitle": "Experience the exact protocol from the Garmin Connect IQ app",
+      "watch_language": "Watch Language:",
+      "height": "Height",
+      "biological_sex": "Biological Sex",
+      "presets": "Presets:",
+      "telemetry_session_time": "SESSION TIME",
+      "telemetry_round": "ROUND",
+      "telemetry_phase": "PHASE",
+      "telemetry_breath_cycle": "BREATH CYCLE",
+      "btn_reset": "Reset",
+      "btn_skip_phase": "Skip Phase"
     }
   },
   "de": {
@@ -201,7 +218,24 @@
       "action_discard": "[BACK] Verwerfen",
       "prompt": "Menütaste drücken",
       "menu_label_1": "Eintrag 1",
-      "menu_label_2": "Eintrag 2"
+      "menu_label_2": "Eintrag 2",
+      "privacy_disclaimer_title": "Datenschutz-Hinweis:",
+      "privacy_disclaimer_body": "Ihre Körpergröße und Ihr biologisches Geschlecht werden ausschließlich lokal in Ihrem Browser verarbeitet. Es werden keine Daten gespeichert, nachverfolgt oder übertragen. Sie dienen rein der Berechnung Ihrer geschätzten Resonanzfrequenz.",
+      "hero_title_main": "Finden Sie Ihren Resonanzatem.",
+      "hero_title_sub": "Maximieren Sie Ihre Herzfrequenzvariabilität.",
+      "hero_desc": "Ein präziser HFV-Biofeedback-Atemtaktgeber für Garmin-Uhren. Kalibrieren und finden Sie Ihre individuelle Resonanzfrequenz ohne Reibung.",
+      "demo_title": "Interaktiver Resonanzfrequenz-Atemtaktgeber",
+      "demo_subtitle": "Erleben Sie das exakte Protokoll der Garmin Connect IQ App",
+      "watch_language": "Uhren-Sprache:",
+      "height": "Körpergröße",
+      "biological_sex": "Biologisches Geschlecht",
+      "presets": "Voreinstellungen:",
+      "telemetry_session_time": "SITZUNGSZEIT",
+      "telemetry_round": "RUNDE",
+      "telemetry_phase": "PHASE",
+      "telemetry_breath_cycle": "ATEMZYKLUS",
+      "btn_reset": "Zurücksetzen",
+      "btn_skip_phase": "Phase überspringen"
     }
   },
   "es": {
@@ -303,7 +337,24 @@
       "action_discard": "[BACK] Descartar",
       "prompt": "Presiona el botón de menú",
       "menu_label_1": "Elemento 1",
-      "menu_label_2": "Elemento 2"
+      "menu_label_2": "Elemento 2",
+      "privacy_disclaimer_title": "Aviso de privacidad:",
+      "privacy_disclaimer_body": "Tu altura y sexo se procesan exclusivamente de forma local en tu navegador. No se almacena, rastrea ni transmite ningún dato. Se utilizan únicamente para calcular tu frecuencia de resonancia inicial estimada.",
+      "hero_title_main": "Encuentra tu respiración resonante.",
+      "hero_title_sub": "Maximiza la variabilidad de la frecuencia cardíaca.",
+      "hero_desc": "Un marcapasos respiratorio de biorretroalimentación de VFC de precisión para relojes Garmin. Calibra y fija tu frecuencia de resonancia individual sin fricción.",
+      "demo_title": "Marcapasos interactivo de frecuencia de resonancia",
+      "demo_subtitle": "Experimenta el protocolo exacto de la aplicación Garmin Connect IQ",
+      "watch_language": "Idioma del reloj:",
+      "height": "Altura",
+      "biological_sex": "Sexo biológico",
+      "presets": "Preajustes:",
+      "telemetry_session_time": "TIEMPO DE SESIÓN",
+      "telemetry_round": "RONDA",
+      "telemetry_phase": "FASE",
+      "telemetry_breath_cycle": "CICLO RESPIRATORIO",
+      "btn_reset": "Restablecer",
+      "btn_skip_phase": "Saltar fase"
     }
   },
   "fr": {
@@ -405,7 +456,24 @@
       "action_discard": "[BACK] Supprimer",
       "prompt": "Appuyez sur le menu",
       "menu_label_1": "Option 1",
-      "menu_label_2": "Option 2"
+      "menu_label_2": "Option 2",
+      "privacy_disclaimer_title": "Confidentialité :",
+      "privacy_disclaimer_body": "Votre taille et votre sexe sont traités exclusivement en local dans votre navigateur. Aucune donnée n'est stockée, suivie ou transmise. Ils sont uniquement utilisés pour calculer votre fréquence de résonance initiale estimée.",
+      "hero_title_main": "Trouvez votre respiration résonnante.",
+      "hero_title_sub": "Maximisez la variabilité de la fréquence cardiaque.",
+      "hero_desc": "Un guide respiratoire de biofeedback VRC de précision pour les montres Garmin. Calibrez et verrouillez votre fréquence de résonance individuelle sans friction.",
+      "demo_title": "Guide respiratoire interactif de fréquence de résonance",
+      "demo_subtitle": "Découvrez le protocole exact de l'application Garmin Connect IQ",
+      "watch_language": "Langue de la montre :",
+      "height": "Taille",
+      "biological_sex": "Sexe biologique",
+      "presets": "Préréglages :",
+      "telemetry_session_time": "TEMPS DE SESSION",
+      "telemetry_round": "CYCLE",
+      "telemetry_phase": "PHASE",
+      "telemetry_breath_cycle": "CYCLE RESPIRATOIRE",
+      "btn_reset": "Réinitialiser",
+      "btn_skip_phase": "Passer la phase"
     }
   },
   "it": {
@@ -507,7 +575,24 @@
       "action_discard": "[BACK] Annulla",
       "prompt": "Premi il tasto menu",
       "menu_label_1": "Elemento 1",
-      "menu_label_2": "Elemento 2"
+      "menu_label_2": "Elemento 2",
+      "privacy_disclaimer_title": "Informativa sulla privacy:",
+      "privacy_disclaimer_body": "La tua altezza e il tuo sesso biologico vengono elaborati interamente in locale nel tuo browser. Nessun dato viene memorizzato, tracciato o trasmesso. Servono esclusivamente a calcolare la tua frequenza di risonanza iniziale stimata.",
+      "hero_title_main": "Trova il tuo respiro risonante.",
+      "hero_title_sub": "Massimizza la variabilità della frequenza cardiaca.",
+      "hero_desc": "Un pacer respiratorio di biofeedback HRV di precisione per orologi Garmin. Calibra e blocca la tua frequenza di risonanza individuale senza attrito.",
+      "demo_title": "Pacer interattivo di frequenza di risonanza",
+      "demo_subtitle": "Sperimenta il protocollo esatto dell'app Garmin Connect IQ",
+      "watch_language": "Lingua dell'orologio:",
+      "height": "Altezza",
+      "biological_sex": "Sesso biologico",
+      "presets": "Predefiniti:",
+      "telemetry_session_time": "TEMPO SESSIONE",
+      "telemetry_round": "ROUND",
+      "telemetry_phase": "FASE",
+      "telemetry_breath_cycle": "CICLO RESPIRATORIO",
+      "btn_reset": "Reimposta",
+      "btn_skip_phase": "Salta fase"
     }
   },
   "nl": {
@@ -609,7 +694,24 @@
       "action_discard": "[BACK] Verwijderen",
       "prompt": "Klik op de menuknop",
       "menu_label_1": "Optie 1",
-      "menu_label_2": "Optie 2"
+      "menu_label_2": "Optie 2",
+      "privacy_disclaimer_title": "Privacyverklaring:",
+      "privacy_disclaimer_body": "Je lengte en geslacht worden volledig lokaal in je browser verwerkt. Er worden geen gegevens opgeslagen, bijgehouden of verzonden. Ze worden uitsluitend gebruikt om je geschatte initiële resonantiefrequentie te berekenen.",
+      "hero_title_main": "Vind je resonante ademhaling.",
+      "hero_title_sub": "Maximaliseer hartslagvariabiliteit.",
+      "hero_desc": "Een precisie HRV-biofeedback adempacer voor Garmin-horloges. Kalibreer en vergrendel je individuele resonantiefrequentie zonder wrijving.",
+      "demo_title": "Interactieve resonantiefrequentie adempacer",
+      "demo_subtitle": "Ervaar het exacte protocol van de Garmin Connect IQ-app",
+      "watch_language": "Horlogetaal:",
+      "height": "Lengte",
+      "biological_sex": "Biologisch geslacht",
+      "presets": "Voorinstellingen:",
+      "telemetry_session_time": "SESSIETIJD",
+      "telemetry_round": "RONDE",
+      "telemetry_phase": "FASE",
+      "telemetry_breath_cycle": "ADEMCYCLUS",
+      "btn_reset": "Herstellen",
+      "btn_skip_phase": "Fase overslaan"
     }
   },
   "pl": {
@@ -711,7 +813,24 @@
       "action_discard": "[BACK] Odrzuć",
       "prompt": "Naciśnij przycisk menu",
       "menu_label_1": "Pozycja 1",
-      "menu_label_2": "Pozycja 2"
+      "menu_label_2": "Pozycja 2",
+      "privacy_disclaimer_title": "Ochrona prywatności:",
+      "privacy_disclaimer_body": "Twój wzrost i płeć są przetwarzane wyłącznie lokalnie w Twojej przeglądarce. Żadne dane nie są zapisywane, śledzone ani przesyłane. Służą one wyłącznie do obliczenia szacunkowej początkowej częstotliwości rezonansowej.",
+      "hero_title_main": "Znajdź swój oddech rezonansowy.",
+      "hero_title_sub": "Maksymalizuj zmienność rytmu zatokowego.",
+      "hero_desc": "Precyzyjny pacer oddechowy biofeedback HRV dla zegarków Garmin. Skalibruj i zablokuj swoją indywidualną częstotliwość rezonansową bez żadnych przeszkód.",
+      "demo_title": "Interaktywny pacer częstotliwości rezonansowej",
+      "demo_subtitle": "Poznaj dokładny protokół z aplikacji Garmin Connect IQ",
+      "watch_language": "Język zegarka:",
+      "height": "Wzrost",
+      "biological_sex": "Płeć biologiczna",
+      "presets": "Ustawienia:",
+      "telemetry_session_time": "CZAS SESJI",
+      "telemetry_round": "RUNDA",
+      "telemetry_phase": "FAZA",
+      "telemetry_breath_cycle": "CYKL ODDECHOWY",
+      "btn_reset": "Resetuj",
+      "btn_skip_phase": "Pomiń fazę"
     }
   },
   "pt": {
@@ -813,7 +932,24 @@
       "action_discard": "[BACK] Descartar",
       "prompt": "Clica no botão de menu",
       "menu_label_1": "Item 1",
-      "menu_label_2": "Item 2"
+      "menu_label_2": "Item 2",
+      "privacy_disclaimer_title": "Aviso de privacidade:",
+      "privacy_disclaimer_body": "A sua altura e sexo biológico são processados inteiramente de forma local no seu navegador. Nenhum dado é armazenado, rastreado ou transmitido. São usados exclusivamente para calcular a sua frequência de ressonância inicial estimada.",
+      "hero_title_main": "Encontre a sua respiração ressonante.",
+      "hero_title_sub": "Maximize a variabilidade da frequência cardíaca.",
+      "hero_desc": "Um guia respiratório de biofeedback VFC de precisão para relógios Garmin. Calibre e fixe a sua frequência de ressonância individual sem atrito.",
+      "demo_title": "Guia interativo de frequência de ressonância",
+      "demo_subtitle": "Experimente o protocolo exato da aplicação Garmin Connect IQ",
+      "watch_language": "Idioma do relógio:",
+      "height": "Altura",
+      "biological_sex": "Sexo biológico",
+      "presets": "Predefinições:",
+      "telemetry_session_time": "TEMPO DA SESSÃO",
+      "telemetry_round": "RONDA",
+      "telemetry_phase": "FASE",
+      "telemetry_breath_cycle": "CICLO RESPIRATÓRIO",
+      "btn_reset": "Repor",
+      "btn_skip_phase": "Ignorar fase"
     }
   },
   "sv": {
@@ -915,7 +1051,24 @@
       "action_discard": "[BACK] Släng",
       "prompt": "Tryck på menyknappen",
       "menu_label_1": "Objekt 1",
-      "menu_label_2": "Objekt 2"
+      "menu_label_2": "Objekt 2",
+      "privacy_disclaimer_title": "Integritetsmeddelande:",
+      "privacy_disclaimer_body": "Din längd och ditt biologiska kön behandlas helt lokalt i din webbläsare. Inga uppgifter lagras, spåras eller överförs. De används uteslutande för att beräkna din initiala uppskattade resonansfrekvens.",
+      "hero_title_main": "Hitta din resonansandning.",
+      "hero_title_sub": "Maximera pulsvariabiliteten.",
+      "hero_desc": "En precision HRV-biofeedback andningstaktare för Garmin-klockor. Kalibrera och lås in din individuella resonansfrekvens friktionsfritt.",
+      "demo_title": "Interaktiv resonansfrekvens-taktare",
+      "demo_subtitle": "Upplev det exakta protokollet från Garmin Connect IQ-appen",
+      "watch_language": "Klockspråk:",
+      "height": "Längd",
+      "biological_sex": "Biologiskt kön",
+      "presets": "Förinställningar:",
+      "telemetry_session_time": "SESSIONSTID",
+      "telemetry_round": "RUNDA",
+      "telemetry_phase": "FAS",
+      "telemetry_breath_cycle": "ANDNINGSCYKEL",
+      "btn_reset": "Återställ",
+      "btn_skip_phase": "Hoppa över fas"
     }
   },
   "da": {
@@ -1017,7 +1170,24 @@
       "action_discard": "[BACK] Kassér",
       "prompt": "Tryk på menuknappen",
       "menu_label_1": "Punkt 1",
-      "menu_label_2": "Punkt 2"
+      "menu_label_2": "Punkt 2",
+      "privacy_disclaimer_title": "Privatlivsmeddelelse:",
+      "privacy_disclaimer_body": "Din højde og dit biologiske køn behandles udelukkende lokalt i din browser. Ingen data gemmes, spores eller overføres. De bruges udelukkende til at beregne din oprindelige anslåede resonansfrekvens.",
+      "hero_title_main": "Find din resonante vejrtrækning.",
+      "hero_title_sub": "Maksimér pulsvariabiliteten.",
+      "hero_desc": "En præcisions HRV-biofeedback vejrtrækningspacer til Garmin-ure. Kalibrer og lås din individuelle resonansfrekvens uden friktion.",
+      "demo_title": "Interaktiv resonansfrekvens-pacer",
+      "demo_subtitle": "Oplev den nøjagtige protokol fra Garmin Connect IQ-appen",
+      "watch_language": "Ursprog:",
+      "height": "Højde",
+      "biological_sex": "Biologisk køn",
+      "presets": "Forudindstillinger:",
+      "telemetry_session_time": "SESSIONSTID",
+      "telemetry_round": "RUNDE",
+      "telemetry_phase": "FASE",
+      "telemetry_breath_cycle": "VEJRTRÆKNINGSCYKLUS",
+      "btn_reset": "Nulstil",
+      "btn_skip_phase": "Spring fase over"
     }
   },
   "nb": {
@@ -1119,7 +1289,24 @@
       "action_discard": "[BACK] Forkast",
       "prompt": "Trykk på menyknappen",
       "menu_label_1": "Element 1",
-      "menu_label_2": "Element 2"
+      "menu_label_2": "Element 2",
+      "privacy_disclaimer_title": "Personvernerklæring:",
+      "privacy_disclaimer_body": "Høyden og det biologiske kjønnet ditt behandles utelukkende lokalt i nettleseren din. Ingen data lagres, spores eller overføres. De brukes utelukkende til å beregne din opprinnelige estimerte resonansfrekvens.",
+      "hero_title_main": "Finn din resonanspust.",
+      "hero_title_sub": "Maksimer hjertefrekvensvariabiliteten.",
+      "hero_desc": "En presisjons HRV-biofeedback pustetakter for Garmin-klokker. Kalibrer og lås inn din individuelle resonansfrekvens uten friksjon.",
+      "demo_title": "Interaktiv resonansfrekvens-takter",
+      "demo_subtitle": "Opplev den nøyaktige protokollen fra Garmin Connect IQ-appen",
+      "watch_language": "Klokkespråk:",
+      "height": "Høyde",
+      "biological_sex": "Biologisk kjønn",
+      "presets": "Forhåndsinnstillinger:",
+      "telemetry_session_time": "ØKTTID",
+      "telemetry_round": "RUNDE",
+      "telemetry_phase": "FASE",
+      "telemetry_breath_cycle": "PUSTESYKLUS",
+      "btn_reset": "Tilbakestill",
+      "btn_skip_phase": "Hopp over fase"
     }
   },
   "fi": {
@@ -1221,7 +1408,24 @@
       "action_discard": "[BACK] Hylkää",
       "prompt": "Paina valikkopainiketta",
       "menu_label_1": "Kohta 1",
-      "menu_label_2": "Kohta 2"
+      "menu_label_2": "Kohta 2",
+      "privacy_disclaimer_title": "Tietosuojahuomautus:",
+      "privacy_disclaimer_body": "Pituutesi ja biologinen sukupuolesi käsitellään täysin paikallisesti selaimessasi. Mitään tietoja ei tallenneta, seurata tai siirretä. Niitä käytetään ainoastaan arvioidun alustavan resonanssitaajuutesi laskemiseen.",
+      "hero_title_main": "Löydä resonanssihengityksesi.",
+      "hero_title_sub": "Maksimoi sykevaihtelusi.",
+      "hero_desc": "Tarkka HRV-biopalautteen hengitystahti Garmin-kelloille. Kalibroi ja lukitse yksilöllinen resonanssitaajuutesi vaivattomasti.",
+      "demo_title": "Vuorovaikutteinen resonanssitaajuuden hengitystahti",
+      "demo_subtitle": "Koe tarkka protokolla Garmin Connect IQ -sovelluksesta",
+      "watch_language": "Kellon kieli:",
+      "height": "Pituus",
+      "biological_sex": "Biologinen sukupuoli",
+      "presets": "Esiasetukset:",
+      "telemetry_session_time": "ISTUNNON AIKA",
+      "telemetry_round": "KIERROS",
+      "telemetry_phase": "VAIHE",
+      "telemetry_breath_cycle": "HENGITYSSYKLI",
+      "btn_reset": "Nollaa",
+      "btn_skip_phase": "Ohita vaihe"
     }
   },
   "cs": {
@@ -1323,7 +1527,24 @@
       "action_discard": "[BACK] Zahodit",
       "prompt": "Klikněte na tlačítko nabídky",
       "menu_label_1": "Položka 1",
-      "menu_label_2": "Položka 2"
+      "menu_label_2": "Položka 2",
+      "privacy_disclaimer_title": "Ochrana soukromí:",
+      "privacy_disclaimer_body": "Vaše výška a pohlaví jsou zpracovávány výhradně lokálně ve vašem prohlížeči. Žádná data se neukládají, nesledují ani nepřenášejí. Slouží výhradně k výpočtu vaší výchozí odhadované rezonanční frekvence.",
+      "hero_title_main": "Najděte svůj rezonanční dech.",
+      "hero_title_sub": "Maximalizujte variabilitu srdeční frekvence.",
+      "hero_desc": "Přesný pacer dechu s biofeedbackem HRV pro hodinky Garmin. Zkalibrujte a uzamkněte svou individuální rezonanční frekvenci bez tření.",
+      "demo_title": "Interaktivní pacer rezonanční frekvence",
+      "demo_subtitle": "Vyzkoušejte přesný protokol z aplikace Garmin Connect IQ",
+      "watch_language": "Jazyk hodinek:",
+      "height": "Výška",
+      "biological_sex": "Biologické pohlaví",
+      "presets": "Předvolby:",
+      "telemetry_session_time": "ČAS RELACE",
+      "telemetry_round": "KOLO",
+      "telemetry_phase": "FÁZE",
+      "telemetry_breath_cycle": "DECHOVÝ CYKLUS",
+      "btn_reset": "Resetovat",
+      "btn_skip_phase": "Přeskočit fázi"
     }
   },
   "hu": {
@@ -1425,9 +1646,26 @@
       "action_discard": "[BACK] Elvetés",
       "prompt": "Nyomd meg a menü gombot",
       "menu_label_1": "1. Elem",
+      "privacy_disclaimer_title": "Adatvédelmi tájékoztató:",
+      "privacy_disclaimer_body": "A testmagasságot és a biológiai nemet kizárólag helyben, a böngészőjében dolgozzuk fel. Semmilyen adatot nem tárolunk, nem követünk nyomon és nem továbbítunk. Kizárólag a becsült kezdeti rezonanciafrekvencia kiszámítására szolgálnak.",
+      "hero_title_main": "Találja meg a rezonáns légzését.",
+      "hero_title_sub": "Maximalizálja a szívfrekvencia-variabilitást.",
+      "hero_desc": "Precíziós HRV biofeedback légzésritmus-vezérlő Garmin órákhoz. Kalibrálja és rögzítse egyéni rezonanciafrekvenciáját zökkenőmentesen.",
+      "demo_title": "Interaktív rezonanciafrekvencia légzésvezérlő",
+      "demo_subtitle": "Tapasztalja meg a Garmin Connect IQ alkalmazás pontos protokollját",
+      "watch_language": "Óra nyelve:",
+      "height": "Magasság",
+      "biological_sex": "Biológiai nem",
+      "presets": "Előbeállítások:",
+      "telemetry_session_time": "MUNKAMENET IDŐ",
+      "telemetry_round": "KÖR",
+      "telemetry_phase": "FÁZIS",
+      "telemetry_breath_cycle": "LÉGZÉSI CIKLUS",
+      "btn_reset": "Visszaállítás",
+      "btn_skip_phase": "Fázis kihagyása"
     }
   }
 };
-if (typeof module !== 'undefined' && module.exports) {
+if (typeof module !== "undefined" && module.exports) {
   module.exports = (typeof window !== "undefined" ? window : global).PEAK_I18N;
 }
