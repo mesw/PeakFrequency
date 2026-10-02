@@ -20,7 +20,7 @@
   <link
     href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap"
     rel="stylesheet">
-  <script src="assets/translations.js"></script>
+  <script src="assets/translations.js?v=20261002"></script>
 
   <style>
     :root {
@@ -6058,6 +6058,10 @@
           // If the DOM is still loading when this inline script executes, re-run setLanguage
           // once DOMContentLoaded fires so that all subsequent sections (Training Guide,
           // Safety Disclaimer, Science, Protocol, Features, Store Descriptions, Footer) are fully translated.
+          // Expose globally so external or late-loading triggers can re-apply translations
+          window.setLanguage = setLanguage;
+          window.currentLang = currentLang;
+
           if (document.readyState === 'loading') {
             document.addEventListener('DOMContentLoaded', () => {
               setLanguage(currentLang || savedLang);
@@ -6547,6 +6551,11 @@
           setTimeout(() => { copyBtn.innerText = originalText; }, 2000);
         }).catch(() => { });
       });
+    }
+
+    // Fail-safe translation initialization at the very end of HTML parsing
+    if (typeof window.setLanguage === 'function') {
+      window.setLanguage(window.currentLang || localStorage.getItem('peakfrequency_lang') || 'de');
     }
   </script>
 </body>
