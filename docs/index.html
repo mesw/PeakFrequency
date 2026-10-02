@@ -907,7 +907,7 @@
         <option value="hu">🇭🇺 Magyar</option>
       </select>
       <a href="https://apps.garmin.com/apps/174cda32-a42a-43b4-8b07-658ddda48d92?tid=0" class="btn btn-primary"
-        target="_blank" rel="noopener noreferrer">
+        target="_blank" rel="noopener noreferrer" data-i18n="nav_store_btn">
         Connect IQ Store
       </a>
     </div>
@@ -916,7 +916,7 @@
   <!-- Hero Section -->
   <section class="hero">
     <div class="container">
-      <div class="badge">Garmin Connect IQ Watch App • Available Now</div>
+      <div class="badge" data-i18n="badge_garmin">Garmin Connect IQ Watch App • Available Now</div>
       <h1><span id="heroTitleMain">Find Your Resonant Breath.</span><br><span id="heroTitleSub">Maximize Heart Rate Variability.</span></h1>
       <p id="heroDesc">
         A precision HRV biofeedback breath pacer for Garmin watches. Calibrate and lock into your individual resonance
@@ -5934,7 +5934,8 @@
             if (btnTryDemo && s.btn_try_demo) btnTryDemo.textContent = s.btn_try_demo;
             if (btnPrivacyPolicy && s.btn_privacy_policy) btnPrivacyPolicy.textContent = s.btn_privacy_policy;
             if (navPrivacyPolicy && s.btn_privacy_policy) navPrivacyPolicy.textContent = s.btn_privacy_policy;
-            if (footerPrivacyPolicy && s.btn_privacy_policy) footerPrivacyPolicy.textContent = s.btn_privacy_policy;
+            const elFooterPrivacy = footerPrivacyPolicy || document.getElementById('footerPrivacyPolicy');
+            if (elFooterPrivacy && s.btn_privacy_policy) elFooterPrivacy.textContent = s.btn_privacy_policy;
 
             // 3. Technique Guidance Rules
             if (techRatioTitle) techRatioTitle.textContent = s.ratio_title || 'Breath Ratio';
@@ -6051,7 +6052,17 @@
           if (!window.PEAK_I18N || !window.PEAK_I18N[savedLang]) {
             savedLang = 'en';
           }
+          // Initialize language immediately for already-parsed elements (hero, demo watch, etc.)
           setLanguage(savedLang);
+
+          // If the DOM is still loading when this inline script executes, re-run setLanguage
+          // once DOMContentLoaded fires so that all subsequent sections (Training Guide,
+          // Safety Disclaimer, Science, Protocol, Features, Store Descriptions, Footer) are fully translated.
+          if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', () => {
+              setLanguage(currentLang || savedLang);
+            });
+          }
         })();
       </script>
     </div>
@@ -6485,12 +6496,12 @@
   <footer>
     <div class="container">
       <div class="footer-grid" style="margin-bottom: 1.5rem;">
-        <div>
+        <div data-i18n="footer_tagline">
           <strong>Peak Frequency</strong> • Precision HRV Biofeedback for Garmin Connect IQ
         </div>
         <div style="display: flex; gap: 1.5rem;">
-          <a href="privacy_policy.html" id="footerPrivacyPolicy">Privacy Policy</a>
-          <a href="tutorial_redirect.html">Video Guide</a>
+          <a href="privacy_policy.html" id="footerPrivacyPolicy" data-i18n="btn_privacy_policy">Privacy Policy</a>
+          <a href="tutorial_redirect.html" data-i18n="video_guide_title">Video Guide</a>
           <a href="https://github.com/mesw/PeakFrequency" target="_blank" rel="noopener noreferrer">GitHub
             Repository</a>
         </div>
@@ -6530,7 +6541,9 @@
         if (!activeContent) return;
         navigator.clipboard.writeText(activeContent.innerText).then(() => {
           const originalText = copyBtn.innerText;
-          copyBtn.innerText = 'Copied!';
+          const lang = document.documentElement.lang || 'en';
+          const s = (window.PEAK_I18N && window.PEAK_I18N[lang] && window.PEAK_I18N[lang].strings) || {};
+          copyBtn.innerText = s.store_copied_btn || 'Copied!';
           setTimeout(() => { copyBtn.innerText = originalText; }, 2000);
         }).catch(() => { });
       });
