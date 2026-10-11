@@ -1,0 +1,1633 @@
+.sr-only {
+          position: absolute;
+          width: 1px;
+          height: 1px;
+          padding: 0;
+          margin: -1px;
+          overflow: hidden;
+          clip: rect(0, 0, 0, 0);
+          white-space: nowrap;
+          border: 0;
+        }
+
+        .demo-section {
+          padding: 2.5rem 0.5rem;
+          color: #f1f5f9;
+          font-family: inherit;
+        }
+
+        .demo-container {
+          max-width: 740px;
+          margin: 0 auto;
+          display: flex;
+          flex-direction: column;
+          gap: 1.5rem;
+        }
+
+        .demo-header {
+          text-align: center;
+          margin-bottom: 0.5rem;
+        }
+
+        .demo-header h2 {
+          font-size: 2rem;
+          margin-bottom: 0.4rem;
+          color: #38bdf8;
+          line-height: 1.25;
+        }
+
+        .demo-header .subtitle {
+          color: #94a3b8;
+          font-size: 0.98rem;
+        }
+
+        .demo-lang-selector-bar {
+          display: inline-flex;
+          align-items: center;
+          gap: 0.65rem;
+          background: rgba(15, 23, 42, 0.7);
+          border: 1px solid #1e293b;
+          border-radius: 9999px;
+          padding: 0.35rem 0.95rem;
+          margin-bottom: 0.85rem;
+          box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .demo-lang-selector-bar label {
+          font-size: 0.82rem;
+          font-weight: 600;
+          color: #94a3b8;
+          letter-spacing: 0.02em;
+        }
+
+        .demo-lang-select {
+          background: #0b1120;
+          border: 1px solid #334155;
+          color: #38bdf8;
+          font-family: inherit;
+          font-size: 0.84rem;
+          font-weight: 600;
+          border-radius: 6px;
+          padding: 0.28rem 1.65rem 0.28rem 0.65rem;
+          cursor: pointer;
+          appearance: none;
+          background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2338bdf8' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+          background-repeat: no-repeat;
+          background-position: right 0.5rem center;
+          transition: all 0.2s ease;
+        }
+
+        .demo-lang-select:hover,
+        .demo-lang-select:focus {
+          border-color: #38bdf8;
+          outline: none;
+        }
+
+        .demo-card {
+          background: #131926;
+          border: 1px solid #23354d;
+          border-radius: 20px;
+          padding: 1.75rem;
+          box-shadow: 0 10px 35px rgba(0, 0, 0, 0.45);
+        }
+
+        .setup-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+          gap: 1.25rem;
+          margin-bottom: 1.25rem;
+        }
+
+        .form-group {
+          display: flex;
+          flex-direction: column;
+          gap: 0.5rem;
+        }
+
+        .form-label-row {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+        }
+
+        .form-group label {
+          font-size: 0.82rem;
+          font-weight: 700;
+          text-transform: uppercase;
+          letter-spacing: 0.05em;
+          color: #94a3b8;
+        }
+
+        .value-chip {
+          font-family: 'JetBrains Mono', monospace;
+          font-size: 0.82rem;
+          font-weight: 700;
+          color: #38bdf8;
+          background: rgba(56, 189, 248, 0.1);
+          border: 1px solid rgba(56, 189, 248, 0.28);
+          padding: 0.15rem 0.55rem;
+          border-radius: 12px;
+        }
+
+        .value-chip.chip-cyan {
+          color: #67e8f9;
+          background: rgba(6, 182, 212, 0.12);
+          border-color: rgba(6, 182, 212, 0.3);
+        }
+
+        .input-row {
+          display: flex;
+          align-items: center;
+          gap: 0.75rem;
+        }
+
+        .slider {
+          flex: 1;
+          height: 10px;
+          border-radius: 5px;
+          background: #1e293b;
+          accent-color: #38bdf8;
+          cursor: pointer;
+          touch-action: pan-y;
+        }
+
+        .slider::-webkit-slider-thumb {
+          width: 24px;
+          height: 24px;
+          border-radius: 50%;
+          background: #38bdf8;
+          border: 2px solid #0b111a;
+          box-shadow: 0 0 10px rgba(56, 189, 248, 0.7);
+          cursor: pointer;
+        }
+
+        .num-input {
+          width: 68px;
+          min-height: 44px;
+          background: #0b111a;
+          border: 1px solid #334155;
+          color: #f8fafc;
+          border-radius: 10px;
+          font-size: 16px;
+          /* Prevents auto-zoom on iOS */
+          font-weight: 700;
+          text-align: center;
+        }
+
+        .segmented-control {
+          display: flex;
+          background: #0b111a;
+          border: 1px solid #2d3b4e;
+          border-radius: 10px;
+          padding: 3px;
+          gap: 3px;
+          min-height: 44px;
+        }
+
+        .seg-btn {
+          flex: 1;
+          border: none;
+          background: transparent;
+          color: #94a3b8;
+          font-size: 0.92rem;
+          font-weight: 600;
+          border-radius: 8px;
+          cursor: pointer;
+          transition: all 0.18s ease;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          user-select: none;
+        }
+
+        .seg-btn.active {
+          background: #38bdf8;
+          color: #082f49;
+          font-weight: 700;
+          box-shadow: 0 2px 8px rgba(56, 189, 248, 0.35);
+        }
+
+        .bpm-control-row {
+          display: flex;
+          align-items: center;
+          gap: 0.5rem;
+        }
+
+        .bpm-input-wrapper {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          background: #0b111a;
+          border: 1px solid #38bdf8;
+          border-radius: 10px;
+          padding: 0 0.5rem;
+          flex: 1;
+          min-height: 44px;
+        }
+
+        .bpm-input {
+          width: 72px;
+          background: transparent;
+          border: none;
+          color: #38bdf8;
+          font-weight: 800;
+          font-size: 1.25rem;
+          text-align: center;
+          outline: none;
+        }
+
+        .bpm-unit {
+          font-size: 0.8rem;
+          color: #94a3b8;
+          font-weight: 700;
+        }
+
+        .step-btn {
+          min-width: 52px;
+          min-height: 44px;
+          background: #203147;
+          border: 1px solid #334763;
+          color: #38bdf8;
+          font-weight: 800;
+          font-size: 1rem;
+          border-radius: 10px;
+          cursor: pointer;
+          transition: all 0.15s ease;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          user-select: none;
+        }
+
+        .step-btn:active {
+          background: #38bdf8;
+          color: #082f49;
+          transform: scale(0.96);
+        }
+
+        .presets-row {
+          display: flex;
+          align-items: center;
+          gap: 0.35rem;
+          flex-wrap: wrap;
+          margin-top: 0.4rem;
+        }
+
+        .presets-label {
+          font-size: 0.72rem;
+          font-weight: 700;
+          color: #64748b;
+          text-transform: uppercase;
+          letter-spacing: 0.05em;
+        }
+
+        .preset-chip {
+          background: rgba(56, 189, 248, 0.08);
+          border: 1px solid rgba(56, 189, 248, 0.22);
+          color: #7dd3fc;
+          border-radius: 14px;
+          padding: 0.2rem 0.55rem;
+          font-size: 0.78rem;
+          font-weight: 600;
+          cursor: pointer;
+          transition: all 0.15s ease;
+        }
+
+        .preset-chip:active,
+        .preset-chip.active {
+          background: #38bdf8;
+          color: #082f49;
+          font-weight: 700;
+          border-color: #38bdf8;
+        }
+
+        .estimated-tag {
+          font-size: 0.75rem;
+          color: #38bdf8;
+          opacity: 0.9;
+          margin-top: 0.2rem;
+        }
+
+        .privacy-disclaimer {
+          display: flex;
+          align-items: flex-start;
+          gap: 0.75rem;
+          background: rgba(56, 189, 248, 0.06);
+          border: 1px solid rgba(56, 189, 248, 0.22);
+          border-radius: 12px;
+          padding: 0.85rem 1rem;
+          font-size: 0.82rem;
+          line-height: 1.45;
+          color: #cbd5e1;
+        }
+
+        .privacy-icon {
+          flex-shrink: 0;
+          stroke: #38bdf8;
+          margin-top: 2px;
+        }
+
+        /* Telemetry Bar */
+        .telemetry-bar {
+          display: grid;
+          grid-template-columns: repeat(4, 1fr);
+          gap: 0.75rem;
+          background: #0b111a;
+          border: 1px solid #23354d;
+          border-radius: 14px;
+          padding: 0.85rem;
+          margin-bottom: 1.5rem;
+        }
+
+        .telemetry-item {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          background: rgba(255, 255, 255, 0.025);
+          border: 1px solid rgba(255, 255, 255, 0.04);
+          border-radius: 10px;
+          padding: 0.55rem 0.35rem;
+        }
+
+        .telemetry-label {
+          font-size: 0.68rem;
+          font-weight: 700;
+          letter-spacing: 0.06em;
+          color: #64748b;
+          margin-bottom: 0.2rem;
+        }
+
+        .telemetry-val {
+          font-size: 1.05rem;
+          font-weight: 700;
+          color: #f1f5f9;
+        }
+
+        .phase-badge {
+          color: #fbbf24;
+        }
+
+        .phase-badge.paced {
+          color: #38bdf8;
+        }
+
+        /* Garmin Smartwatch Hardware Simulation & AMOLED Display */
+        .watch-chassis-wrap {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          margin: 1.5rem 0;
+          position: relative;
+        }
+
+        .watch-bezel {
+          width: 320px;
+          height: 320px;
+          max-width: 86vw;
+          max-height: 86vw;
+          aspect-ratio: 1 / 1;
+          border-radius: 50%;
+          background: radial-gradient(circle at 45% 35%, #2a2f3d 0%, #1c202a 60%, #13161f 100%);
+          border: 4px solid #282d3b;
+          box-shadow:
+            0 16px 45px rgba(0, 0, 0, 0.85),
+            inset 0 1px 2px rgba(255, 255, 255, 0.14),
+            inset 0 -2px 6px rgba(0, 0, 0, 0.7);
+          position: relative;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          box-sizing: border-box;
+          user-select: none;
+        }
+
+        /* 12 O'clock Top White Bezel Tick Mark */
+        .bezel-tick-12 {
+          position: absolute;
+          top: 3px;
+          left: 50%;
+          transform: translateX(-50%);
+          width: 3px;
+          height: 8px;
+          background: #ffffff;
+          border-radius: 2px;
+          z-index: 10;
+        }
+
+        /* ~45° (1:45-2:00) START Button Accent Lime-Green Tick Mark */
+        .bezel-tick-start {
+          position: absolute;
+          top: 18px;
+          right: 32px;
+          width: 3.5px;
+          height: 18px;
+          background: #c6f135;
+          border-radius: 2px;
+          transform: rotate(45deg);
+          transform-origin: center center;
+          z-index: 10;
+        }
+
+        /* AMOLED Circular Display Screen */
+        .watch-screen {
+          width: 82%;
+          height: 82%;
+          border-radius: 50%;
+          background: #000000;
+          box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.95);
+          position: relative;
+          overflow: hidden;
+          box-sizing: border-box;
+          user-select: none;
+        }
+
+        /* Line 1: Coaching Hint */
+        .watch-hint {
+          position: absolute;
+          top: 16%;
+          left: 0;
+          width: 100%;
+          text-align: center;
+          font-size: 15px;
+          font-weight: 500;
+          letter-spacing: 0.01em;
+          color: #ffffff;
+          font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+          line-height: 1.2;
+          user-select: none;
+          transition: color 0.3s ease;
+        }
+
+        /* Line 2: Pacer Directive */
+        .watch-directive {
+          position: absolute;
+          top: 28%;
+          left: 0;
+          width: 100%;
+          text-align: center;
+          font-size: 32px;
+          font-weight: 900;
+          letter-spacing: 0.04em;
+          text-transform: uppercase;
+          line-height: 1;
+          color: #00ffff;
+          font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+          user-select: none;
+          transition: color 0.2s ease;
+        }
+
+        .watch-directive.exhale {
+          color: #ff9800;
+        }
+
+        .watch-directive.rest {
+          color: #fbbf24;
+          font-size: 24px;
+        }
+
+        /* Line 3: Horizontal Capsule Progress Bar */
+        .watch-bar-track {
+          position: absolute;
+          top: 48%;
+          left: 19%;
+          width: 62%;
+          height: 14px;
+          transform: translateY(-50%);
+          border-radius: 7px;
+          background: #222226;
+          overflow: hidden;
+        }
+
+        .watch-bar-fill {
+          height: 100%;
+          width: 0%;
+          border-radius: 7px;
+          background: #00ffff;
+          transition: width 0.04s linear, background-color 0.2s ease;
+          will-change: width;
+        }
+
+        .watch-bar-fill.exhale {
+          background: #ff9800;
+        }
+
+        /* Line 4: Cadence Info */
+        .watch-cadence {
+          position: absolute;
+          top: 64%;
+          left: 0;
+          width: 100%;
+          text-align: center;
+          font-size: 16.5px;
+          font-weight: 700;
+          color: #00ffff;
+          letter-spacing: 0.01em;
+          font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+          user-select: none;
+        }
+
+        /* Line 5: Live Telemetry */
+        .watch-telemetry {
+          position: absolute;
+          top: 77%;
+          left: 0;
+          width: 100%;
+          text-align: center;
+          font-size: 15.5px;
+          font-weight: 700;
+          color: #ffffff;
+          letter-spacing: 0.01em;
+          font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+          user-select: none;
+        }
+
+        /* Ergonomic Actions */
+        .pacer-actions {
+          display: flex;
+          flex-direction: column;
+          gap: 0.75rem;
+          width: 100%;
+          margin-top: 1rem;
+        }
+
+        .btn-action-primary {
+          width: 100%;
+          min-height: 50px;
+          border-radius: 12px;
+          border: none;
+          background: #38bdf8;
+          color: #082f49;
+          font-size: 1.05rem;
+          font-weight: 800;
+          letter-spacing: 0.02em;
+          cursor: pointer;
+          box-shadow: 0 4px 20px rgba(56, 189, 248, 0.35);
+          transition: all 0.2s ease;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          user-select: none;
+        }
+
+        .btn-action-primary:active {
+          transform: translateY(1px);
+        }
+
+        .btn-action-primary.paused {
+          background: #fbbf24;
+          color: #451a03;
+          box-shadow: 0 4px 20px rgba(251, 191, 36, 0.35);
+        }
+
+        .secondary-actions {
+          display: grid;
+          grid-template-columns: repeat(3, 1fr);
+          gap: 0.5rem;
+          width: 100%;
+        }
+
+        .btn-secondary,
+        .btn-outline,
+        .btn-icon {
+          min-height: 44px;
+          padding: 0.65rem 0.5rem;
+          border-radius: 10px;
+          font-size: 0.85rem;
+          font-weight: 600;
+          cursor: pointer;
+          transition: all 0.15s ease;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          text-align: center;
+          user-select: none;
+        }
+
+        .btn-secondary {
+          background: #1e293b;
+          color: #f1f5f9;
+          border: 1px solid #334155;
+        }
+
+        .btn-secondary:hover {
+          background: #334155;
+        }
+
+        .btn-outline {
+          background: transparent;
+          color: #94a3b8;
+          border: 1px solid #334155;
+        }
+
+        .btn-outline:hover {
+          color: #f1f5f9;
+          border-color: #64748b;
+        }
+
+        .btn-icon {
+          background: #0f172a;
+          border: 1px solid #334155;
+          color: #cbd5e1;
+        }
+
+        .cue-indicators {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          gap: 0.5rem;
+          flex-wrap: wrap;
+          margin-top: 0.25rem;
+        }
+
+        .cue-badge {
+          font-size: 0.72rem;
+          color: #94a3b8;
+          background: rgba(255, 255, 255, 0.035);
+          border: 1px solid rgba(255, 255, 255, 0.06);
+          border-radius: 10px;
+          padding: 0.2rem 0.55rem;
+        }
+
+        /* Technique Rules Grid (Garmin Stage 3 Pre-Pacing Prompts) */
+        .technique-rules-container {
+          margin-top: 1.5rem;
+          padding-top: 1.25rem;
+          border-top: 1px solid #1e293b;
+        }
+
+        .tech-header {
+          display: flex;
+          align-items: center;
+          gap: 0.75rem;
+          margin-bottom: 0.9rem;
+        }
+
+        .tech-badge {
+          font-size: 0.72rem;
+          font-weight: 700;
+          letter-spacing: 0.05em;
+          text-transform: uppercase;
+          color: #38bdf8;
+          background: rgba(56, 189, 248, 0.12);
+          border: 1px solid rgba(56, 189, 248, 0.25);
+          border-radius: 6px;
+          padding: 0.2rem 0.5rem;
+        }
+
+        .tech-header h3 {
+          font-size: 0.95rem;
+          font-weight: 700;
+          color: #f1f5f9;
+          margin: 0;
+        }
+
+        .technique-grid {
+          display: grid;
+          grid-template-columns: repeat(4, 1fr);
+          gap: 0.75rem;
+        }
+
+        .tech-card {
+          background: #0b1120;
+          border: 1px solid #1e293b;
+          border-radius: 12px;
+          padding: 0.85rem 0.65rem;
+          text-align: center;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          gap: 0.3rem;
+          transition: border-color 0.2s ease, transform 0.2s ease;
+        }
+
+        .tech-card:hover {
+          border-color: #38bdf8;
+          transform: translateY(-2px);
+        }
+
+        .tech-icon {
+          font-size: 1.35rem;
+          line-height: 1;
+          margin-bottom: 0.15rem;
+        }
+
+        .tech-label {
+          font-size: 0.74rem;
+          font-weight: 600;
+          color: #94a3b8;
+          text-transform: uppercase;
+          letter-spacing: 0.03em;
+        }
+
+        .tech-val {
+          font-size: 0.84rem;
+          font-weight: 700;
+          color: #38bdf8;
+          line-height: 1.25;
+          white-space: pre-line;
+        }
+
+        /* Integrated ANT+ Sensor Bar */
+        .ant-sensor-bar {
+          width: 100%;
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          flex-wrap: wrap;
+          gap: 0.85rem;
+          padding: 0.85rem 1.1rem;
+          background: #090d16;
+          border: 1px solid #1f2a3e;
+          border-radius: 12px;
+          margin-top: 0.25rem;
+          box-sizing: border-box;
+        }
+
+        .ant-sensor-actions {
+          display: flex;
+          gap: 0.6rem;
+          flex-wrap: wrap;
+          align-items: center;
+        }
+
+        .ant-sensor-status {
+          display: flex;
+          align-items: center;
+          gap: 0.55rem;
+          font-family: 'JetBrains Mono', monospace;
+          font-size: 0.76rem;
+          color: #94a3b8;
+          max-width: 100%;
+        }
+
+        .ant-status-text {
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+        }
+
+        /* Collapsible Live ANT+ Charts & Biometrics Section */
+        .ant-charts-collapse {
+          width: 100%;
+          display: flex;
+          flex-direction: column;
+          gap: 1.25rem;
+          margin-top: 0.5rem;
+          padding: 1.25rem 0 0.5rem 0;
+          border-top: 1px dashed #1e293b;
+          box-sizing: border-box;
+          animation: antFadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @keyframes antFadeIn {
+          from {
+            opacity: 0;
+            transform: translateY(-8px);
+          }
+
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+
+        .ant-charts-header {
+          display: flex;
+          justify-content: space-between;
+          align-items: flex-start;
+          flex-wrap: wrap;
+          gap: 1rem;
+          padding-bottom: 0.5rem;
+        }
+
+        .ant-collapse-actions {
+          display: flex;
+          align-items: center;
+        }
+
+        .ant-title-group {
+          display: flex;
+          flex-direction: column;
+          gap: 0.35rem;
+        }
+
+        .ant-title-row {
+          display: flex;
+          align-items: center;
+          gap: 0.65rem;
+          flex-wrap: wrap;
+        }
+
+        .ant-badge {
+          font-size: 0.72rem;
+          font-weight: 800;
+          letter-spacing: 0.05em;
+          text-transform: uppercase;
+          color: #10b981;
+          background: rgba(16, 185, 129, 0.12);
+          border: 1px solid rgba(16, 185, 129, 0.3);
+          border-radius: 6px;
+          padding: 0.2rem 0.55rem;
+        }
+
+        .ant-charts-header h4 {
+          font-size: 1.15rem;
+          font-weight: 800;
+          color: #f1f5f9;
+          margin: 0;
+        }
+
+        .ant-subtitle {
+          font-size: 0.84rem;
+          color: #94a3b8;
+          margin: 0;
+        }
+
+        .btn-ant-connect,
+        .btn-ant-simulate,
+        .btn-ant-export {
+          padding: 0.55rem 0.95rem;
+          border-radius: 10px;
+          font-size: 0.82rem;
+          font-weight: 700;
+          cursor: pointer;
+          transition: all 0.18s ease;
+          display: flex;
+          align-items: center;
+          gap: 0.4rem;
+          user-select: none;
+        }
+
+        .btn-ant-connect {
+          background: #0284c7;
+          color: #ffffff;
+          border: 1px solid #0ea5e9;
+          box-shadow: 0 2px 12px rgba(2, 132, 199, 0.35);
+        }
+
+        .btn-ant-connect:hover {
+          background: #0369a1;
+        }
+
+        .btn-ant-connect.active {
+          background: #10b981;
+          border-color: #34d399;
+          color: #064e3b;
+          box-shadow: 0 2px 12px rgba(16, 185, 129, 0.4);
+        }
+
+        .btn-ant-simulate {
+          background: #1e293b;
+          color: #cbd5e1;
+          border: 1px solid #334155;
+        }
+
+        .btn-ant-simulate:hover {
+          background: #334155;
+          color: #f8fafc;
+        }
+
+        .btn-ant-simulate.active {
+          background: rgba(245, 158, 11, 0.18);
+          border-color: #f59e0b;
+          color: #fbbf24;
+        }
+
+        .btn-ant-export {
+          background: transparent;
+          color: #94a3b8;
+          border: 1px solid #334155;
+        }
+
+        .btn-ant-export:hover {
+          color: #f1f5f9;
+          border-color: #64748b;
+        }
+
+        /* Session Mode Switcher */
+        .session-mode-bar {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 0.75rem;
+          margin-bottom: 1.5rem;
+        }
+
+        .mode-tab-btn {
+          display: flex;
+          align-items: center;
+          gap: 0.85rem;
+          padding: 0.85rem 1.15rem;
+          background: #090d16;
+          border: 1px solid #1f2a3e;
+          border-radius: 14px;
+          color: #94a3b8;
+          cursor: pointer;
+          transition: all 0.2s ease;
+          text-align: left;
+        }
+
+        .mode-tab-btn:hover {
+          border-color: #38bdf8;
+          color: #f1f5f9;
+        }
+
+        .mode-tab-btn.active {
+          background: rgba(0, 229, 255, 0.08);
+          border-color: #00e5ff;
+          box-shadow: 0 0 16px rgba(0, 229, 255, 0.2);
+          color: #ffffff;
+        }
+
+        .mode-tab-icon {
+          font-size: 1.5rem;
+          line-height: 1;
+        }
+
+        .mode-tab-text {
+          display: flex;
+          flex-direction: column;
+          gap: 0.15rem;
+        }
+
+        .mode-tab-text strong {
+          font-size: 0.95rem;
+          font-weight: 700;
+          color: inherit;
+        }
+
+        .mode-tab-text small {
+          font-size: 0.75rem;
+          color: #64748b;
+        }
+
+        .mode-tab-btn.active .mode-tab-text small {
+          color: #38bdf8;
+        }
+
+        /* Training Config Row */
+        .training-config-row {
+          display: flex;
+          flex-wrap: wrap;
+          align-items: center;
+          justify-content: space-between;
+          gap: 1rem;
+          background: #090d16;
+          border: 1px solid #1f2a3e;
+          border-radius: 12px;
+          padding: 0.85rem 1.15rem;
+          margin-bottom: 1.25rem;
+        }
+
+        .training-config-group {
+          display: flex;
+          align-items: center;
+          gap: 0.75rem;
+          flex-wrap: wrap;
+        }
+
+        .config-lbl {
+          font-size: 0.8rem;
+          font-weight: 700;
+          color: #94a3b8;
+          text-transform: uppercase;
+          letter-spacing: 0.03em;
+        }
+
+        .duration-control .seg-btn {
+          padding: 0.35rem 0.75rem;
+          font-size: 0.8rem;
+        }
+
+        .baseline-control-wrapper {
+          display: flex;
+          align-items: center;
+          gap: 0.5rem;
+        }
+
+        .baseline-val-chip {
+          background: #0f172a;
+          border: 1px solid #334155;
+          border-radius: 8px;
+          padding: 0.3rem 0.6rem;
+          font-family: 'JetBrains Mono', monospace;
+          font-weight: 700;
+          font-size: 0.85rem;
+          color: #00e5ff;
+        }
+
+        .goal-chip {
+          background: rgba(0, 255, 102, 0.12);
+          border: 1px solid #00ff66;
+          border-radius: 8px;
+          padding: 0.3rem 0.6rem;
+          font-family: 'JetBrains Mono', monospace;
+          font-weight: 700;
+          font-size: 0.8rem;
+          color: #00ff66;
+        }
+
+        /* Metrics bar */
+        .ant-metrics-bar {
+          display: grid;
+          grid-template-columns: repeat(5, 1fr);
+          gap: 0.75rem;
+        }
+
+        .ant-metric-pill {
+          background: #0b1120;
+          border: 1px solid #1e293b;
+          border-radius: 12px;
+          padding: 0.75rem 0.85rem;
+          display: flex;
+          flex-direction: column;
+          gap: 0.2rem;
+        }
+
+        .metric-lbl {
+          font-size: 0.72rem;
+          font-weight: 600;
+          color: #94a3b8;
+          text-transform: uppercase;
+          letter-spacing: 0.04em;
+        }
+
+        .metric-num {
+          font-size: 1.25rem;
+          font-weight: 800;
+          font-family: 'JetBrains Mono', monospace;
+          line-height: 1.1;
+        }
+
+        .metric-num small {
+          font-size: 0.75rem;
+          font-weight: 600;
+          color: #94a3b8;
+          font-family: inherit;
+        }
+
+        .hr-num {
+          color: #f43f5e;
+        }
+
+        .rr-num {
+          color: #00e5ff;
+        }
+
+        .rmssd-num {
+          color: #10b981;
+        }
+
+        .phase-num {
+          color: #fbbf24;
+        }
+
+        .rsa-num {
+          color: #00ff66;
+        }
+
+        .ant-debug-bar {
+          font-family: 'JetBrains Mono', monospace;
+          font-size: 0.76rem;
+          color: #94a3b8;
+          background: #090d16;
+          border: 1px solid #1a2234;
+          border-radius: 8px;
+          padding: 0.45rem 0.75rem;
+          display: flex;
+          align-items: center;
+          gap: 0.5rem;
+          overflow-x: auto;
+          white-space: nowrap;
+        }
+
+        .status-indicator {
+          width: 8px;
+          height: 8px;
+          border-radius: 50%;
+          background: #64748b;
+          flex-shrink: 0;
+          transition: background-color 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .status-indicator.active {
+          background: #10b981;
+          box-shadow: 0 0 10px #10b981;
+        }
+
+        .status-indicator.sim {
+          background: #f59e0b;
+          box-shadow: 0 0 10px #f59e0b;
+        }
+
+        /* Superimposed Hero Graph */
+        .graph-container {
+          background: #090d16;
+          border: 1px solid #1f2a3e;
+          border-radius: 14px;
+          padding: 1rem 1.15rem;
+          display: flex;
+          flex-direction: column;
+          gap: 0.75rem;
+        }
+
+        .graph-header {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          flex-wrap: wrap;
+          gap: 0.5rem;
+        }
+
+        .graph-title-row {
+          display: flex;
+          align-items: center;
+          gap: 0.5rem;
+        }
+
+        .graph-title-row h4 {
+          font-size: 0.95rem;
+          font-weight: 700;
+          color: #f1f5f9;
+          margin: 0;
+        }
+
+        .graph-legend {
+          display: flex;
+          align-items: center;
+          gap: 1.25rem;
+          font-size: 0.76rem;
+          font-weight: 600;
+        }
+
+        .legend-item {
+          display: flex;
+          align-items: center;
+          gap: 0.4rem;
+          color: #cbd5e1;
+        }
+
+        .legend-line {
+          width: 16px;
+          height: 3px;
+          border-radius: 2px;
+        }
+
+        .legend-line.cyan {
+          background: #00e5ff;
+          box-shadow: 0 0 8px rgba(0, 229, 255, 0.6);
+        }
+
+        .legend-line.red {
+          background: #ff3366;
+          box-shadow: 0 0 8px rgba(255, 51, 102, 0.6);
+        }
+
+        .canvas-wrapper {
+          position: relative;
+          width: 100%;
+          border-radius: 10px;
+          overflow: hidden;
+          background: #05080f;
+          border: 1px solid #151d2c;
+        }
+
+        .live-canvas {
+          width: 100%;
+          height: 210px;
+          display: block;
+        }
+
+        .canvas-watermark {
+          position: absolute;
+          bottom: 8px;
+          right: 12px;
+          font-family: 'JetBrains Mono', monospace;
+          font-size: 0.65rem;
+          color: rgba(255, 255, 255, 0.15);
+          letter-spacing: 0.08em;
+          user-select: none;
+          pointer-events: none;
+        }
+
+        /* Biofeedback Primary Grid */
+        .biofeedback-primary-grid {
+          display: grid;
+          grid-template-columns: 1fr 180px;
+          gap: 0.75rem;
+        }
+
+        .rsa-lightbar-container {
+          display: flex;
+          flex-direction: column;
+        }
+
+        .badge-excursion {
+          font-size: 0.68rem;
+          font-weight: 700;
+          padding: 0.2rem 0.5rem;
+          border-radius: 4px;
+          background: rgba(0, 255, 102, 0.15);
+          color: #00ff66;
+          border: 1px solid rgba(0, 255, 102, 0.3);
+        }
+
+        .lightbar-gauge-wrapper {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          gap: 0.5rem;
+          width: 100%;
+        }
+
+        .lightbar-canvas {
+          width: 100%;
+          height: 210px;
+          display: block;
+          background: #05080f;
+          border: 1px solid #151d2c;
+          border-radius: 10px;
+        }
+
+        .lightbar-stats {
+          width: 100%;
+          display: flex;
+          flex-direction: column;
+          gap: 0.2rem;
+          font-size: 0.72rem;
+          font-family: 'JetBrains Mono', monospace;
+          color: #94a3b8;
+          padding: 0.35rem 0.5rem;
+          background: #05080f;
+          border-radius: 6px;
+          border: 1px solid #151d2c;
+        }
+
+        .lb-stat-row {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+        }
+
+        .lb-val-accent {
+          color: #00ff66;
+        }
+
+        /* Moving 60s Frequency Analysis (FFT Spectrum) */
+        .fft-spectrum-container {
+          margin-top: 0.25rem;
+        }
+
+        .fft-spectrum-container .live-canvas {
+          height: 175px;
+        }
+
+        .fft-window-badge {
+          font-size: 0.7rem;
+          color: #64748b;
+          font-family: 'JetBrains Mono', monospace;
+          margin-left: 0.5rem;
+        }
+
+        .legend-box {
+          width: 10px;
+          height: 10px;
+          border-radius: 2px;
+          display: inline-block;
+          vertical-align: middle;
+          margin-right: 3px;
+        }
+
+        .legend-box.vlf {
+          background: #7c3aed;
+        }
+
+        .legend-box.lf {
+          background: #00e5ff;
+          box-shadow: 0 0 6px #00e5ff;
+        }
+
+        .legend-box.hf {
+          background: #3b82f6;
+        }
+
+        .fft-readout-watermark {
+          position: absolute;
+          bottom: 8px;
+          right: 12px;
+          font-family: 'JetBrains Mono', monospace;
+          font-size: 0.7rem;
+          color: #00e5ff;
+          letter-spacing: 0.04em;
+          font-weight: 600;
+          pointer-events: none;
+        }
+
+        /* Modal Summary */
+        .training-summary-modal-backdrop {
+          position: fixed;
+          top: 0;
+          left: 0;
+          width: 100vw;
+          height: 100vh;
+          background: rgba(0, 0, 0, 0.85);
+          backdrop-filter: blur(10px);
+          z-index: 9999;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          padding: 1.5rem;
+        }
+
+        .training-summary-card {
+          background: #090d16;
+          border: 1px solid #00e5ff;
+          box-shadow: 0 0 50px rgba(0, 229, 255, 0.25);
+          border-radius: 20px;
+          max-width: 540px;
+          width: 100%;
+          padding: 2rem;
+          text-align: center;
+          animation: popIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @keyframes popIn {
+          from { opacity: 0; transform: scale(0.92); }
+          to { opacity: 1; transform: scale(1); }
+        }
+
+        .summary-celebration-icon {
+          font-size: 2.75rem;
+          margin-bottom: 0.5rem;
+        }
+
+        .training-summary-card h3 {
+          font-size: 1.6rem;
+          font-weight: 800;
+          color: #f1f5f9;
+          margin-bottom: 0.25rem;
+        }
+
+        .summary-subtitle {
+          font-size: 0.9rem;
+          color: #94a3b8;
+          margin-bottom: 1.5rem;
+        }
+
+        .summary-stats-grid {
+          display: grid;
+          grid-template-columns: repeat(2, 1fr);
+          gap: 0.75rem;
+          margin-bottom: 1.75rem;
+          text-align: left;
+        }
+
+        .summary-stat-box {
+          background: #0f1422;
+          border: 1px solid #1e293b;
+          border-radius: 12px;
+          padding: 0.85rem 1rem;
+          display: flex;
+          flex-direction: column;
+          gap: 0.2rem;
+        }
+
+        .summary-stat-box.highlight {
+          border-color: #00ff66;
+          background: rgba(0, 255, 102, 0.05);
+        }
+
+        .sum-lbl {
+          font-size: 0.72rem;
+          font-weight: 700;
+          color: #64748b;
+          text-transform: uppercase;
+        }
+
+        .sum-val {
+          font-size: 1.35rem;
+          font-weight: 800;
+          font-family: 'JetBrains Mono', monospace;
+          color: #f1f5f9;
+        }
+
+        .summary-stat-box.highlight .sum-val {
+          color: #00ff66;
+        }
+
+        .sum-delta {
+          font-size: 0.72rem;
+          font-weight: 600;
+          color: #38bdf8;
+        }
+
+        .summary-modal-actions {
+          display: flex;
+          gap: 0.75rem;
+          justify-content: center;
+        }
+
+        /* Sparklines Grid */
+        .sparklines-grid {
+          display: grid;
+          grid-template-columns: repeat(3, 1fr);
+          gap: 0.75rem;
+        }
+
+        .sparkline-card {
+          background: #090d16;
+          border: 1px solid #1f2a3e;
+          border-radius: 12px;
+          padding: 0.65rem 0.75rem;
+          display: flex;
+          flex-direction: column;
+          gap: 0.35rem;
+        }
+
+        .sparkline-label {
+          display: flex;
+          align-items: center;
+          gap: 0.4rem;
+          font-size: 0.72rem;
+          font-weight: 700;
+          color: #94a3b8;
+          text-transform: uppercase;
+          letter-spacing: 0.03em;
+        }
+
+        .sparkline-color {
+          width: 8px;
+          height: 8px;
+          border-radius: 2px;
+        }
+
+        .sparkline-color.hr {
+          background: #f43f5e;
+        }
+
+        .sparkline-color.rr {
+          background: #00e5ff;
+        }
+
+        .sparkline-color.rmssd {
+          background: #10b981;
+        }
+
+        .spark-canvas {
+          width: 100%;
+          height: 75px;
+          display: block;
+          border-radius: 6px;
+          background: #05080f;
+        }
+
+        .ant-setup-hint {
+          font-size: 0.8rem;
+          color: #94a3b8;
+        }
+
+        .ant-setup-hint summary {
+          cursor: pointer;
+          font-weight: 600;
+          color: #38bdf8;
+          user-select: none;
+        }
+
+        .ant-setup-hint p {
+          margin-top: 0.5rem;
+          line-height: 1.45;
+          padding: 0.65rem 0.85rem;
+          background: #090d16;
+          border: 1px solid #1a2234;
+          border-radius: 8px;
+        }
+
+        /* Mobile Adjustments */
+        @media (max-width: 640px) {
+          .demo-section {
+            padding: 1.5rem 0.25rem;
+          }
+
+          .demo-card {
+            padding: 1.25rem 0.9rem;
+            border-radius: 16px;
+          }
+
+          .session-mode-bar {
+            grid-template-columns: 1fr;
+          }
+
+          .training-config-row {
+            flex-direction: column;
+            align-items: stretch;
+            gap: 0.75rem;
+          }
+
+          .biofeedback-primary-grid {
+            grid-template-columns: 1fr;
+          }
+
+          .summary-stats-grid {
+            grid-template-columns: 1fr;
+          }
+
+          .setup-grid {
+            grid-template-columns: 1fr;
+            gap: 1.15rem;
+          }
+
+          .telemetry-bar {
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0.55rem;
+            padding: 0.65rem;
+          }
+
+          .technique-grid {
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0.65rem;
+          }
+
+          .ant-sensor-bar {
+            flex-direction: column;
+            align-items: stretch;
+            gap: 0.65rem;
+            padding: 0.75rem;
+          }
+
+          .ant-sensor-actions {
+            width: 100%;
+          }
+
+          .ant-sensor-status {
+            justify-content: center;
+            font-size: 0.72rem;
+            white-space: normal;
+            text-align: center;
+          }
+
+          .ant-charts-header {
+            flex-direction: column;
+            align-items: stretch;
+            gap: 0.65rem;
+          }
+
+          .ant-metrics-bar {
+            grid-template-columns: repeat(2, 1fr);
+          }
+
+          .sparklines-grid {
+            grid-template-columns: 1fr;
+          }
+
+          .btn-ant-connect,
+          .btn-ant-simulate,
+          .btn-ant-export {
+            flex: 1 1 auto;
+            justify-content: center;
+          }
+
+          .watch-chassis-wrap {
+            margin: 1.25rem 0;
+          }
+
+          .watch-bezel {
+            width: min(290px, 84vw);
+            height: min(290px, 84vw);
+          }
+
+          .bezel-tick-start {
+            top: 16px;
+            right: 28px;
+            height: 16px;
+          }
+
+          .watch-directive {
+            font-size: 28px;
+          }
+
+          .watch-hint {
+            font-size: 13.5px;
+          }
+
+          .watch-cadence {
+            font-size: 15px;
+          }
+
+          .watch-telemetry {
+            font-size: 14px;
+          }
+        }
+
+        @media (max-width: 380px) {
+          .secondary-actions {
+            grid-template-columns: 1fr 1fr;
+          }
+
+          .btn-icon {
+            grid-column: span 2;
+          }
+
+          .bpm-control-row {
+            flex-wrap: wrap;
+          }
+        }

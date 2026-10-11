@@ -1,0 +1,964 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Peak Frequency — Standalone Interactive Breath Pacer</title>
+  <meta name="description"
+    content="Standalone Garmin HRV resonance breath pacer simulator based on the Lehrer Protocol. Calibrate and pace your breathing cadence.">
+  <link rel="icon" type="image/png" href="assets/app_icon_512x512.png">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap"
+    rel="stylesheet">
+
+  <!-- Shared Pacer Component Styles -->
+  <link rel="stylesheet" href="assets/pacer.css">
+
+  <style>
+    :root {
+      --bg-dark: #07090e;
+      --bg-surface: #0f141f;
+      --bg-card: #151c2c;
+      --border-subtle: #232d42;
+      --cyan: #00e5ff;
+      --cyan-glow: rgba(0, 229, 255, 0.25);
+      --amber: #ffaa00;
+      --green: #00e676;
+    }
+
+    body {
+      background-color: var(--bg-dark);
+      color: #c3ccdb;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .standalone-nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 1.5rem;
+      border-bottom: 1px solid var(--border-subtle);
+      background: rgba(7, 9, 14, 0.9);
+      backdrop-filter: blur(10px);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      font-weight: 700;
+      font-size: 1.15rem;
+      color: #f4f7fc;
+      text-decoration: none;
+    }
+
+    .brand img {
+      width: 28px;
+      height: 28px;
+      border-radius: 6px;
+    }
+
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .btn-back {
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: var(--cyan);
+      text-decoration: none;
+      padding: 0.4rem 0.8rem;
+      border-radius: 6px;
+      border: 1px solid rgba(0, 229, 255, 0.2);
+      transition: all 0.2s ease;
+    }
+
+    .btn-back:hover {
+      background: rgba(0, 229, 255, 0.1);
+      border-color: var(--cyan);
+    }
+
+    .standalone-footer {
+      margin-top: auto;
+      text-align: center;
+      padding: 1.5rem;
+      font-size: 0.8rem;
+      color: #64748b;
+      border-top: 1px solid var(--border-subtle);
+    }
+  </style>
+
+  <!-- Connect IQ 14-Locale Translations -->
+  <script src="assets/translations.js?v=20261002"></script>
+</head>
+
+<body>
+  <nav class="standalone-nav">
+    <a href="index.html" class="brand">
+      <img src="assets/app_icon_512x512.png" alt="Peak Frequency Icon">
+      <span>Peak Frequency</span>
+    </a>
+    <div class="nav-right">
+      <div class="demo-lang-selector-bar" style="margin: 0;">
+        <select id="demoLangSelect" class="demo-lang-select" aria-label="Select Demo Watch Language">
+          <option value="en">🇬🇧 English</option>
+          <option value="de">🇩🇪 Deutsch</option>
+          <option value="es">🇪🇸 Español</option>
+          <option value="fr">🇫🇷 Français</option>
+          <option value="it">🇮🇹 Italiano</option>
+          <option value="nl">🇳🇱 Nederlands</option>
+          <option value="pl">🇵🇱 Polski</option>
+          <option value="pt">🇵🇹 Português</option>
+          <option value="sv">🇸🇪 Svenska</option>
+          <option value="da">🇩🇰 Dansk</option>
+          <option value="nb">🇳🇴 Norsk</option>
+          <option value="fi">🇫🇮 Suomi</option>
+          <option value="cs">🇨🇿 Čeština</option>
+          <option value="hu">🇭🇺 Magyar</option>
+        </select>
+      </div>
+      <a href="index.html" class="btn-back">← Back to Overview</a>
+    </div>
+  </nav>
+
+  <!-- Main Demo Container -->
+  <main class="demo-section" style="padding-top: 1.5rem;">
+    <div class="demo-container" id="pacerDemoMount">
+      <!-- Session Mode Switcher -->
+      <div class="session-mode-bar" role="tablist" aria-label="Session Mode">
+        <button type="button" class="mode-tab-btn active" id="tabModeTest" role="tab" aria-selected="true">
+          <span class="mode-tab-icon">🔬</span>
+          <div class="mode-tab-text">
+            <strong data-i18n="lbl_mode_test_title">Resonance Test</strong>
+            <small data-i18n="lbl_mode_test_sub">Assessment Protocol (Stepped Cadences)</small>
+          </div>
+        </button>
+        <button type="button" class="mode-tab-btn" id="tabModeTrain" role="tab" aria-selected="false">
+          <span class="mode-tab-icon">🎯</span>
+          <div class="mode-tab-text">
+            <strong data-i18n="lbl_mode_train_title">Daily Biofeedback Training</strong>
+            <small data-i18n="lbl_mode_train_sub">Lehrer Protocol (10–20 Min Practice &amp; Real-Time RSA)</small>
+          </div>
+        </button>
+      </div>
+
+      <!-- Parameter Setup Card -->
+      <div class="demo-card setup-card">
+        <!-- Training Duration & Baseline Settings -->
+        <div class="training-config-row" id="trainingConfigRow" style="display: none;">
+          <div class="training-config-group">
+            <span class="config-lbl" data-i18n="lbl_train_duration">Session Duration:</span>
+            <div class="segmented-control duration-control" role="group" aria-label="Training Duration">
+              <button type="button" class="seg-btn duration-btn" data-min="10">10 Min</button>
+              <button type="button" class="seg-btn duration-btn" data-min="15">15 Min</button>
+              <button type="button" class="seg-btn duration-btn active" data-min="20">20 Min (Standard)</button>
+            </div>
+          </div>
+          <div class="training-config-group">
+            <span class="config-lbl" data-i18n="lbl_baseline_rsa">Baseline RSA (Rest):</span>
+            <div class="baseline-control-wrapper">
+              <button type="button" class="step-btn" id="baselineMinus" aria-label="Decrease baseline RSA">−1</button>
+              <span class="baseline-val-chip" id="baselineValDisplay">10.0 <small>BPM</small></span>
+              <button type="button" class="step-btn" id="baselinePlus" aria-label="Increase baseline RSA">+1</button>
+              <span class="goal-chip" id="goalTargetDisplay">Target (2×): 20.0 BPM</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="setup-grid">
+          <!-- Height Input -->
+          <div class="form-group">
+            <div class="form-label-row">
+              <label for="userHeight" data-i18n="height">Height</label>
+              <span class="value-chip" id="heightBadge"><span id="heightVal">175</span> cm</span>
+            </div>
+            <div class="input-row">
+              <input type="range" id="userHeight" min="130" max="220" value="175" class="slider" aria-label="Height in centimeters">
+              <input type="number" id="userHeightNum" min="130" max="220" value="175" class="num-input" aria-label="Height number in centimeters">
+            </div>
+          </div>
+
+          <!-- Sex Input -->
+          <div class="form-group">
+            <div class="form-label-row">
+              <label for="userSex" data-i18n="biological_sex">Biological Sex</label>
+            </div>
+            <div class="segmented-control" role="group" aria-label="Biological Sex">
+              <button type="button" class="seg-btn active" data-val="male" id="sexMaleBtn">♂ Male</button>
+              <button type="button" class="seg-btn" data-val="female" id="sexFemaleBtn">♀ Female</button>
+            </div>
+            <select id="userSex" class="styled-select sr-only" aria-hidden="true" tabindex="-1">
+              <option value="male" selected>Male</option>
+              <option value="female">Female</option>
+            </select>
+          </div>
+
+          <!-- Target Cadence Stepper & Presets -->
+          <div class="form-group bpm-form-group">
+            <div class="form-label-row">
+              <label for="targetBpm" data-i18n="target_cadence">Target Pacing Rate</label>
+              <span class="value-chip chip-cyan" id="cycleSecHint">10.6s cycle</span>
+            </div>
+            <div class="bpm-control-row">
+              <button type="button" class="step-btn" id="bpmMinus" aria-label="Decrease BPM by 0.05">−0.05</button>
+              <div class="bpm-input-wrapper">
+                <input type="number" id="targetBpm" min="3.50" max="9.00" step="0.05" value="5.65" class="bpm-input" aria-label="Target BPM">
+                <span class="bpm-unit">BPM</span>
+              </div>
+              <button type="button" class="step-btn" id="bpmPlus" aria-label="Increase BPM by 0.05">+0.05</button>
+            </div>
+            <div class="presets-row" role="group" aria-label="Quick Cadence Presets">
+              <span class="presets-label" data-i18n="presets">Presets:</span>
+              <button type="button" class="preset-chip" data-bpm="5.00">5.0</button>
+              <button type="button" class="preset-chip" data-bpm="5.50">5.5</button>
+              <button type="button" class="preset-chip active" data-bpm="5.65">5.65</button>
+              <button type="button" class="preset-chip" data-bpm="6.00">6.0</button>
+              <button type="button" class="preset-chip" data-bpm="6.50">6.5</button>
+            </div>
+            <small class="estimated-tag" id="estimatedTag">Estimated from body metrics</small>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pacer Display Card -->
+      <div class="demo-card pacer-card">
+        <!-- Session Telemetry -->
+        <div class="telemetry-bar">
+          <div class="telemetry-item">
+            <span class="telemetry-label" data-i18n="telemetry_session_time">SESSION TIME</span>
+            <span class="telemetry-val" id="totalTimeDisplay">00:00</span>
+          </div>
+          <div class="telemetry-item">
+            <span class="telemetry-label" data-i18n="telemetry_round">ROUND</span>
+            <span class="telemetry-val" id="roundDisplay">Round 1</span>
+          </div>
+          <div class="telemetry-item">
+            <span class="telemetry-label" data-i18n="telemetry_phase">PHASE</span>
+            <span class="telemetry-val phase-badge" id="phaseDisplay">Rest (2:00)</span>
+          </div>
+          <div class="telemetry-item">
+            <span class="telemetry-label" data-i18n="telemetry_breath_cycle">BREATH CYCLE</span>
+            <span class="telemetry-val" id="cycleDisplay">-- / --</span>
+          </div>
+        </div>
+
+        <!-- Garmin Smartwatch AMOLED Simulation -->
+        <div class="watch-chassis-wrap">
+          <div class="watch-bezel" id="watchBezel">
+            <div class="bezel-tick bezel-tick-12" title="12 o'clock notch"></div>
+            <div class="bezel-tick bezel-tick-start" title="START button accent"></div>
+
+            <div class="watch-screen" id="watchScreen">
+              <!-- 5-Tier Content Hierarchy -->
+              <div class="watch-hint" id="watchHint">Through nose</div>
+              <div class="watch-directive" id="watchDirective">BREATHE IN</div>
+              <div class="watch-bar-track" id="watchBarTrack" style="display: none;">
+                <div class="watch-bar-fill" id="watchBarFill" style="width: 0%;"></div>
+              </div>
+              <div class="watch-cadence" id="watchCadence">R1 Center: 5.65 BPM</div>
+              <div class="watch-telemetry" id="watchTelemetry">HR: -- | 120 s left</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Pacer Actions -->
+        <div class="pacer-actions">
+          <button type="button" class="btn-action-primary" id="btnStartPause">
+            <span id="btnStartPauseText">Start Session</span>
+          </button>
+          <div class="secondary-actions">
+            <button type="button" class="btn-secondary" id="btnReset" data-i18n="btn_reset">Reset</button>
+            <button type="button" class="btn-outline" id="btnSkipPhase" data-i18n="btn_skip_phase">Skip Phase</button>
+            <button type="button" class="btn-icon" id="btnAudioToggle" title="Toggle audio cues">
+              <span id="audioIcon">🔊 Cues ON</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Integrated ANT+ Sensor Bar -->
+        <div class="ant-sensor-bar">
+          <div class="ant-sensor-actions">
+            <button type="button" class="btn-ant-connect" id="btnConnectAnt">
+              <span id="btnConnectAntText" data-i18n="ant_btn_connect">🔌 Connect ANT+ Stick</span>
+            </button>
+            <button type="button" class="btn-ant-simulate" id="btnSimulateAnt">
+              <span id="btnSimulateText" data-i18n="ant_btn_simulate">⚡ Live Simulation</span>
+            </button>
+          </div>
+          <div class="ant-sensor-status" id="antStatusContainer">
+            <span class="status-indicator" id="antStatusDot"></span>
+            <span id="lblAntStatus" class="ant-status-text">ANT+ Status: Ready for ANT+ USB stick or Live Simulation</span>
+          </div>
+        </div>
+
+        <!-- Windows Zadig / WebUSB Connection Hint (Always Visible) -->
+        <div class="ant-setup-hint">
+          <details>
+            <summary id="driverSetupSummary" data-i18n="ant_driver_setup">ℹ️ Windows Driver Setup for ANT+ USB Sticks (Zadig / WinUSB)</summary>
+            <p id="driverSetupDetails">On Windows, ANT+ USB sticks use a locked driver by default. To enable direct WebUSB access in Chrome/Edge, open <a href="https://zadig.akeo.ie/" target="_blank" rel="noopener">Zadig</a>, select <em>Options → List All Devices</em>, select your ANT USB stick, choose <strong>WinUSB</strong> as target driver, and click <em>Replace Driver</em>. (Mac &amp; Linux connect out-of-the-box).</p>
+          </details>
+        </div>
+
+        <!-- Collapsible Live ANT+ Charts & Biometrics Section (Hidden until connected) -->
+        <div class="ant-charts-collapse" id="antChartsCollapse" style="display: none;">
+          <!-- Header with Live Badge, Title, and Export Button -->
+          <div class="ant-charts-header">
+            <div class="ant-title-group">
+              <div class="ant-title-row">
+                <span class="ant-badge" id="antBadge" data-i18n="ant_badge">ANT+ WebUSB</span>
+                <h4 id="antCardHeading" data-i18n="ant_heading">Live ANT+ Monitoring &amp; Superimposed Waveform</h4>
+              </div>
+              <p class="ant-subtitle" id="antSubtitle" data-i18n="ant_sub">Real-time beat-by-beat RR interval deframing &amp; 0° respiration phase synchrony</p>
+            </div>
+            <div class="ant-collapse-actions">
+              <button type="button" class="btn-ant-export" id="btnExportJsonl" title="Export RR &amp; Respiration Session Log as JSONL">
+                <span id="btnExportJsonlText" data-i18n="ant_btn_export">📥 Export JSONL</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Real-Time Metric Badges (5 Metrics) -->
+          <div class="ant-metrics-bar">
+            <div class="ant-metric-pill">
+              <span class="metric-lbl" id="lblHrTitle" data-i18n="lbl_hr_title">Heart Rate</span>
+              <span class="metric-num hr-num" id="valHR">-- <small>BPM</small></span>
+            </div>
+            <div class="ant-metric-pill">
+              <span class="metric-lbl" id="lblRrTitle" data-i18n="lbl_rr_title">RR Interval</span>
+              <span class="metric-num rr-num" id="valRR">-- <small>ms</small></span>
+            </div>
+            <div class="ant-metric-pill">
+              <span class="metric-lbl" id="lblRmssdTitle" data-i18n="lbl_rmssd_title">RMSSD</span>
+              <span class="metric-num rmssd-num" id="valRMSSD">-- <small>ms</small></span>
+            </div>
+            <div class="ant-metric-pill">
+              <span class="metric-lbl" id="lblPhaseTitle" data-i18n="lbl_phase_title">Phase Coherence</span>
+              <span class="metric-num phase-num" id="valPhaseLag">-- <small>ms lag</small></span>
+            </div>
+            <div class="ant-metric-pill rsa-metric-pill">
+              <span class="metric-lbl" id="lblRsaTitle" data-i18n="lbl_rsa_title">Breath RSA (ΔHR)</span>
+              <span class="metric-num rsa-num" id="valRSA">-- <small>BPM</small></span>
+            </div>
+          </div>
+
+          <!-- Primary Biofeedback Grid: Form 1 Cardiotachometer + Form 3 RSA Light-Bar -->
+          <div class="biofeedback-primary-grid">
+            <!-- Left: Superimposed Cardiotachometer -->
+            <div class="graph-container cardiotachometer-container">
+              <div class="graph-header">
+                <div class="graph-title-row">
+                  <span class="graph-icon">📈</span>
+                  <h4 id="graphSyncTitle" data-i18n="graph_title_sync">Cardiotachometer &amp; Respiration</h4>
+                </div>
+                <div class="graph-legend">
+                  <span class="legend-item"><span class="legend-line cyan"></span> <span id="legendBreath" data-i18n="legend_breath">Cyan: Respiration</span></span>
+                  <span class="legend-item"><span class="legend-line red"></span> <span id="legendRR" data-i18n="legend_rr">Red: Heart Rate (HR)</span></span>
+                </div>
+              </div>
+              <div class="canvas-wrapper">
+                <canvas id="syncCanvas" width="520" height="210" class="live-canvas"></canvas>
+                <div class="canvas-watermark" id="canvasWatermark">PHASE SYNCHRONY • 0° RESONANCE LOCK</div>
+              </div>
+            </div>
+
+            <!-- Right: Dynamic RSA Light-Bar Excursion Gauge -->
+            <div class="graph-container rsa-lightbar-container">
+              <div class="graph-header">
+                <div class="graph-title-row">
+                  <span class="graph-icon">📶</span>
+                  <h4 id="lightbarTitle" data-i18n="lightbar_title">RSA Light-Bar</h4>
+                </div>
+                <span class="badge-excursion" id="badgeExcursionGoal" data-i18n="lightbar_goal">Goal: 2× Base</span>
+              </div>
+              <div class="lightbar-gauge-wrapper">
+                <canvas id="lightBarCanvas" width="160" height="210" class="lightbar-canvas"></canvas>
+                <div class="lightbar-stats">
+                  <div class="lb-stat-row"><span class="lb-lbl">Latest ΔHR:</span> <strong id="lbDeltaHrVal" class="lb-val-accent">-- BPM</strong></div>
+                  <div class="lb-stat-row"><span class="lb-lbl">Excursion:</span> <strong id="lbExcursionVal">--%</strong></div>
+                  <div class="lb-stat-row"><span class="lb-lbl">Max / Min:</span> <span id="lbHrExtremes">-- / --</span></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Form 2: Moving 60-Second Frequency Analysis (FFT Spectrum 0.005–0.40 Hz) -->
+          <div class="graph-container fft-spectrum-container">
+            <div class="graph-header">
+              <div class="graph-title-row">
+                <span class="graph-icon">📊</span>
+                <h4 id="fftGraphTitle" data-i18n="fft_graph_title">Moving Frequency Analysis (0.005–0.40 Hz FFT)</h4>
+                <span class="fft-window-badge">Rolling 60s Window • 1 Hz Update</span>
+              </div>
+              <div class="graph-legend">
+                <span class="legend-item"><span class="legend-box vlf"></span> <span>VLF (0.005–0.04)</span></span>
+                <span class="legend-item"><span class="legend-box lf"></span> <span>LF Resonance (0.04–0.15)</span></span>
+                <span class="legend-item"><span class="legend-box hf"></span> <span>HF (0.15–0.40)</span></span>
+              </div>
+            </div>
+            <div class="canvas-wrapper">
+              <canvas id="fftCanvas" width="700" height="175" class="live-canvas"></canvas>
+              <div class="fft-readout-watermark" id="fftReadout">Peak: -- Hz | Resonance Power: -- ms²/Hz</div>
+            </div>
+          </div>
+
+          <!-- Secondary Multi-Metric Sparklines (HR, RR, RMSSD) -->
+          <div class="sparklines-grid">
+            <div class="sparkline-card">
+              <div class="sparkline-label">
+                <span class="sparkline-color hr"></span>
+                <span id="sparkHrLabel">Heart Rate (40–160 BPM)</span>
+              </div>
+              <canvas id="sparkHrCanvas" width="220" height="75" class="spark-canvas"></canvas>
+            </div>
+            <div class="sparkline-card">
+              <div class="sparkline-label">
+                <span class="sparkline-color rr"></span>
+                <span id="sparkRrLabel">RR Intervals (300–1500 ms)</span>
+              </div>
+              <canvas id="sparkRrCanvas" width="220" height="75" class="spark-canvas"></canvas>
+            </div>
+            <div class="sparkline-card">
+              <div class="sparkline-label">
+                <span class="sparkline-color rmssd"></span>
+                <span id="sparkRmssdLabel">RMSSD Vagotonia (0–120 ms)</span>
+              </div>
+              <canvas id="sparkRmssdCanvas" width="220" height="75" class="spark-canvas"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Session Summary Modal (Lehrer Protocol) -->
+    <div class="training-summary-modal-backdrop" id="trainingSummaryModal" style="display: none;" role="dialog" aria-modal="true" aria-labelledby="sumTitle">
+      <div class="training-summary-card">
+        <div class="summary-celebration-icon">🏆</div>
+        <h3 id="sumTitle">Training Session Complete!</h3>
+        <p class="summary-subtitle" id="sumSubtitle">Lehrer HRV Biofeedback Resonance Practice</p>
+        
+        <div class="summary-stats-grid">
+          <div class="summary-stat-box">
+            <span class="sum-lbl">Session Time</span>
+            <strong class="sum-val" id="sumDuration">20:00</strong>
+          </div>
+          <div class="summary-stat-box">
+            <span class="sum-lbl">Completed Breaths</span>
+            <strong class="sum-val" id="sumBreaths">113</strong>
+          </div>
+          <div class="summary-stat-box highlight">
+            <span class="sum-lbl">Mean RSA Amplitude</span>
+            <strong class="sum-val" id="sumAvgDeltaHr">+19.4 BPM</strong>
+            <small class="sum-delta" id="sumBaselineDelta">+94% vs Baseline</small>
+          </div>
+          <div class="summary-stat-box">
+            <span class="sum-lbl">Phase Synchrony</span>
+            <strong class="sum-val" id="sumPhaseSync">88%</strong>
+            <small class="sum-delta">in 0° Phase Lock</small>
+          </div>
+          <div class="summary-stat-box">
+            <span class="sum-lbl">Peak LF Frequency</span>
+            <strong class="sum-val" id="sumPeakFreq">0.095 Hz</strong>
+            <small class="sum-delta" id="sumTargetDiff">Target: 0.094 Hz</small>
+          </div>
+          <div class="summary-stat-box">
+            <span class="sum-lbl">Resonance Coherence</span>
+            <strong class="sum-val" id="sumCoherence">86%</strong>
+            <small class="sum-delta">LF Spectral Power</small>
+          </div>
+        </div>
+
+        <div class="summary-modal-actions">
+          <button type="button" class="btn btn-primary" id="btnModalExportJsonl">📥 Export Session JSONL</button>
+          <button type="button" class="btn btn-outline" id="btnModalClose">Close</button>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="standalone-footer">
+    <p>Peak Frequency Breath Pacer Simulator • Lehrer HRV Biofeedback Protocol • Offline Capable</p>
+  </footer>
+
+  <!-- Reusable Pacer Component Script -->
+  <script src="assets/garmin-pacer.js"></script>
+  <script src="assets/ant-biometrics.js"></script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      'use strict';
+
+      // State
+      let sessionMode = 'TEST';
+      let roundNumber = 1;
+      let currentPhase = 'REST';
+      let totalElapsedSec = 0;
+      let phaseRemainingSec = 120;
+      const PHASE_PACE_SEC = 120;
+      let baselineRsaBpm = 10.0;
+      let trainingDurationMin = 20;
+
+      let completedBreathsCount = 0;
+      const breathHistory = [];
+      let latestBreathDeltaHR = 0.0;
+      let latestBreathExcursion = 0.0;
+
+      let currentLang = 'en';
+      let s = (window.PEAK_I18N && window.PEAK_I18N['en'] && window.PEAK_I18N['en'].strings) || {};
+      let antBiometrics = null;
+
+      // DOM Elements
+      const totalTimeDisplay = document.getElementById('totalTimeDisplay');
+      const roundDisplay = document.getElementById('roundDisplay');
+      const phaseDisplay = document.getElementById('phaseDisplay');
+      const cycleDisplay = document.getElementById('cycleDisplay');
+      const btnStartPause = document.getElementById('btnStartPause');
+      const btnStartPauseText = document.getElementById('btnStartPauseText');
+      const btnReset = document.getElementById('btnReset');
+      const btnSkipPhase = document.getElementById('btnSkipPhase');
+      const btnAudioToggle = document.getElementById('btnAudioToggle');
+      const audioIcon = document.getElementById('audioIcon');
+      const targetBpmInput = document.getElementById('targetBpm');
+      const userHeightSlider = document.getElementById('userHeight');
+      const userHeightNum = document.getElementById('userHeightNum');
+      const heightValText = document.getElementById('heightVal');
+      const sexMaleBtn = document.getElementById('sexMaleBtn');
+      const sexFemaleBtn = document.getElementById('sexFemaleBtn');
+      const userSexSelect = document.getElementById('userSex');
+      const cycleSecHint = document.getElementById('cycleSecHint');
+      const estimatedTag = document.getElementById('estimatedTag');
+      const presetChips = document.querySelectorAll('.preset-chip');
+      const bpmMinusBtn = document.getElementById('bpmMinus');
+      const bpmPlusBtn = document.getElementById('bpmPlus');
+      const tabModeTest = document.getElementById('tabModeTest');
+      const tabModeTrain = document.getElementById('tabModeTrain');
+      const trainingConfigRow = document.getElementById('trainingConfigRow');
+      const durationBtns = document.querySelectorAll('.duration-btn');
+      const baselineMinus = document.getElementById('baselineMinus');
+      const baselinePlus = document.getElementById('baselinePlus');
+      const baselineValDisplay = document.getElementById('baselineValDisplay');
+      const goalTargetDisplay = document.getElementById('goalTargetDisplay');
+      const badgeExcursionGoal = document.getElementById('badgeExcursionGoal');
+      const demoLangSelect = document.getElementById('demoLangSelect');
+
+      // Modal Elements
+      const trainingSummaryModal = document.getElementById('trainingSummaryModal');
+      const sumDuration = document.getElementById('sumDuration');
+      const sumBreaths = document.getElementById('sumBreaths');
+      const sumAvgDeltaHr = document.getElementById('sumAvgDeltaHr');
+      const sumBaselineDelta = document.getElementById('sumBaselineDelta');
+      const sumPhaseSync = document.getElementById('sumPhaseSync');
+      const sumPeakFreq = document.getElementById('sumPeakFreq');
+      const sumTargetDiff = document.getElementById('sumTargetDiff');
+      const sumCoherence = document.getElementById('sumCoherence');
+      const btnModalClose = document.getElementById('btnModalClose');
+      const btnModalExportJsonl = document.getElementById('btnModalExportJsonl');
+
+      // Initialize Pacer Component
+      const pacer = new GarminPacer('#pacerDemoMount', {
+        targetBpm: 5.65,
+        sessionMode: 'TEST',
+        onTick: (data) => {
+          totalElapsedSec = data.totalElapsedSec;
+          phaseRemainingSec = data.phaseRemainingSec;
+          currentPhase = data.phase;
+          roundNumber = data.roundNumber;
+
+          if (totalTimeDisplay) totalTimeDisplay.textContent = PacerEngine.formatMMSS(totalElapsedSec);
+          if (phaseDisplay) {
+            const pName = (sessionMode === 'TRAIN')
+              ? (s.lbl_mode_train_title || 'Training')
+              : (currentPhase === 'REST' ? (s.rest_baseline_title || 'Rest') : (s.paced_title || 'Paced'));
+            phaseDisplay.textContent = `${pName} (${PacerEngine.formatMMSS(Math.max(0, phaseRemainingSec))})`;
+            if (currentPhase === 'PACE') phaseDisplay.classList.add('paced');
+            else phaseDisplay.classList.remove('paced');
+          }
+
+          if (cycleDisplay) {
+            if (sessionMode === 'TRAIN') {
+              cycleDisplay.textContent = `Breath ${completedBreathsCount + 1} (${trainingDurationMin}m Practice)`;
+            } else if (currentPhase === 'REST') {
+              cycleDisplay.textContent = s.free_breathing || s.breathe_naturally || 'Resting';
+            } else {
+              const cycleWord = s.cycle_prefix || 'Breath';
+              const bpm = parseFloat(targetBpmInput.value) || 5.65;
+              const cycleDur = 60.0 / bpm;
+              const totalC = Math.max(1, Math.floor(PHASE_PACE_SEC / cycleDur));
+              const elapsedInPhase = (PHASE_PACE_SEC - phaseRemainingSec);
+              const curC = Math.min(totalC, Math.floor(elapsedInPhase / cycleDur) + 1);
+              cycleDisplay.textContent = `${cycleWord} ${curC} / ${totalC}`;
+            }
+          }
+
+          if (antBiometrics) antBiometrics.calculateFftSpectrum();
+        },
+        onPhaseChange: (data) => {
+          roundNumber = data.roundNumber;
+          currentPhase = data.phase;
+          const rPrefix = s.round_prefix ? `${s.round_prefix} ` : 'Round ';
+          if (roundDisplay) roundDisplay.textContent = `${rPrefix}${roundNumber}`;
+        },
+        onBreathCycle: () => {
+          if (antBiometrics) {
+            const targetGoal = baselineRsaBpm * 2.0;
+            const delta = Math.max(0, (antBiometrics.pacer ? antBiometrics.pacer.engine.breathMaxHR : 0) - (antBiometrics.pacer ? antBiometrics.pacer.engine.breathMinHR : 0));
+            latestBreathDeltaHR = delta;
+            latestBreathExcursion = Math.round((delta / targetGoal) * 100);
+            completedBreathsCount++;
+
+            breathHistory.push({
+              breathIndex: completedBreathsCount,
+              minHR: antBiometrics.pacer ? antBiometrics.pacer.engine.breathMinHR : 0,
+              maxHR: antBiometrics.pacer ? antBiometrics.pacer.engine.breathMaxHR : 0,
+              deltaHR: delta,
+              phaseLagMs: antBiometrics.currentPhaseLagMs,
+              excursionPct: latestBreathExcursion
+            });
+
+            antBiometrics.latestBreathExcursion = latestBreathExcursion;
+            if (antBiometrics.dom.valRSA) {
+              antBiometrics.dom.valRSA.innerHTML = `+${delta.toFixed(1)} <small>BPM</small>`;
+              antBiometrics.dom.valRSA.style.color = delta >= targetGoal ? '#00ff66' : '#00e5ff';
+            }
+            if (antBiometrics.dom.lbDeltaHrVal) antBiometrics.dom.lbDeltaHrVal.textContent = `+${delta.toFixed(1)} BPM`;
+            if (antBiometrics.dom.lbExcursionVal) {
+              antBiometrics.dom.lbExcursionVal.textContent = `${latestBreathExcursion}%`;
+              antBiometrics.dom.lbExcursionVal.style.color = latestBreathExcursion >= 100 ? '#00ff66' : '#00e5ff';
+            }
+            if (antBiometrics.dom.lbHrExtremes && antBiometrics.pacer) {
+              antBiometrics.dom.lbHrExtremes.textContent = `${antBiometrics.pacer.engine.breathMaxHR} / ${antBiometrics.pacer.engine.breathMinHR} BPM`;
+            }
+          }
+        },
+        onSessionComplete: () => {
+          completeTrainingSession();
+        }
+      });
+
+      // Initialize ANT+ Biometrics Controller
+      if (typeof AntBiometricsController !== 'undefined') {
+        antBiometrics = new AntBiometricsController({
+          pacer: pacer,
+          container: document,
+          baselineRsaBpm: baselineRsaBpm
+        });
+      }
+
+      // Functions
+      function setTargetCadence(bpmVal, updateInputs) {
+        const bpm = Math.max(3.50, Math.min(9.00, parseFloat(bpmVal) || 5.65));
+        if (updateInputs && targetBpmInput) {
+          targetBpmInput.value = bpm.toFixed(2);
+        }
+        pacer.setTargetBpm(bpm);
+        if (cycleSecHint) {
+          const dur = (60.0 / bpm).toFixed(1);
+          const cycleWord = s.cycle_prefix ? s.cycle_prefix.toLowerCase() : 'cycle';
+          cycleSecHint.textContent = `${dur}s ${cycleWord}`;
+        }
+        presetChips.forEach(chip => {
+          chip.classList.toggle('active', Math.abs(parseFloat(chip.dataset.bpm) - bpm) < 0.01);
+        });
+      }
+
+      function updateEstimate(autoApply = true) {
+        const h = parseFloat(userHeightSlider.value);
+        const sVal = userSexSelect.value;
+        if (heightValText) heightValText.textContent = h;
+        if (userHeightNum) userHeightNum.value = h;
+
+        const estBpm = PacerEngine.calculateEstimatedBpm(h, sVal);
+        const sSex = (sVal === 'female') ? (s.female || 'Female') : (s.male || 'Male');
+        const baseTxt = s.baseline_rf || 'Estimated';
+        const unitTxt = s.bpm_unit || 'BPM';
+        if (estimatedTag) estimatedTag.textContent = `${baseTxt}: ${estBpm} ${unitTxt} (${h}cm, ${sSex})`;
+
+        if (autoApply) {
+          setTargetCadence(estBpm, true);
+        }
+      }
+
+      function setSex(sexVal) {
+        userSexSelect.value = sexVal;
+        if (sexVal === 'male') {
+          sexMaleBtn.classList.add('active');
+          sexFemaleBtn.classList.remove('active');
+        } else {
+          sexFemaleBtn.classList.add('active');
+          sexMaleBtn.classList.remove('active');
+        }
+        updateEstimate(true);
+      }
+
+      function updateBaselineDisplay() {
+        if (baselineValDisplay) baselineValDisplay.textContent = `${baselineRsaBpm.toFixed(1)} BPM`;
+        if (goalTargetDisplay) goalTargetDisplay.textContent = `Target (2×): ${(baselineRsaBpm * 2.0).toFixed(1)} BPM`;
+        if (badgeExcursionGoal) badgeExcursionGoal.textContent = `Goal: ${(baselineRsaBpm * 2.0).toFixed(0)} BPM (2× Base)`;
+        if (antBiometrics) antBiometrics.baselineRsaBpm = baselineRsaBpm;
+      }
+
+      function setSessionMode(mode) {
+        if (sessionMode === mode) return;
+        sessionMode = mode;
+        if (sessionMode === 'TRAIN') {
+          tabModeTrain.classList.add('active');
+          tabModeTrain.setAttribute('aria-selected', 'true');
+          tabModeTest.classList.remove('active');
+          tabModeTest.setAttribute('aria-selected', 'false');
+          if (trainingConfigRow) trainingConfigRow.style.display = 'flex';
+          if (btnSkipPhase) btnSkipPhase.textContent = s.btn_finish_session || 'Finish Practice';
+        } else {
+          tabModeTest.classList.add('active');
+          tabModeTest.setAttribute('aria-selected', 'true');
+          tabModeTrain.classList.remove('active');
+          tabModeTrain.setAttribute('aria-selected', 'false');
+          if (trainingConfigRow) trainingConfigRow.style.display = 'none';
+          if (btnSkipPhase) btnSkipPhase.textContent = s.btn_skip_phase || 'Skip Phase';
+        }
+        pacer.setSessionMode(mode);
+        resetSession();
+      }
+
+      function resetSession() {
+        pacer.reset();
+        btnStartPause.classList.remove('paused');
+        if (btnStartPauseText) btnStartPauseText.textContent = s.start_begin ? s.start_begin.replace(/[\[\]]/g, '') : 'Start Session';
+        if (roundDisplay) roundDisplay.textContent = `${s.round_prefix ? s.round_prefix + ' ' : 'Round '}1`;
+        if (totalTimeDisplay) totalTimeDisplay.textContent = '00:00';
+        if (phaseDisplay) phaseDisplay.textContent = sessionMode === 'TRAIN' ? `Daily Practice (${trainingDurationMin}:00)` : 'Rest (2:00)';
+        completedBreathsCount = 0;
+        breathHistory.length = 0;
+        latestBreathDeltaHR = 0.0;
+        latestBreathExcursion = 0.0;
+
+        if (antBiometrics) {
+          if (antBiometrics.dom.valRSA) antBiometrics.dom.valRSA.innerHTML = '-- <small>BPM</small>';
+          if (antBiometrics.dom.lbDeltaHrVal) antBiometrics.dom.lbDeltaHrVal.textContent = '-- BPM';
+          if (antBiometrics.dom.lbExcursionVal) antBiometrics.dom.lbExcursionVal.textContent = '--%';
+          if (antBiometrics.dom.lbHrExtremes) antBiometrics.dom.lbHrExtremes.textContent = '-- / --';
+          antBiometrics.lightBarAnimExcursion = 0.0;
+          antBiometrics.lightBarPeakHoldVal = 0.0;
+        }
+        if (trainingSummaryModal) trainingSummaryModal.style.display = 'none';
+      }
+
+      function completeTrainingSession() {
+        pacer.pause();
+        btnStartPause.classList.remove('paused');
+        if (btnStartPauseText) btnStartPauseText.textContent = s.start_begin ? s.start_begin.replace(/[\[\]]/g, '') : 'Start Session';
+
+        let sumDelta = 0, validBreaths = 0;
+        for (let i = 0; i < breathHistory.length; i++) {
+          if (breathHistory[i].deltaHR > 0) {
+            sumDelta += breathHistory[i].deltaHR;
+            validBreaths++;
+          }
+        }
+        const avgDelta = validBreaths > 0 ? (sumDelta / validBreaths) : (latestBreathDeltaHR || 18.0);
+        const baselineInc = Math.round(((avgDelta - baselineRsaBpm) / baselineRsaBpm) * 100);
+        const phaseSyncPct = antBiometrics && antBiometrics.currentPhaseDeg <= 25 ? Math.min(96, Math.max(78, Math.round(antBiometrics.lfPowerRatio * 100))) : Math.max(50, Math.round((antBiometrics ? antBiometrics.lfPowerRatio : 0.8) * 85));
+
+        if (sumDuration) sumDuration.textContent = `${trainingDurationMin}:00`;
+        if (sumBreaths) sumBreaths.textContent = completedBreathsCount || Math.round(trainingDurationMin * (parseFloat(targetBpmInput.value) || 5.65));
+        if (sumAvgDeltaHr) sumAvgDeltaHr.textContent = `+${avgDelta.toFixed(1)} BPM`;
+        if (sumBaselineDelta) {
+          const sign = baselineInc >= 0 ? '+' : '';
+          sumBaselineDelta.textContent = `${sign}${baselineInc}% vs Baseline (${baselineRsaBpm.toFixed(1)} BPM)`;
+        }
+        if (sumPhaseSync) sumPhaseSync.textContent = `${phaseSyncPct}%`;
+        if (sumPeakFreq) {
+          const peakF = antBiometrics && antBiometrics.peakSpectralFreq > 0 ? antBiometrics.peakSpectralFreq : ((parseFloat(targetBpmInput.value) || 5.65) / 60.0);
+          sumPeakFreq.textContent = `${peakF.toFixed(3)} Hz (${(peakF * 60.0).toFixed(1)} BPM)`;
+        }
+        if (sumTargetDiff) {
+          const targetBpm = parseFloat(targetBpmInput.value) || 5.65;
+          const peakBpm = (antBiometrics && antBiometrics.peakSpectralFreq > 0 ? antBiometrics.peakSpectralFreq : (targetBpm / 60.0)) * 60.0;
+          const diff = Math.abs(peakBpm - targetBpm);
+          sumTargetDiff.textContent = `Δ ${diff.toFixed(2)} BPM from Target`;
+        }
+        if (sumCoherence) {
+          const coh = Math.round((antBiometrics ? antBiometrics.lfPowerRatio : 0.86) * 100);
+          sumCoherence.textContent = `${coh}% LF Ratio`;
+        }
+        if (trainingSummaryModal) trainingSummaryModal.style.display = 'flex';
+      }
+
+      // Event Bindings
+      userHeightSlider.addEventListener('input', () => updateEstimate(true));
+      userHeightNum.addEventListener('input', () => {
+        const val = parseFloat(userHeightNum.value);
+        if (!isNaN(val)) {
+          userHeightSlider.value = Math.max(130, Math.min(220, val));
+          updateEstimate(true);
+        }
+      });
+
+      sexMaleBtn.addEventListener('click', () => setSex('male'));
+      sexFemaleBtn.addEventListener('click', () => setSex('female'));
+
+      if (bpmMinusBtn) {
+        bpmMinusBtn.addEventListener('click', () => {
+          const val = (parseFloat(targetBpmInput.value) || 5.65) - 0.05;
+          setTargetCadence(val, true);
+          pacer.triggerHaptic(15);
+        });
+      }
+      if (bpmPlusBtn) {
+        bpmPlusBtn.addEventListener('click', () => {
+          const val = (parseFloat(targetBpmInput.value) || 5.65) + 0.05;
+          setTargetCadence(val, true);
+          pacer.triggerHaptic(15);
+        });
+      }
+
+      targetBpmInput.addEventListener('input', () => {
+        const val = parseFloat(targetBpmInput.value);
+        if (!isNaN(val)) setTargetCadence(val, false);
+      });
+      targetBpmInput.addEventListener('change', () => {
+        setTargetCadence(targetBpmInput.value, true);
+      });
+
+      presetChips.forEach(chip => {
+        chip.addEventListener('click', () => {
+          setTargetCadence(chip.dataset.bpm, true);
+          pacer.triggerHaptic(20);
+        });
+      });
+
+      btnStartPause.addEventListener('click', () => {
+        if (pacer.isRunning) {
+          pacer.pause();
+          btnStartPause.classList.remove('paused');
+          btnStartPauseText.textContent = s.start_continue ? s.start_continue.replace(/[\[\]]/g, '') : 'Resume Session';
+        } else {
+          pacer.start();
+          btnStartPause.classList.add('paused');
+          btnStartPauseText.textContent = s.session_paused || 'Pause Session';
+          if (antBiometrics) antBiometrics.ensureAnimLoop();
+        }
+      });
+
+      btnReset.addEventListener('click', resetSession);
+      btnSkipPhase.addEventListener('click', () => pacer.advancePhase());
+
+      btnAudioToggle.addEventListener('click', () => {
+        const on = pacer.toggleAudio();
+        audioIcon.textContent = on ? `🔊 ${s.sound_on || 'Cues ON'}` : `🔇 ${s.sound_off || 'Cues Muted'}`;
+      });
+
+      tabModeTest.addEventListener('click', () => setSessionMode('TEST'));
+      tabModeTrain.addEventListener('click', () => setSessionMode('TRAIN'));
+
+      durationBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+          durationBtns.forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          trainingDurationMin = parseInt(btn.dataset.min, 10) || 20;
+          pacer.engine.trainingDurationMin = trainingDurationMin;
+          pacer.engine.trainingRemainingSec = trainingDurationMin * 60;
+          if (sessionMode === 'TRAIN') {
+            phaseRemainingSec = pacer.engine.trainingRemainingSec;
+            pacer.renderWatch();
+          }
+          pacer.triggerHaptic(20);
+        });
+      });
+
+      if (baselineMinus) {
+        baselineMinus.addEventListener('click', () => {
+          baselineRsaBpm = Math.max(3.0, baselineRsaBpm - 0.5);
+          updateBaselineDisplay();
+          pacer.triggerHaptic(15);
+        });
+      }
+      if (baselinePlus) {
+        baselinePlus.addEventListener('click', () => {
+          baselineRsaBpm = Math.min(30.0, baselineRsaBpm + 0.5);
+          updateBaselineDisplay();
+          pacer.triggerHaptic(15);
+        });
+      }
+
+      if (btnModalClose) {
+        btnModalClose.addEventListener('click', () => {
+          if (trainingSummaryModal) trainingSummaryModal.style.display = 'none';
+          resetSession();
+        });
+      }
+      if (btnModalExportJsonl) {
+        btnModalExportJsonl.addEventListener('click', () => {
+          if (antBiometrics) antBiometrics.exportJsonl();
+        });
+      }
+
+      // Declarative i18n
+      function applyLang(lang) {
+        if (!window.PEAK_I18N || !window.PEAK_I18N[lang]) lang = 'en';
+        currentLang = lang;
+        try { localStorage.setItem('peakfrequency_lang', lang); } catch (e) {}
+        document.documentElement.lang = lang;
+        if (demoLangSelect && demoLangSelect.value !== lang) demoLangSelect.value = lang;
+
+        s = (window.PEAK_I18N && window.PEAK_I18N[lang] && window.PEAK_I18N[lang].strings) || {};
+        pacer.setLanguage(lang, s);
+
+        document.querySelectorAll('[data-i18n]').forEach(el => {
+          const k = el.getAttribute('data-i18n');
+          if (s[k]) {
+            if (el.tagName === 'INPUT' && (el.type === 'button' || el.type === 'submit')) {
+              el.value = s[k];
+            } else {
+              el.innerHTML = s[k];
+            }
+          }
+        });
+
+        if (sexMaleBtn) sexMaleBtn.textContent = `♂ ${s.male || 'Male'}`;
+        if (sexFemaleBtn) sexFemaleBtn.textContent = `♀ ${s.female || 'Female'}`;
+        if (userSexSelect && userSexSelect.options.length >= 2) {
+          userSexSelect.options[0].text = s.male || 'Male';
+          userSexSelect.options[1].text = s.female || 'Female';
+        }
+
+        const d10Btn = document.querySelector('.duration-btn[data-min="10"]');
+        const d15Btn = document.querySelector('.duration-btn[data-min="15"]');
+        const d20Btn = document.querySelector('.duration-btn[data-min="20"]');
+        if (d10Btn && s.btn_duration_10) d10Btn.textContent = s.btn_duration_10;
+        if (d15Btn && s.btn_duration_15) d15Btn.textContent = s.btn_duration_15;
+        if (d20Btn && s.btn_duration_20) d20Btn.textContent = s.btn_duration_20;
+
+        if (goalTargetDisplay) goalTargetDisplay.textContent = `${s.goal_target_prefix || 'Target (2×):'} ${(baselineRsaBpm * 2.0).toFixed(1)} BPM`;
+        if (badgeExcursionGoal) badgeExcursionGoal.textContent = `${s.lightbar_goal || 'Goal: 2× Base'}`;
+
+        updateEstimate(false);
+        if (antBiometrics) antBiometrics.renderVisuals();
+      }
+
+      if (demoLangSelect) {
+        demoLangSelect.addEventListener('change', (e) => applyLang(e.target.value));
+      }
+
+      let savedLang = 'en';
+      try {
+        savedLang = localStorage.getItem('peakfrequency_lang') ||
+          (navigator.language ? navigator.language.slice(0, 2).toLowerCase() : 'en');
+      } catch (e) {}
+      if (!window.PEAK_I18N || !window.PEAK_I18N[savedLang]) savedLang = 'en';
+
+      applyLang(savedLang);
+    });
+  </script>
+</body>
+
+</html>
