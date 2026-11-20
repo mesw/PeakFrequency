@@ -504,7 +504,7 @@
           width: 0%;
           border-radius: 7px;
           background: #00ffff;
-          transition: width 0.04s linear, background-color 0.2s ease;
+          transition: background-color 0.2s ease;
           will-change: width;
         }
 

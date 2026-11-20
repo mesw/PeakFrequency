@@ -3,10 +3,11 @@
  * Peak Frequency — HRV Resonance Breath Pacer for Garmin
  *
  * Implements:
- * 1. Organic Noise-Filtered Shepard Glissando Acoustics (GEMINI.md Section 7.C)
- * 2. 5-Tier Garmin Round Display Simulator with Zero-Layout-Shift State Diffing (GEMINI.md Section 7.D)
- * 3. Hasuo et al. (2023) Biometric Resonance Estimation Model
- * 4. Dual Export Pattern (window.GarminPacer / module.exports)
+ * 1. Organic Noise-Filtered Shepard Glissando Acoustics with Volume & Background Lookahead Scheduling
+ * 2. 5-Tier Garmin Round Display Simulator with Zero-Layout-Shift State Diffing
+ * 3. Hasuo et al. (2023) Biometric Resonance Estimation Model & Monotonic Wall-Clock Engine
+ * 4. Full 2-Round Calibration Protocol (Round 1 ±0.25 BPM, Round 2 ±0.125 BPM) + Daily Practice Halfway Break
+ * 5. Dual Export Pattern (window.GarminPacer / module.exports)
  */
 
 (function (root, factory) {
@@ -23,6 +24,15 @@
   }
 })(typeof self !== 'undefined' ? self : this, function () {
   'use strict';
+
+  function clampBpm(val) {
+    return Math.round(Math.max(3.5, Math.min(8.5, val)) * 1000) / 1000;
+  }
+
+  function formatLocalizedNumber(val, decimals, lang) {
+    var str = Number(val).toFixed(decimals);
+    return lang === 'de' ? str.replace('.', ',') : str;
+  }
 
   // =========================================================================
   // 1. ORGANIC NOISE-FILTERED SHEPARD GLISSANDO AUDIO SYNTHESIZER
@@ -43,6 +53,9 @@
       this.SHEPARD_CENTER_FREQ = 640; // Vocal breath warmth center
       this.SHEPARD_SIGMA = 1.5;
       this.cuesEnabled = true;
+      this.volume = 0.75; // 0..1 user-controllable softness
+      this._lastClickCtxTime = -10;
+      this._lastClickIsTop = null;
     }
 
     init() {
@@ -55,6 +68,18 @@
       if (this.ctx && this.ctx.state === 'suspended') {
         this.ctx.resume().catch(function () {});
       }
+    }
+
+    setVolume(vol) {
+      var clamped = Math.max(0, Math.min(1, Number(vol)));
+      if (isNaN(clamped)) clamped = 0.75;
+      this.volume = clamped;
+      if (this.masterGain && this.ctx) {
+        var now = this.ctx.currentTime;
+        this.masterGain.gain.cancelScheduledValues(now);
+        this.masterGain.gain.setTargetAtTime(Math.max(0.0001, this.volume), now, 0.03);
+      }
+      return this.volume;
     }
 
     createPinkNoiseBuffer(seconds) {
@@ -92,7 +117,7 @@
       if (!this.masterGain) {
         this.masterGain = this.ctx.createGain();
         this.masterGain.gain.setValueAtTime(0.001, this.ctx.currentTime);
-        this.masterGain.gain.linearRampToValueAtTime(1.0, this.ctx.currentTime + 0.1);
+        this.masterGain.gain.linearRampToValueAtTime(Math.max(0.0001, this.volume), this.ctx.currentTime + 0.12);
         this.masterGain.connect(this.ctx.destination);
       }
 
@@ -141,12 +166,46 @@
       }
     }
 
+    computeEnvelopeAt(cycleProgress) {
+      var p = ((cycleProgress % 1.0) + 1.0) % 1.0;
+      var isInhale = p < 0.40;
+      var phaseProgress = isInhale ? (p / 0.40) : ((p - 0.40) / 0.60);
+      var phaseFactor = isInhale
+        ? (0.5 - 0.5 * Math.cos(phaseProgress * Math.PI))
+        : (0.5 + 0.5 * Math.cos(phaseProgress * Math.PI));
+      var pulseSine = Math.sin(phaseProgress * 4 * Math.PI);
+      var pulseModulation = 0.78 + 0.22 * Math.abs(pulseSine);
+      return {
+        isInhale: isInhale,
+        phaseFactor: phaseFactor,
+        pulseModulation: pulseModulation
+      };
+    }
+
+    clearAutomation(fromTime) {
+      if (!this.ctx) return;
+      if (this.formantFilter) {
+        this.formantFilter.frequency.cancelScheduledValues(fromTime);
+        this.formantFilter.Q.cancelScheduledValues(fromTime);
+      }
+      if (this.formantGain) {
+        this.formantGain.gain.cancelScheduledValues(fromTime);
+      }
+      if (this.shepardNoiseMasterGain) {
+        this.shepardNoiseMasterGain.gain.cancelScheduledValues(fromTime);
+      }
+      for (var i = 0; i < this.shepardFilterNodes.length; i++) {
+        this.shepardFilterNodes[i].filter.frequency.cancelScheduledValues(fromTime);
+        this.shepardFilterNodes[i].gain.gain.cancelScheduledValues(fromTime);
+      }
+    }
+
     updateFrame(isInhale, phaseFactor, pulseModulation) {
       if (!this.cuesEnabled || !this.ctx || this.ctx.state !== 'running') return;
       var now = this.ctx.currentTime;
-      var timeConstant = 0.02; // Anti-zipper smoothing
+      var timeConstant = 0.02;
+      this.clearAutomation(now);
 
-      // 1. Vocal Breath Formants (Inhale: 750->1600 Hz, Exhale: 600->260 Hz)
       if (this.formantGain && this.formantFilter) {
         var formantFreq, baseNoiseVol, qVal;
         if (isInhale) {
@@ -163,12 +222,11 @@
         this.formantGain.gain.setTargetAtTime(baseNoiseVol, now, timeConstant);
       }
 
-      // 2. Shepard Resonant Filter Bank over Noise (Zero Sine Siren)
       if (this.shepardNoiseMasterGain && this.shepardFilterNodes.length > 0) {
         var masterShepardVol = (0.08 + 0.34 * phaseFactor) * pulseModulation;
         this.shepardNoiseMasterGain.gain.setTargetAtTime(masterShepardVol, now, timeConstant);
 
-        for (var i = 0; i < this.SHEPARD_BANDS; i++) {
+        for (var i = 0; i < this.shepardFilterNodes.length; i++) {
           var freq = this.SHEPARD_BASE_FREQ * Math.pow(2, i + phaseFactor);
           var gain = this.calculateShepardGain(freq);
           this.shepardFilterNodes[i].filter.frequency.setTargetAtTime(freq, now, timeConstant);
@@ -177,31 +235,109 @@
       }
     }
 
-    playClick(isTop) {
+    /**
+     * Schedules continuous breath modulation & upcoming turnaround clicks ahead on the Web Audio thread
+     * so background/minimized browser tabs remain uninterrupted between ~1 Hz timer ticks.
+     */
+    scheduleLookahead(currentCycleProgress, bpm, horizonSec) {
+      if (!this.cuesEnabled || !this.ctx || this.ctx.state !== 'running') return;
+      var now = this.ctx.currentTime;
+      var span = horizonSec || 1.35;
+      var cycleDurationSec = 60.0 / Math.max(3.5, Math.min(8.5, bpm));
+      var stepSec = 0.12;
+      var steps = Math.max(2, Math.ceil(span / stepSec));
+
+      this.clearAutomation(now);
+
+      for (var k = 0; k <= steps; k++) {
+        var dt = k * stepSec;
+        var t = now + dt;
+        var futureProgress = (currentCycleProgress + dt / cycleDurationSec) % 1.0;
+        var env = this.computeEnvelopeAt(futureProgress);
+
+        var formantFreq = env.isInhale
+          ? (750 + (1600 - 750) * env.phaseFactor)
+          : (260 + (600 - 260) * env.phaseFactor);
+        var baseNoiseVol = (env.isInhale
+          ? (0.05 + 0.28 * env.phaseFactor)
+          : (0.04 + 0.24 * env.phaseFactor)) * env.pulseModulation;
+        var qVal = env.isInhale ? 1.8 : 1.2;
+
+        if (k === 0) {
+          if (this.formantFilter && this.formantGain) {
+            this.formantFilter.Q.setValueAtTime(qVal, t);
+            this.formantFilter.frequency.setValueAtTime(formantFreq, t);
+            this.formantGain.gain.setValueAtTime(baseNoiseVol, t);
+          }
+          if (this.shepardNoiseMasterGain) {
+            this.shepardNoiseMasterGain.gain.setValueAtTime((0.08 + 0.34 * env.phaseFactor) * env.pulseModulation, t);
+          }
+          for (var i0 = 0; i0 < this.shepardFilterNodes.length; i0++) {
+            var f0 = this.SHEPARD_BASE_FREQ * Math.pow(2, i0 + env.phaseFactor);
+            this.shepardFilterNodes[i0].filter.frequency.setValueAtTime(f0, t);
+            this.shepardFilterNodes[i0].gain.gain.setValueAtTime(this.calculateShepardGain(f0), t);
+          }
+        } else {
+          if (this.formantFilter && this.formantGain) {
+            this.formantFilter.Q.linearRampToValueAtTime(qVal, t);
+            this.formantFilter.frequency.linearRampToValueAtTime(formantFreq, t);
+            this.formantGain.gain.linearRampToValueAtTime(baseNoiseVol, t);
+          }
+          if (this.shepardNoiseMasterGain) {
+            this.shepardNoiseMasterGain.gain.linearRampToValueAtTime((0.08 + 0.34 * env.phaseFactor) * env.pulseModulation, t);
+          }
+          for (var i = 0; i < this.shepardFilterNodes.length; i++) {
+            var freq = this.SHEPARD_BASE_FREQ * Math.pow(2, i + env.phaseFactor);
+            this.shepardFilterNodes[i].filter.frequency.linearRampToValueAtTime(freq, t);
+            this.shepardFilterNodes[i].gain.gain.linearRampToValueAtTime(this.calculateShepardGain(freq), t);
+          }
+        }
+      }
+
+      // Schedule upcoming exhale turnaround (0.40) and inhale turnaround (1.00) inside span
+      var dtPeak = (0.40 - currentCycleProgress) * cycleDurationSec;
+      if (dtPeak > 0.01 && dtPeak <= span) {
+        this.playClick(true, now + dtPeak);
+      }
+      var dtBottom = (1.0 - currentCycleProgress) * cycleDurationSec;
+      if (dtBottom > 0.01 && dtBottom <= span) {
+        this.playClick(false, now + dtBottom);
+      }
+    }
+
+    playClick(isTop, atCtxTime) {
       if (!this.cuesEnabled) return;
       this.init();
       if (!this.ctx) return;
       try {
-        var now = this.ctx.currentTime;
+        var targetTime = (typeof atCtxTime === 'number' && atCtxTime > this.ctx.currentTime)
+          ? atCtxTime
+          : this.ctx.currentTime;
+
+        // Deduplicate foreground + background lookahead scheduling within 220ms
+        if (Math.abs(targetTime - this._lastClickCtxTime) < 0.22 && this._lastClickIsTop === isTop) {
+          return;
+        }
+        this._lastClickCtxTime = targetTime;
+        this._lastClickIsTop = isTop;
+
         var osc = this.ctx.createOscillator();
         var gain = this.ctx.createGain();
-
-        // Top of inhale: crisp high tick (1800 -> 350 Hz)
-        // Bottom of exhale: warm grounding knock (1100 -> 200 Hz)
         var startFreq = isTop ? 1800 : 1100;
         var endFreq = isTop ? 350 : 200;
+        var peakGain = Math.max(0.0001, 0.24 * this.volume);
 
         osc.type = 'triangle';
-        osc.frequency.setValueAtTime(startFreq, now);
-        osc.frequency.exponentialRampToValueAtTime(endFreq, now + 0.018);
+        osc.frequency.setValueAtTime(startFreq, targetTime);
+        osc.frequency.exponentialRampToValueAtTime(endFreq, targetTime + 0.018);
 
-        gain.gain.setValueAtTime(0.24, now);
-        gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.022);
+        gain.gain.setValueAtTime(peakGain, targetTime);
+        gain.gain.exponentialRampToValueAtTime(0.0001, targetTime + 0.022);
 
         osc.connect(gain);
         gain.connect(this.ctx.destination);
-        osc.start(now);
-        osc.stop(now + 0.025);
+        osc.start(targetTime);
+        osc.stop(targetTime + 0.025);
       } catch (e) {}
     }
 
@@ -215,10 +351,11 @@
         var t = type || 'sine';
         var osc = this.ctx.createOscillator();
         var gain = this.ctx.createGain();
+        var peakGain = Math.max(0.0001, 0.08 * this.volume);
         osc.type = t;
         osc.frequency.setValueAtTime(f, this.ctx.currentTime);
-        gain.gain.setValueAtTime(0.08, this.ctx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + dur);
+        gain.gain.setValueAtTime(peakGain, this.ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.0001, this.ctx.currentTime + dur);
         osc.connect(gain);
         gain.connect(this.ctx.destination);
         osc.start();
@@ -229,6 +366,7 @@
     stop(immediate) {
       if (!this.masterGain || !this.ctx) return;
       var now = this.ctx.currentTime;
+      this.clearAutomation(now);
       this.masterGain.gain.cancelScheduledValues(now);
       var self = this;
 
@@ -292,7 +430,6 @@
       this.cadence = this.container.querySelector('#watchCadence');
       this.telemetry = this.container.querySelector('#watchTelemetry');
 
-      // State diffing cache to eliminate redundant layout operations (60fps safety)
       this._lastState = {
         directive: null,
         directiveClass: null,
@@ -310,7 +447,6 @@
     render(state) {
       if (!this.container) return;
 
-      // 1. Directive
       if (this.directive && (state.directive !== this._lastState.directive || state.directiveClass !== this._lastState.directiveClass)) {
         this.directive.textContent = state.directive;
         this.directive.className = state.directiveClass || 'watch-directive';
@@ -318,7 +454,6 @@
         this._lastState.directiveClass = state.directiveClass;
       }
 
-      // 2. Coaching Hint
       if (this.hint && (state.hint !== this._lastState.hint || state.hintColor !== this._lastState.hintColor)) {
         this.hint.textContent = state.hint;
         this.hint.style.color = state.hintColor || '#ffffff';
@@ -326,7 +461,6 @@
         this._lastState.hintColor = state.hintColor;
       }
 
-      // 3. Capsule Progress Bar
       if (this.barTrack && state.showBar !== this._lastState.showBar) {
         this.barTrack.style.display = state.showBar ? 'block' : 'none';
         this._lastState.showBar = state.showBar;
@@ -341,7 +475,6 @@
         this._lastState.fillPct = '0';
       }
 
-      // 4. Cadence Line
       if (this.cadence && (state.cadenceText !== this._lastState.cadenceText || state.cadenceColor !== this._lastState.cadenceColor)) {
         this.cadence.textContent = state.cadenceText;
         this.cadence.style.color = state.cadenceColor || '#00ffff';
@@ -349,7 +482,6 @@
         this._lastState.cadenceColor = state.cadenceColor;
       }
 
-      // 5. Telemetry Line
       if (this.telemetry && state.telemetryText !== this._lastState.telemetryText) {
         this.telemetry.textContent = state.telemetryText;
         this._lastState.telemetryText = state.telemetryText;
@@ -364,19 +496,29 @@
     constructor(options) {
       var opts = options || {};
       this.targetBpm = opts.targetBpm || 5.65;
-      this.sessionMode = opts.sessionMode || 'TEST'; // 'TEST' | 'TRAIN'
-      this.phase = 'REST'; // 'REST' | 'PACE'
+      this.testCenterBpm = opts.targetBpm || 5.65;
+      this.sessionMode = opts.sessionMode || 'TRAIN'; // 'TEST' | 'TRAIN'
       this.roundNumber = 1;
+      this.legIndex = 0; // 0 = center, 1 = higher (+step), 2 = lower (-step)
       this.totalElapsedSec = 0;
-      this.phaseRemainingSec = 120;
-      this.trainingDurationMin = opts.trainingDurationMin || 20;
+      this.trainingDurationMin = opts.trainingDurationMin || 10;
       this.trainingRemainingSec = this.trainingDurationMin * 60;
+      this.halfwayBreakSec = opts.halfwayBreakSec || 0;
+      this.halfwayBreakTaken = false;
+      this.testRestSec = opts.testRestSec || 120;
+      this.testPaceSec = opts.testPaceSec || 120;
+      this.phase = this.sessionMode === 'TEST' ? 'REST' : 'PACE'; // 'REST' | 'PACE' | 'BREAK' | 'ROUND1_EVAL'
+      this.phaseRemainingSec = this.sessionMode === 'TEST' ? this.testRestSec : this.trainingRemainingSec;
       this.breathPhase = 0.0;
       this.baselineRsaBpm = opts.baselineRsaBpm || 10.0;
       this.latestBreathDeltaHR = 0.0;
       this.latestBreathExcursion = 0.0;
       this.completedBreathsCount = 0;
       this.breathHistory = [];
+      this.stageCycles = [];
+      this.testResults = [];
+      this.round1Winner = null;
+      this.winningResult = null;
     }
 
     static calculateEstimatedBpm(heightCm, sex) {
@@ -395,10 +537,63 @@
       }
     }
 
+    static calculateFillFraction(cycleProgress) {
+      var clamped = Math.max(0.0, Math.min(1.0, cycleProgress));
+      if (clamped < 0.40) {
+        return clamped / 0.40;
+      } else {
+        return 1.0 - ((clamped - 0.40) / 0.60);
+      }
+    }
+
     static formatMMSS(sec) {
-      var m = Math.floor(sec / 60).toString().padStart(2, '0');
-      var s = Math.floor(sec % 60).toString().padStart(2, '0');
+      var safe = Math.max(0, Math.floor(sec));
+      var m = Math.floor(safe / 60).toString().padStart(2, '0');
+      var s = Math.floor(safe % 60).toString().padStart(2, '0');
       return m + ':' + s;
+    }
+
+    static scoreStageCycles(cycles, bpm, roundNumber, legKey, totalRestoredLegIdx) {
+      var total = cycles ? cycles.length : 0;
+      if (total === 0) {
+        return {
+          round: roundNumber,
+          legKey: legKey,
+          stageOrder: totalRestoredLegIdx,
+          bpm: bpm,
+          cyclesUsed: 0,
+          meanDeltaHR: null,
+          meanPhaseLagMs: null,
+          resonanceScore: null
+        };
+      }
+      // Discard first half (~60s settling) when at least 2 cycles were captured
+      var cutoff = total >= 2 ? Math.floor(total / 2) : 0;
+      var settled = cycles.slice(cutoff);
+      var sumDelta = 0;
+      var sumLag = 0;
+      for (var i = 0; i < settled.length; i++) {
+        sumDelta += settled[i].deltaHR || 0;
+        sumLag += settled[i].phaseLagMs || 0;
+      }
+      var avgDelta = sumDelta / settled.length;
+      var avgLag = Math.round(sumLag / settled.length);
+      var absLag = Math.abs(avgLag);
+      var phaseMult = 1.0;
+      if (absLag > 1200) {
+        phaseMult = Math.max(0.35, 1.0 - (absLag - 1200) / 3500.0);
+      }
+      var score = avgDelta >= 1.0 ? Math.round(avgDelta * phaseMult * 100) / 100 : 0;
+      return {
+        round: roundNumber,
+        legKey: legKey,
+        stageOrder: totalRestoredLegIdx,
+        bpm: bpm,
+        cyclesUsed: settled.length,
+        meanDeltaHR: Math.round(avgDelta * 10) / 10,
+        meanPhaseLagMs: avgLag,
+        resonanceScore: score
+      };
     }
   }
 
@@ -415,7 +610,11 @@
       this.audio = new BreathAudioSynth();
       this.engine = new PacerEngine({
         targetBpm: this.options.targetBpm || 5.65,
-        sessionMode: this.options.sessionMode || 'TEST'
+        sessionMode: this.options.sessionMode || 'TRAIN',
+        trainingDurationMin: this.options.trainingDurationMin || 10,
+        halfwayBreakSec: this.options.halfwayBreakSec || 0,
+        testRestSec: this.options.testRestSec || 120,
+        testPaceSec: this.options.testPaceSec || 120
       });
 
       this.isRunning = false;
@@ -423,16 +622,17 @@
       this.cuesEnabled = true;
       this.timerInterval = null;
       this.animFrameId = null;
-      this.lastAnimTimestamp = null;
+      this.lastWallMs = null;
+      this.secAccumulatorMs = 0;
       this.lastInhaleState = false;
       this.somaticHintIndex = 0;
       this.wakeLock = null;
+      this._boundVisibilityHandler = null;
 
-      // Authenticated hints matching strings.xml
       this.INHALE_HINTS = ['Through nose', 'Easily into belly', 'Normal, shallow', 'Quiet, relaxed', 'Belly out', 'Chest still'];
       this.EXHALE_HINTS = ['Relax shoulders', 'Pursed lips', 'Stay shallow', 'Relax jaw', 'Gently', 'Without force'];
       this.currentLang = 'en';
-      this.strings = (window.PEAK_I18N && window.PEAK_I18N['en'] && window.PEAK_I18N['en'].strings) || {};
+      this.strings = (window.PEAK_I18N && window.PEAK_I18N.en && window.PEAK_I18N.en.strings) || {};
 
       this._initSimulator();
     }
@@ -445,7 +645,7 @@
     }
 
     setLanguage(lang, customStrings) {
-      this.currentLang = lang || 'en';
+      this.currentLang = (lang === 'de') ? 'de' : 'en';
       if (customStrings) {
         this.strings = customStrings;
       } else if (window.PEAK_I18N && window.PEAK_I18N[this.currentLang]) {
@@ -482,18 +682,40 @@
     }
 
     setTargetBpm(bpm) {
-      this.engine.targetBpm = parseFloat(bpm) || 5.65;
+      var clamped = clampBpm(parseFloat(bpm) || 5.65);
+      this.engine.targetBpm = clamped;
+      if (this.engine.sessionMode === 'TEST' && this.engine.totalElapsedSec === 0) {
+        this.engine.testCenterBpm = clamped;
+      }
       this.renderWatch();
     }
 
+    setHalfwayBreak(sec) {
+      this.engine.halfwayBreakSec = Math.max(0, parseInt(sec, 10) || 0);
+    }
+
+    setVolume(vol) {
+      return this.audio.setVolume(vol);
+    }
+
+    recordBreathMetrics(metrics) {
+      if (!metrics) return;
+      if (this.engine.sessionMode === 'TEST' && this.engine.phase === 'PACE') {
+        this.engine.stageCycles.push({
+          deltaHR: metrics.deltaHR,
+          phaseLagMs: metrics.phaseLagMs || 0
+        });
+      }
+    }
+
     setSessionMode(mode) {
-      this.engine.sessionMode = mode;
+      this.engine.sessionMode = mode === 'TEST' ? 'TEST' : 'TRAIN';
       this.reset();
     }
 
     requestWakeLock() {
       var self = this;
-      if ('wakeLock' in navigator) {
+      if (typeof navigator !== 'undefined' && 'wakeLock' in navigator && typeof document !== 'undefined' && document.visibilityState === 'visible') {
         navigator.wakeLock.request('screen').then(function (lock) {
           self.wakeLock = lock;
           lock.addEventListener('release', function () {
@@ -512,7 +734,7 @@
 
     triggerHaptic(pattern) {
       if (!this.cuesEnabled) return;
-      if ('vibrate' in navigator) {
+      if (typeof navigator !== 'undefined' && 'vibrate' in navigator) {
         try { navigator.vibrate(pattern); } catch (e) {}
       }
     }
@@ -532,31 +754,84 @@
       return this.cuesEnabled;
     }
 
-    setPhase(phase, playCues) {
+    getLegBpm(roundNum, legIdx, centerBpm) {
+      var step = roundNum === 1 ? 0.25 : 0.125;
+      if (legIdx === 0) return clampBpm(centerBpm);
+      if (legIdx === 1) return clampBpm(centerBpm + step);
+      return clampBpm(centerBpm - step);
+    }
+
+    getCurrentLegName() {
       var s = this.strings;
+      var de = this.currentLang === 'de';
+      if (this.engine.legIndex === 1) return s.leg_higher || (de ? 'Höher' : 'Higher');
+      if (this.engine.legIndex === 2) return s.leg_lower || (de ? 'Tiefer' : 'Lower');
+      return s.leg_center || (de ? 'Mitte' : 'Center');
+    }
+
+    _pickRoundWinner(results) {
+      var best = null;
+      for (var i = 0; i < results.length; i++) {
+        var r = results[i];
+        if (r && r.resonanceScore !== null) {
+          if (!best || r.resonanceScore > best.resonanceScore) {
+            best = r;
+          }
+        }
+      }
+      if (!best && results.length > 0) {
+        best = results[0];
+      }
+      return best;
+    }
+
+    setPhase(phase, playCues) {
       this.engine.phase = phase;
 
       if (this.engine.sessionMode === 'TRAIN') {
-        this.engine.phase = 'PACE';
-        this.engine.phaseRemainingSec = this.engine.trainingRemainingSec;
-        if (playCues) {
-          this.audio.playBeep(660, 0.4);
-          this.triggerHaptic([100, 60, 100]);
-        }
-      } else if (phase === 'REST') {
-        this.engine.phaseRemainingSec = 120;
-        this.audio.stop(false);
-        if (playCues) {
-          this.audio.playBeep(330, 0.3);
-          this.triggerHaptic([80, 50, 80]);
+        if (phase === 'BREAK') {
+          this.engine.phaseRemainingSec = this.engine.halfwayBreakSec || 60;
+          this.audio.stop(false);
+          if (playCues) {
+            this.audio.playBeep(330, 0.3);
+            this.triggerHaptic([80, 50, 80]);
+          }
+        } else {
+          this.engine.phase = 'PACE';
+          this.engine.phaseRemainingSec = this.engine.trainingRemainingSec;
+          this.engine.breathPhase = 0.0;
+          this.lastInhaleState = false;
+          if (playCues) {
+            this.audio.playBeep(660, 0.35);
+            this.triggerHaptic([100, 60, 100]);
+          }
         }
       } else {
-        this.engine.phaseRemainingSec = 120;
-        this.engine.breathPhase = 0.0;
-        this.lastInhaleState = false;
-        if (playCues) {
-          this.audio.playBeep(660, 0.4);
-          this.triggerHaptic([100, 60, 100]);
+        if (phase === 'REST') {
+          this.engine.phaseRemainingSec = this.engine.testRestSec;
+          this.audio.stop(false);
+          if (playCues) {
+            this.audio.playBeep(330, 0.3);
+            this.triggerHaptic([80, 50, 80]);
+          }
+        } else if (phase === 'ROUND1_EVAL') {
+          this.engine.phaseRemainingSec = 0;
+          this.audio.stop(false);
+          if (playCues) {
+            this.audio.playBeep(523.25, 0.4);
+            this.triggerHaptic([100, 60, 100]);
+          }
+        } else {
+          this.engine.phase = 'PACE';
+          this.engine.phaseRemainingSec = this.engine.testPaceSec;
+          this.engine.breathPhase = 0.0;
+          this.engine.stageCycles = [];
+          this.lastInhaleState = false;
+          this.engine.targetBpm = this.getLegBpm(this.engine.roundNumber, this.engine.legIndex, this.engine.testCenterBpm);
+          if (playCues) {
+            this.audio.playBeep(660, 0.35);
+            this.triggerHaptic([100, 60, 100]);
+          }
         }
       }
 
@@ -564,50 +839,153 @@
       if (typeof this.options.onPhaseChange === 'function') {
         this.options.onPhaseChange({
           phase: this.engine.phase,
-          roundNumber: this.engine.roundNumber
+          roundNumber: this.engine.roundNumber,
+          legIndex: this.engine.legIndex,
+          targetBpm: this.engine.targetBpm
         });
       }
     }
 
+    _recordFinishedLeg() {
+      var legKeys = ['center', 'higher', 'lower'];
+      var res = PacerEngine.scoreStageCycles(
+        this.engine.stageCycles,
+        this.engine.targetBpm,
+        this.engine.roundNumber,
+        legKeys[this.engine.legIndex] || 'center',
+        this.engine.testResults.length + 1
+      );
+      this.engine.testResults.push(res);
+      this.engine.stageCycles = [];
+      return res;
+    }
+
     advancePhase() {
       if (this.engine.sessionMode === 'TRAIN') {
+        if (this.engine.phase === 'BREAK') {
+          this.engine.halfwayBreakTaken = true;
+          this.setPhase('PACE', true);
+          return;
+        }
         this.completeSession();
         return;
       }
+
       if (this.engine.phase === 'REST') {
         this.setPhase('PACE', true);
-      } else {
-        this.engine.roundNumber++;
-        this.setPhase('REST', true);
+        return;
       }
+
+      if (this.engine.phase === 'ROUND1_EVAL') {
+        this.continueToRound2();
+        return;
+      }
+
+      // Finished an active PACE leg in TEST mode
+      this._recordFinishedLeg();
+
+      if (this.engine.legIndex < 2) {
+        this.engine.legIndex++;
+        this.engine.targetBpm = this.getLegBpm(this.engine.roundNumber, this.engine.legIndex, this.engine.testCenterBpm);
+        this.setPhase('REST', true);
+        return;
+      }
+
+      // Finished leg 2 of current round
+      if (this.engine.roundNumber === 1) {
+        var r1Winner = this._pickRoundWinner(this.engine.testResults);
+        this.engine.round1Winner = r1Winner;
+        if (r1Winner && r1Winner.bpm) {
+          this.engine.testCenterBpm = r1Winner.bpm;
+          this.engine.targetBpm = r1Winner.bpm;
+        }
+        this.pause();
+        this.setPhase('ROUND1_EVAL', true);
+        if (typeof this.options.onRoundEval === 'function') {
+          this.options.onRoundEval({
+            round1Results: this.engine.testResults.slice(),
+            winner: r1Winner
+          });
+        }
+        return;
+      }
+
+      // Finished Round 2 -> select overall winner & complete calibration
+      var r2Results = this.engine.testResults.filter(function (r) { return r.round === 2; });
+      this.engine.winningResult = this._pickRoundWinner(r2Results.length ? r2Results : this.engine.testResults);
+      if (this.engine.winningResult && this.engine.winningResult.bpm) {
+        this.engine.targetBpm = this.engine.winningResult.bpm;
+      }
+      this.completeSession();
+    }
+
+    continueToRound2() {
+      this.engine.roundNumber = 2;
+      this.engine.legIndex = 0;
+      this.setPhase('REST', false);
+      this.start();
+    }
+
+    finishCalibrationEarly() {
+      this.engine.winningResult = this.engine.round1Winner || this._pickRoundWinner(this.engine.testResults);
+      if (this.engine.winningResult && this.engine.winningResult.bpm) {
+        this.engine.targetBpm = this.engine.winningResult.bpm;
+      }
+      this.completeSession();
     }
 
     completeSession() {
       this.pause();
       this.triggerHaptic([150, 100, 150, 100, 250]);
-      this.audio.playBeep(880, 0.6);
+      this.audio.playBeep(880, 0.55);
       if (typeof this.options.onSessionComplete === 'function') {
         this.options.onSessionComplete({
+          sessionMode: this.engine.sessionMode,
           durationMin: this.engine.trainingDurationMin,
           completedBreaths: this.engine.completedBreathsCount,
-          breathHistory: this.engine.breathHistory
+          breathHistory: this.engine.breathHistory,
+          testResults: this.engine.testResults ? this.engine.testResults.slice() : [],
+          winningResult: this.engine.winningResult || this.engine.round1Winner || null
         });
       }
     }
 
     start() {
       if (this.isRunning) return;
+      if (this.engine.phase === 'ROUND1_EVAL') {
+        this.continueToRound2();
+        return;
+      }
       this.audio.init();
       this.requestWakeLock();
       this.isRunning = true;
+      this.lastWallMs = (typeof performance !== 'undefined' && performance.now) ? performance.now() : Date.now();
+      this.secAccumulatorMs = 0;
       var self = this;
+
+      if (!this._boundVisibilityHandler && typeof document !== 'undefined') {
+        this._boundVisibilityHandler = function () {
+          if (!self.isRunning) return;
+          if (document.visibilityState === 'visible') {
+            self.requestWakeLock();
+            if (!self.animFrameId && typeof requestAnimationFrame === 'function') {
+              self.animFrameId = requestAnimationFrame(function () {
+                self.updateVisualLoop();
+              });
+            }
+          }
+        };
+        document.addEventListener('visibilitychange', this._boundVisibilityHandler);
+      }
 
       if (!this.timerInterval) {
         this.timerInterval = setInterval(function () {
-          self.tick();
-        }, 1000);
-        this.animFrameId = requestAnimationFrame(function (ts) {
-          self.updateVisualLoop(ts);
+          self._heartbeatStep();
+        }, 250);
+      }
+      if (!this.animFrameId && typeof requestAnimationFrame === 'function') {
+        this.animFrameId = requestAnimationFrame(function () {
+          self.updateVisualLoop();
         });
       }
     }
@@ -615,14 +993,18 @@
     pause() {
       if (!this.isRunning) return;
       this.isRunning = false;
-      this.lastAnimTimestamp = null;
+      this.lastWallMs = null;
       this.releaseWakeLock();
       this.audio.stop(false);
 
-      clearInterval(this.timerInterval);
-      cancelAnimationFrame(this.animFrameId);
-      this.timerInterval = null;
-      this.animFrameId = null;
+      if (this.timerInterval) {
+        clearInterval(this.timerInterval);
+        this.timerInterval = null;
+      }
+      if (this.animFrameId && typeof cancelAnimationFrame === 'function') {
+        cancelAnimationFrame(this.animFrameId);
+        this.animFrameId = null;
+      }
 
       this.renderWatch();
     }
@@ -631,13 +1013,21 @@
       this.pause();
       this.audio.stop(true);
       this.engine.roundNumber = 1;
+      this.engine.legIndex = 0;
       this.engine.totalElapsedSec = 0;
       this.engine.breathPhase = 0.0;
-      this.lastAnimTimestamp = null;
+      this.engine.testCenterBpm = this.engine.targetBpm;
+      this.lastWallMs = null;
+      this.secAccumulatorMs = 0;
       this.lastInhaleState = false;
       this.engine.trainingRemainingSec = this.engine.trainingDurationMin * 60;
+      this.engine.halfwayBreakTaken = false;
       this.engine.completedBreathsCount = 0;
       this.engine.breathHistory = [];
+      this.engine.stageCycles = [];
+      this.engine.testResults = [];
+      this.engine.round1Winner = null;
+      this.engine.winningResult = null;
       this.engine.latestBreathDeltaHR = 0.0;
       this.engine.latestBreathExcursion = 0.0;
 
@@ -650,14 +1040,109 @@
       this.renderWatch();
     }
 
+    _stepWallClock(nowMs, isBackground) {
+      if (!this.isRunning) return;
+      var currentMs = (typeof nowMs === 'number')
+        ? nowMs
+        : ((typeof performance !== 'undefined' && performance.now) ? performance.now() : Date.now());
+      if (this.lastWallMs === null) {
+        this.lastWallMs = currentMs;
+        return;
+      }
+      var dtMs = Math.max(0, Math.min(120000, currentMs - this.lastWallMs));
+      this.lastWallMs = currentMs;
+
+      // Advance breath phase monotonically even when backgrounded
+      if (this.engine.phase === 'PACE') {
+        this.audio.start();
+        var cycleDurationMs = (60.0 / this.engine.targetBpm) * 1000;
+        var prevBreathPhase = this.engine.breathPhase;
+        var totalStep = this.engine.breathPhase + (dtMs / cycleDurationMs);
+        var wraps = Math.floor(totalStep);
+        this.engine.breathPhase = totalStep - wraps;
+
+        if (wraps > 0 || this.engine.breathPhase < prevBreathPhase) {
+          this.engine.completedBreathsCount += Math.max(1, wraps);
+          if (typeof this.options.onBreathCycle === 'function') {
+            this.options.onBreathCycle({
+              breathIndex: this.engine.completedBreathsCount,
+              currentHR: this.currentHR
+            });
+          }
+        }
+
+        var cycleProgress = this.engine.breathPhase;
+        var isInhale = cycleProgress < 0.40;
+
+        if (isInhale && !this.lastInhaleState) {
+          this.audio.playClick(false);
+          this.triggerHaptic(50);
+          this.lastInhaleState = true;
+        } else if (!isInhale && this.lastInhaleState) {
+          this.audio.playClick(true);
+          this.triggerHaptic([30, 40, 30]);
+          this.lastInhaleState = false;
+          this.somaticHintIndex++;
+        }
+
+        if (isBackground) {
+          this.audio.scheduleLookahead(cycleProgress, this.engine.targetBpm, 1.4);
+        } else {
+          var env = this.audio.computeEnvelopeAt(cycleProgress);
+          this.audio.updateFrame(env.isInhale, env.phaseFactor, env.pulseModulation);
+        }
+      }
+
+      // Accumulate exact elapsed seconds without timer drift
+      this.secAccumulatorMs += dtMs;
+      while (this.secAccumulatorMs >= 1000 && this.isRunning) {
+        this.secAccumulatorMs -= 1000;
+        this.tick();
+      }
+    }
+
+    _heartbeatStep() {
+      if (!this.isRunning) return;
+      var nowMs = (typeof performance !== 'undefined' && performance.now) ? performance.now() : Date.now();
+      var hidden = (typeof document !== 'undefined' && document.hidden === true);
+      if (hidden || typeof requestAnimationFrame !== 'function') {
+        this._stepWallClock(nowMs, hidden);
+        if (!hidden) this.renderWatch();
+      } else {
+        // Fallback guard in case rAF stalled without visibility hidden
+        if (this.lastWallMs !== null && (nowMs - this.lastWallMs) > 350) {
+          this._stepWallClock(nowMs, false);
+          this.renderWatch();
+        }
+      }
+    }
+
     tick() {
       this.engine.totalElapsedSec++;
+
       if (this.engine.sessionMode === 'TRAIN') {
-        this.engine.trainingRemainingSec = Math.max(0, this.engine.trainingRemainingSec - 1);
-        this.engine.phaseRemainingSec = this.engine.trainingRemainingSec;
-        if (this.engine.trainingRemainingSec <= 0) {
-          this.completeSession();
-          return;
+        if (this.engine.phase === 'BREAK') {
+          this.engine.phaseRemainingSec = Math.max(0, this.engine.phaseRemainingSec - 1);
+          if (this.engine.phaseRemainingSec <= 0) {
+            this.engine.halfwayBreakTaken = true;
+            this.setPhase('PACE', true);
+          }
+        } else {
+          this.engine.trainingRemainingSec = Math.max(0, this.engine.trainingRemainingSec - 1);
+          this.engine.phaseRemainingSec = this.engine.trainingRemainingSec;
+
+          var halfSec = Math.floor((this.engine.trainingDurationMin * 60) / 2);
+          if (
+            this.engine.halfwayBreakSec > 0 &&
+            !this.engine.halfwayBreakTaken &&
+            this.engine.trainingRemainingSec > 10 &&
+            this.engine.trainingRemainingSec <= halfSec
+          ) {
+            this.setPhase('BREAK', true);
+          } else if (this.engine.trainingRemainingSec <= 0) {
+            this.completeSession();
+            return;
+          }
         }
       } else {
         this.engine.phaseRemainingSec--;
@@ -671,7 +1156,9 @@
           totalElapsedSec: this.engine.totalElapsedSec,
           phaseRemainingSec: this.engine.phaseRemainingSec,
           phase: this.engine.phase,
-          roundNumber: this.engine.roundNumber
+          roundNumber: this.engine.roundNumber,
+          legIndex: this.engine.legIndex,
+          targetBpm: this.engine.targetBpm
         });
       }
     }
@@ -679,160 +1166,125 @@
     renderWatch() {
       if (!this.simulator) return;
       var s = this.strings;
+      var de = this.currentLang === 'de';
       var bpm = this.engine.targetBpm;
-      var hrTxt = s.hr_label || 'HR';
+      var bpmStr = formatLocalizedNumber(bpm, 2, this.currentLang);
+      var hrTxt = s.hr_label || (de ? 'HF' : 'HR');
+      var unitTxt = s.bpm_unit || 'BPM';
+      var minShort = de ? 'Min.' : 'm left';
+      var resLabel = de ? 'Resonanz:' : 'Resonance:';
+      var secLeftTxt = s.seconds_left || (de ? 's übrig' : 's left');
       var state = {};
 
-      if (!this.isRunning && this.engine.totalElapsedSec === 0) {
+      if (this.engine.phase === 'ROUND1_EVAL') {
+        state.directive = (s.round1_complete || (de ? 'RUNDE 1 BEENDET' : 'ROUND 1 COMPLETE')).toUpperCase();
+        state.directiveClass = 'watch-directive rest';
+        state.hint = s.start_round_2 ? s.start_round_2.replace(/[[\]]/g, '') : (de ? 'Runde 2 starten?' : 'Ready for Round 2');
+        state.hintColor = '#2dd4bf';
+        state.showBar = false;
+        state.fillPct = '0';
+        state.cadenceText = (s.winning_rf || (de ? 'R1 Favorit:' : 'R1 Winner:')) + ' ' + bpmStr + ' ' + unitTxt;
+        state.cadenceColor = '#00ffff';
+        state.telemetryText = hrTxt + ': ' + this.getActiveHRDisplay() + ' | ' + (de ? 'Runde 1' : 'Round 1');
+      } else if (!this.isRunning && this.engine.totalElapsedSec === 0) {
         state.directive = s.AppName || 'PEAK FREQUENCY';
         state.directiveClass = 'watch-directive';
-        state.hint = s.prompt || 'Tap Start Below';
+        state.hint = de ? 'Unten auf Start klicken' : 'Tap Start Below';
         state.hintColor = '#e2e8f0';
         state.showBar = this.engine.sessionMode === 'TRAIN';
         state.fillPct = '0';
         if (this.engine.sessionMode === 'TRAIN') {
-          state.cadenceText = 'Resonance: ' + bpm.toFixed(2) + ' BPM';
+          state.cadenceText = resLabel + ' ' + bpmStr + ' ' + unitTxt;
           state.cadenceColor = '#00ffff';
-          state.telemetryText = hrTxt + ': ' + this.getActiveHRDisplay() + ' | ' + this.engine.trainingDurationMin + 'm left';
+          state.telemetryText = hrTxt + ': ' + this.getActiveHRDisplay() + ' | ' + this.engine.trainingDurationMin + ' ' + minShort;
         } else {
           var rTxt = s.round_prefix || 'R';
-          var centerTxt = s.leg_center || 'Center';
-          var unitTxt = s.bpm_unit || 'BPM';
-          state.cadenceText = rTxt + '1 ' + centerTxt + ': ' + bpm.toFixed(2) + ' ' + unitTxt;
+          var legTxt = this.getCurrentLegName();
+          state.cadenceText = rTxt + '1 ' + legTxt + ': ' + bpmStr + ' ' + unitTxt;
           state.cadenceColor = '#00ffff';
-          var secLeftTxt = s.seconds_left || 's left';
-          state.telemetryText = hrTxt + ': ' + this.getActiveHRDisplay() + ' | 120 ' + secLeftTxt;
+          state.telemetryText = hrTxt + ': ' + this.getActiveHRDisplay() + ' | ' + this.engine.testRestSec + ' ' + secLeftTxt;
         }
       } else if (!this.isRunning && this.engine.totalElapsedSec > 0) {
-        state.directive = (s.session_paused || 'PAUSED').toUpperCase();
+        state.directive = (s.session_paused || (de ? 'PAUSE' : 'PAUSED')).toUpperCase();
         state.directiveClass = 'watch-directive rest';
-        state.hint = s.start_continue ? s.start_continue.replace(/[[\]]/g, '') : 'Session paused';
+        state.hint = s.start_continue ? s.start_continue.replace(/[[\]]/g, '') : (de ? 'Pausiert' : 'Session paused');
         state.hintColor = '#fbbf24';
         state.showBar = false;
         state.fillPct = '0';
-        state.cadenceText = 'Resonance: ' + bpm.toFixed(2) + ' BPM';
+        state.cadenceText = resLabel + ' ' + bpmStr + ' ' + unitTxt;
         state.cadenceColor = '#00ffff';
-        state.telemetryText = hrTxt + ': ' + this.getActiveHRDisplay() + ' | ' + Math.max(0, this.engine.phaseRemainingSec) + 's left';
-      } else if (this.engine.phase === 'REST' && this.engine.sessionMode === 'TEST') {
-        state.directive = (s.rest_baseline_title || 'REST BASELINE').toUpperCase();
+        state.telemetryText = hrTxt + ': ' + this.getActiveHRDisplay() + ' | ' + Math.max(0, this.engine.phaseRemainingSec) + ' ' + secLeftTxt;
+      } else if (this.engine.phase === 'BREAK' && this.engine.sessionMode === 'TRAIN') {
+        state.directive = (de ? 'HALBZEIT-PAUSE' : 'HALFWAY BREAK');
         state.directiveClass = 'watch-directive rest';
-        state.hint = s.breathe_naturally || 'Breathe naturally';
+        state.hint = s.breathe_naturally || (de ? 'Natürlich atmen' : 'Breathe naturally');
         state.hintColor = '#94a3b8';
         state.showBar = false;
         state.fillPct = '0';
-        var nextTxt = s.next_prefix || 'Next';
-        var rPrefix = s.round_prefix || 'R';
-        var cTxt = s.leg_center || 'Center';
-        state.cadenceText = nextTxt + ': ' + rPrefix + this.engine.roundNumber + ' ' + cTxt + ' ' + bpm.toFixed(2);
+        state.cadenceText = s.free_natural_breathing || (de ? 'Freies Atmen' : 'Free Natural Breathing');
         state.cadenceColor = '#22c55e';
-        var sLeftTxt = s.seconds_left || 's left';
-        state.telemetryText = hrTxt + ': ' + this.getActiveHRDisplay() + ' | ' + Math.max(0, this.engine.phaseRemainingSec) + ' ' + sLeftTxt;
+        state.telemetryText = hrTxt + ': ' + this.getActiveHRDisplay() + ' | ' + Math.max(0, this.engine.phaseRemainingSec) + ' ' + secLeftTxt;
+      } else if (this.engine.phase === 'REST' && this.engine.sessionMode === 'TEST') {
+        state.directive = (s.rest_baseline_title || (de ? 'RUHE-BASISLINIE' : 'REST BASELINE')).toUpperCase();
+        state.directiveClass = 'watch-directive rest';
+        state.hint = s.breathe_naturally || (de ? 'Natürlich atmen' : 'Breathe naturally');
+        state.hintColor = '#94a3b8';
+        state.showBar = false;
+        state.fillPct = '0';
+        var nextTxt = s.next_prefix || (de ? 'Weiter' : 'Next');
+        var rPrefix = s.round_prefix || 'R';
+        var nextLegTxt = this.getCurrentLegName();
+        state.cadenceText = nextTxt + ': ' + rPrefix + this.engine.roundNumber + ' ' + nextLegTxt + ' ' + bpmStr;
+        state.cadenceColor = '#22c55e';
+        state.telemetryText = hrTxt + ': ' + this.getActiveHRDisplay() + ' | ' + Math.max(0, this.engine.phaseRemainingSec) + ' ' + secLeftTxt;
+      } else {
+        var cycleProgress = this.engine.breathPhase;
+        var isInhale = cycleProgress < 0.40;
+        var fillFraction = PacerEngine.calculateFillFraction(cycleProgress);
+        state.directive = isInhale ? (s.pacer_inhale || 'BREATHE IN') : (s.pacer_exhale || 'BREATHE OUT');
+        state.directiveClass = isInhale ? 'watch-directive' : 'watch-directive exhale';
+        state.hint = isInhale
+          ? this.INHALE_HINTS[this.somaticHintIndex % this.INHALE_HINTS.length]
+          : this.EXHALE_HINTS[this.somaticHintIndex % this.EXHALE_HINTS.length];
+        state.hintColor = '#ffffff';
+        state.showBar = true;
+        state.fillPct = (fillFraction * 100).toFixed(1);
+        state.fillClass = isInhale ? 'watch-bar-fill' : 'watch-bar-fill exhale';
+
+        if (this.engine.sessionMode === 'TRAIN') {
+          state.cadenceText = resLabel + ' ' + bpmStr + ' ' + unitTxt;
+          state.cadenceColor = '#00ffff';
+          var mLeft = Math.ceil(this.engine.phaseRemainingSec / 60);
+          state.telemetryText = hrTxt + ': ' + this.getActiveHRDisplay() + ' | ' + mLeft + ' ' + minShort;
+        } else {
+          var rp = s.round_prefix || 'R';
+          var lg = this.getCurrentLegName();
+          state.cadenceText = rp + this.engine.roundNumber + ' ' + lg + ': ' + bpmStr + ' ' + unitTxt;
+          state.cadenceColor = '#00ffff';
+          state.telemetryText = hrTxt + ': ' + this.getActiveHRDisplay() + ' | ' + Math.max(0, this.engine.phaseRemainingSec) + ' ' + secLeftTxt;
+        }
       }
       this.simulator.render(state);
     }
 
-    updateVisualLoop(timestamp) {
-      if (!this.isRunning) return;
-
-      if (this.lastAnimTimestamp === null) {
-        this.lastAnimTimestamp = timestamp;
+    updateVisualLoop() {
+      if (!this.isRunning) {
+        this.animFrameId = null;
+        return;
       }
-      var dtMs = Math.min(100, Math.max(0, timestamp - this.lastAnimTimestamp));
-      this.lastAnimTimestamp = timestamp;
 
-      var s = this.strings;
-      var bpm = this.engine.targetBpm;
-      var hrTxt = s.hr_label || 'HR';
-
-      if (this.engine.phase === 'REST' && this.engine.sessionMode === 'TEST') {
-        // In rest mode, state is static during frames
-        this.renderWatch();
-      } else {
-        // Active pacing
-        this.audio.start();
-        var cycleDurationMs = (60.0 / bpm) * 1000;
-        var prevBreathPhase = this.engine.breathPhase;
-        this.engine.breathPhase = (this.engine.breathPhase + (dtMs / cycleDurationMs)) % 1.0;
-        var cycleProgress = this.engine.breathPhase;
-
-        // Wrap-around cycle completion detection
-        if (cycleProgress < prevBreathPhase) {
-          this.engine.completedBreathsCount++;
-          if (typeof this.options.onBreathCycle === 'function') {
-            this.options.onBreathCycle({
-              breathIndex: this.engine.completedBreathsCount,
-              currentHR: this.currentHR
-            });
-          }
-        }
-
-        var isInhale = cycleProgress < 0.40;
-        var phaseFactor, phaseProgress;
-        if (isInhale) {
-          phaseProgress = cycleProgress / 0.40;
-          phaseFactor = 0.5 - 0.5 * Math.cos(phaseProgress * Math.PI);
-        } else {
-          phaseProgress = (cycleProgress - 0.40) / 0.60;
-          phaseFactor = 0.5 + 0.5 * Math.cos(phaseProgress * Math.PI);
-        }
-
-        var pulseSine = Math.sin(phaseProgress * 4 * Math.PI);
-        var pulseModulation = 0.78 + 0.22 * Math.abs(pulseSine);
-
-        var fillFraction = isInhale ? phaseProgress : (1.0 - phaseProgress);
-        var fillPct = (fillFraction * 100).toFixed(1);
-
-        // Turnaround clicks
-        if (isInhale && !this.lastInhaleState) {
-          this.audio.playClick(false); // Bottom click (Exhale -> Inhale)
-          this.triggerHaptic(50);
-          this.lastInhaleState = true;
-        } else if (!isInhale && this.lastInhaleState) {
-          this.audio.playClick(true); // Peak click (Inhale -> Exhale)
-          this.triggerHaptic([30, 40, 30]);
-          this.lastInhaleState = false;
-          this.somaticHintIndex++;
-        }
-
-        // Audio synthesis update
-        this.audio.updateFrame(isInhale, phaseFactor, pulseModulation);
-
-        // Render to watch with state diffing
-        var watchState = {
-          directive: isInhale ? (s.pacer_inhale || 'BREATHE IN') : (s.pacer_exhale || 'BREATHE OUT'),
-          directiveClass: isInhale ? 'watch-directive' : 'watch-directive exhale',
-          hint: isInhale
-            ? this.INHALE_HINTS[this.somaticHintIndex % this.INHALE_HINTS.length]
-            : this.EXHALE_HINTS[this.somaticHintIndex % this.EXHALE_HINTS.length],
-          hintColor: '#ffffff',
-          showBar: true,
-          fillPct: fillPct,
-          fillClass: isInhale ? 'watch-bar-fill' : 'watch-bar-fill exhale'
-        };
-
-        if (this.engine.sessionMode === 'TRAIN') {
-          watchState.cadenceText = 'Resonance: ' + bpm.toFixed(2) + ' BPM';
-          watchState.cadenceColor = '#00ffff';
-          var mLeft = Math.ceil(this.engine.phaseRemainingSec / 60);
-          var minTxt = s.minutes_left || 'm left';
-          watchState.telemetryText = hrTxt + ': ' + this.getActiveHRDisplay() + ' | ' + mLeft + ' ' + minTxt;
-        } else {
-          var rPrefix = s.round_prefix || 'R';
-          var centerTxt = s.leg_center || 'Center';
-          var unitTxt = s.bpm_unit || 'BPM';
-          watchState.cadenceText = rPrefix + this.engine.roundNumber + ' ' + centerTxt + ': ' + bpm.toFixed(2) + ' ' + unitTxt;
-          watchState.cadenceColor = '#00ffff';
-          var secLeftTxt = s.seconds_left || 's left';
-          watchState.telemetryText = hrTxt + ': ' + this.getActiveHRDisplay() + ' | ' + Math.max(0, this.engine.phaseRemainingSec) + ' ' + secLeftTxt;
-        }
-
-        this.simulator.render(watchState);
-      }
+      var nowMs = (typeof performance !== 'undefined' && performance.now) ? performance.now() : Date.now();
+      this._stepWallClock(nowMs, false);
+      this.renderWatch();
 
       var self = this;
-      this.animFrameId = requestAnimationFrame(function (ts) {
-        self.updateVisualLoop(ts);
-      });
+      if (typeof requestAnimationFrame === 'function' && (typeof document === 'undefined' || document.visibilityState === 'visible')) {
+        this.animFrameId = requestAnimationFrame(function () {
+          self.updateVisualLoop();
+        });
+      } else {
+        this.animFrameId = null;
+      }
     }
   }
 

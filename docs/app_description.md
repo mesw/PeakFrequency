@@ -148,7 +148,7 @@ Live-Erfassung der RSA-Amplitude pro Atemzug (ΔHF), 0°-Phasensynchronie in % u
 📊 **Visuelle Grafiken & Sitzungsauswertung**
 • **Vollständiger HF-Verlaufsgraph:** Zeigt die kontinuierliche Herzfrequenzkurve über die gesamte Sitzung mit markierten Pausenintervallen und HF-Beruhigungswert.
 • **RSA-Balkendiagramm pro Atemzug:** Farbcodierte Darstellung jedes Atemzyklus (Grün: resonanter Phasenschluss, Cyan: sub-resonant).
-• **Detaillierte Metriken:** HF-Rückgang (Start -> Ende), mittlere RSA-Amplitude, Synchronitätsgrad und Kohärenzwert.
+• **Detaillierte Metriken:** HF-Rückgang (Start/Ende), mittlere RSA-Amplitude, Synchronitätsgrad und Kohärenzwert.
 
 🎯 **2-Runden-Kalibrierungsprotokoll**
 • **Stufe 0:** 2-minütige Ruhe-Basislinie zur Bestimmung der Ruhewert-Referenz.
