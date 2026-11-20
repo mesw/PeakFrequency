@@ -684,13 +684,16 @@
         simLastTime = now;
 
         const bpmTarget = (this.pacer && this.pacer.engine) ? this.pacer.engine.targetBpm : 5.65;
+        const splitRatio = (this.pacer && this.pacer.engine && typeof this.pacer.engine.inhaleRatio === 'number')
+          ? Math.max(0.25, Math.min(0.50, this.pacer.engine.inhaleRatio))
+          : 0.40;
         simLungPhase = (simLungPhase + dtSim * (bpmTarget / 60.0)) % 1.0;
 
         let lungVol = 0;
-        if (simLungPhase < 0.40) {
-          lungVol = 0.5 * (1.0 - Math.cos(Math.PI * (simLungPhase / 0.40)));
+        if (simLungPhase < splitRatio) {
+          lungVol = 0.5 * (1.0 - Math.cos(Math.PI * (simLungPhase / splitRatio)));
         } else {
-          lungVol = 0.5 * (1.0 + Math.cos(Math.PI * ((simLungPhase - 0.40) / 0.60)));
+          lungVol = 0.5 * (1.0 + Math.cos(Math.PI * ((simLungPhase - splitRatio) / (1.0 - splitRatio))));
         }
 
         const baseHR = 76;
@@ -809,11 +812,14 @@
         ? breathPhase
         : ((timestamp * (bpmTarget / 60.0)) % 1.0);
 
+      const splitRatio = (this.pacer && this.pacer.engine && typeof this.pacer.engine.inhaleRatio === 'number')
+        ? Math.max(0.25, Math.min(0.50, this.pacer.engine.inhaleRatio))
+        : 0.40;
       let respVol = 0;
-      if (currentPhaseNorm < 0.40) {
-        respVol = 0.5 * (1.0 - Math.cos(Math.PI * (currentPhaseNorm / 0.40)));
+      if (currentPhaseNorm < splitRatio) {
+        respVol = 0.5 * (1.0 - Math.cos(Math.PI * (currentPhaseNorm / splitRatio)));
       } else {
-        respVol = 0.5 * (1.0 + Math.cos(Math.PI * ((currentPhaseNorm - 0.40) / 0.60)));
+        respVol = 0.5 * (1.0 + Math.cos(Math.PI * ((currentPhaseNorm - splitRatio) / (1.0 - splitRatio))));
       }
       const respNormalized = respVol * 2.0 - 1.0;
 

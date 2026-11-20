@@ -29,6 +29,18 @@
     return Math.round(Math.max(3.5, Math.min(8.5, val)) * 1000) / 1000;
   }
 
+  function clampInhaleRatioPct(val) {
+    var n = Math.round(Number(val));
+    if (isNaN(n)) return 40;
+    return Math.max(25, Math.min(50, n));
+  }
+
+  function clampInhaleRatio(val) {
+    var n = Number(val);
+    if (isNaN(n)) return 0.40;
+    return Math.max(0.25, Math.min(0.50, n));
+  }
+
   function formatLocalizedNumber(val, decimals, lang) {
     var str = Number(val).toFixed(decimals);
     return lang === 'de' ? str.replace('.', ',') : str;
@@ -54,8 +66,14 @@
       this.SHEPARD_SIGMA = 1.5;
       this.cuesEnabled = true;
       this.volume = 0.75; // 0..1 user-controllable softness
+      this.inhaleRatio = 0.40; // 0.25..0.50 (25:75 to 50:50)
       this._lastClickCtxTime = -10;
       this._lastClickIsTop = null;
+    }
+
+    setInhaleRatio(ratio) {
+      this.inhaleRatio = clampInhaleRatio(ratio);
+      return this.inhaleRatio;
     }
 
     init() {
@@ -166,10 +184,11 @@
       }
     }
 
-    computeEnvelopeAt(cycleProgress) {
+    computeEnvelopeAt(cycleProgress, inhaleRatio) {
+      var split = (typeof inhaleRatio === 'number') ? clampInhaleRatio(inhaleRatio) : this.inhaleRatio;
       var p = ((cycleProgress % 1.0) + 1.0) % 1.0;
-      var isInhale = p < 0.40;
-      var phaseProgress = isInhale ? (p / 0.40) : ((p - 0.40) / 0.60);
+      var isInhale = p < split;
+      var phaseProgress = isInhale ? (p / split) : ((p - split) / (1.0 - split));
       var phaseFactor = isInhale
         ? (0.5 - 0.5 * Math.cos(phaseProgress * Math.PI))
         : (0.5 + 0.5 * Math.cos(phaseProgress * Math.PI));
@@ -239,8 +258,9 @@
      * Schedules continuous breath modulation & upcoming turnaround clicks ahead on the Web Audio thread
      * so background/minimized browser tabs remain uninterrupted between ~1 Hz timer ticks.
      */
-    scheduleLookahead(currentCycleProgress, bpm, horizonSec) {
+    scheduleLookahead(currentCycleProgress, bpm, horizonSec, inhaleRatio) {
       if (!this.cuesEnabled || !this.ctx || this.ctx.state !== 'running') return;
+      var split = (typeof inhaleRatio === 'number') ? clampInhaleRatio(inhaleRatio) : this.inhaleRatio;
       var now = this.ctx.currentTime;
       var span = horizonSec || 1.35;
       var cycleDurationSec = 60.0 / Math.max(3.5, Math.min(8.5, bpm));
@@ -253,7 +273,7 @@
         var dt = k * stepSec;
         var t = now + dt;
         var futureProgress = (currentCycleProgress + dt / cycleDurationSec) % 1.0;
-        var env = this.computeEnvelopeAt(futureProgress);
+        var env = this.computeEnvelopeAt(futureProgress, split);
 
         var formantFreq = env.isInhale
           ? (750 + (1600 - 750) * env.phaseFactor)
@@ -294,8 +314,8 @@
         }
       }
 
-      // Schedule upcoming exhale turnaround (0.40) and inhale turnaround (1.00) inside span
-      var dtPeak = (0.40 - currentCycleProgress) * cycleDurationSec;
+      // Schedule upcoming exhale turnaround (split) and inhale turnaround (1.00) inside span
+      var dtPeak = (split - currentCycleProgress) * cycleDurationSec;
       if (dtPeak > 0.01 && dtPeak <= span) {
         this.playClick(true, now + dtPeak);
       }
@@ -497,6 +517,8 @@
       var opts = options || {};
       this.targetBpm = opts.targetBpm || 5.65;
       this.testCenterBpm = opts.targetBpm || 5.65;
+      this.inhaleRatioPct = clampInhaleRatioPct(opts.inhaleRatioPct !== undefined ? opts.inhaleRatioPct : 40);
+      this.inhaleRatio = this.inhaleRatioPct / 100.0;
       this.sessionMode = opts.sessionMode || 'TRAIN'; // 'TEST' | 'TRAIN'
       this.roundNumber = 1;
       this.legIndex = 0; // 0 = center, 1 = higher (+step), 2 = lower (-step)
@@ -529,20 +551,22 @@
       return (Math.round(est * 20) / 20).toFixed(2);
     }
 
-    static calculateLungVolume(phaseNorm) {
-      if (phaseNorm < 0.40) {
-        return 0.5 * (1.0 - Math.cos(Math.PI * (phaseNorm / 0.40)));
+    static calculateLungVolume(phaseNorm, inhaleRatio) {
+      var split = clampInhaleRatio(inhaleRatio !== undefined ? inhaleRatio : 0.40);
+      if (phaseNorm < split) {
+        return 0.5 * (1.0 - Math.cos(Math.PI * (phaseNorm / split)));
       } else {
-        return 0.5 * (1.0 + Math.cos(Math.PI * ((phaseNorm - 0.40) / 0.60)));
+        return 0.5 * (1.0 + Math.cos(Math.PI * ((phaseNorm - split) / (1.0 - split))));
       }
     }
 
-    static calculateFillFraction(cycleProgress) {
+    static calculateFillFraction(cycleProgress, inhaleRatio) {
+      var split = clampInhaleRatio(inhaleRatio !== undefined ? inhaleRatio : 0.40);
       var clamped = Math.max(0.0, Math.min(1.0, cycleProgress));
-      if (clamped < 0.40) {
-        return clamped / 0.40;
+      if (clamped < split) {
+        return clamped / split;
       } else {
-        return 1.0 - ((clamped - 0.40) / 0.60);
+        return 1.0 - ((clamped - split) / (1.0 - split));
       }
     }
 
@@ -610,12 +634,14 @@
       this.audio = new BreathAudioSynth();
       this.engine = new PacerEngine({
         targetBpm: this.options.targetBpm || 5.65,
+        inhaleRatioPct: this.options.inhaleRatioPct !== undefined ? this.options.inhaleRatioPct : 40,
         sessionMode: this.options.sessionMode || 'TRAIN',
         trainingDurationMin: this.options.trainingDurationMin || 10,
         halfwayBreakSec: this.options.halfwayBreakSec || 0,
         testRestSec: this.options.testRestSec || 120,
         testPaceSec: this.options.testPaceSec || 120
       });
+      this.audio.setInhaleRatio(this.engine.inhaleRatio);
 
       this.isRunning = false;
       this.currentHR = 0;
@@ -688,6 +714,15 @@
         this.engine.testCenterBpm = clamped;
       }
       this.renderWatch();
+    }
+
+    setInhaleRatioPct(pct) {
+      var clampedPct = clampInhaleRatioPct(pct);
+      this.engine.inhaleRatioPct = clampedPct;
+      this.engine.inhaleRatio = clampedPct / 100.0;
+      this.audio.setInhaleRatio(this.engine.inhaleRatio);
+      this.renderWatch();
+      return clampedPct;
     }
 
     setHalfwayBreak(sec) {
@@ -1072,7 +1107,8 @@
         }
 
         var cycleProgress = this.engine.breathPhase;
-        var isInhale = cycleProgress < 0.40;
+        var split = this.engine.inhaleRatio || 0.40;
+        var isInhale = cycleProgress < split;
 
         if (isInhale && !this.lastInhaleState) {
           this.audio.playClick(false);
@@ -1086,9 +1122,9 @@
         }
 
         if (isBackground) {
-          this.audio.scheduleLookahead(cycleProgress, this.engine.targetBpm, 1.4);
+          this.audio.scheduleLookahead(cycleProgress, this.engine.targetBpm, 1.4, split);
         } else {
-          var env = this.audio.computeEnvelopeAt(cycleProgress);
+          var env = this.audio.computeEnvelopeAt(cycleProgress, split);
           this.audio.updateFrame(env.isInhale, env.phaseFactor, env.pulseModulation);
         }
       }
@@ -1239,8 +1275,9 @@
         state.telemetryText = hrTxt + ': ' + this.getActiveHRDisplay() + ' | ' + Math.max(0, this.engine.phaseRemainingSec) + ' ' + secLeftTxt;
       } else {
         var cycleProgress = this.engine.breathPhase;
-        var isInhale = cycleProgress < 0.40;
-        var fillFraction = PacerEngine.calculateFillFraction(cycleProgress);
+        var split = this.engine.inhaleRatio || 0.40;
+        var isInhale = cycleProgress < split;
+        var fillFraction = PacerEngine.calculateFillFraction(cycleProgress, split);
         state.directive = isInhale ? (s.pacer_inhale || 'BREATHE IN') : (s.pacer_exhale || 'BREATHE OUT');
         state.directiveClass = isInhale ? 'watch-directive' : 'watch-directive exhale';
         state.hint = isInhale

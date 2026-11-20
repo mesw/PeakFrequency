@@ -1358,12 +1358,6 @@
           Peak Frequency is a free breath pacer for Garmin watches—and this page is its browser version and complete guide. This is a pet project, not a commercial product. The aim is simply to stick closely to published cardiovascular physiology rather than generic breathwork claims.
         </p>
 
-        <div class="callout callout-warm">
-          <p data-copy="hero_ui_note">
-            <strong>Known watch screen issue:</strong> On some Garmin watch screen sizes, parts of the on-screen text can still get cut off. That is a layout bug I have not solved yet—if something is cut off on your watch, all instructions and the full pacer live right here on this page.
-          </p>
-        </div>
-
         <div class="btn-row">
           <a href="#how-to-breathe" class="btn btn-primary" data-copy="cta_learn">How to Breathe Properly</a>
           <a href="#pacer" class="btn btn-secondary" data-copy="cta_pacer">Try the Web Pacer</a>
@@ -1395,7 +1389,7 @@
               <h3 data-copy="rule1_title">Keep it continuous—no breath holds</h3>
             </div>
             <p data-copy="rule1_body">
-              Follow the 40% inhale / 60% exhale wave cleanly (for example ~4.2 s in and ~6.4 s out at 5.65 BPM). Turn gently from breathing in to breathing out and back without pausing (even brief breath holds spike chest pressure and interrupt the wave).
+              Follow the smooth inhale / exhale wave cleanly—40:60 by default (for example ~4.2 s in and ~6.4 s out at 5.65 BPM), or adjusted between 50:50 and 25:75 in settings. Turn gently from breathing in to breathing out and back without pausing (even brief breath holds spike chest pressure and interrupt the wave).
             </p>
           </div>
 
@@ -1613,6 +1607,29 @@
                 <div class="cycle-breakdown" id="cycleBreakdown">
                   One breath: 10.6 s total — 4.2 s gentle inhale / 6.4 s slow exhale (no holds).
                 </div>
+              </div>
+
+              <!-- Breath Ratio (In : Out, 50:50 to 25:75 in 1% steps) -->
+              <div class="control-group">
+                <div class="control-header">
+                  <label for="ratioSlider" class="control-label" data-copy="ratio_heading">Breath Ratio (In : Out)</label>
+                  <span class="control-readout" id="ratioReadout">40:60</span>
+                </div>
+                <div class="control-row">
+                  <button type="button" id="ratioMinusBtn" class="step-btn" aria-label="Decrease inhale share by 1 percent">−1%</button>
+                  <input type="range" id="ratioSlider" min="25" max="50" step="1" value="40" aria-label="Inhale percentage from 25 to 50 percent">
+                  <button type="button" id="ratioPlusBtn" class="step-btn" aria-label="Increase inhale share by 1 percent">+1%</button>
+                </div>
+                <div class="chip-row" id="ratioPresetChips" aria-label="Common breath ratio presets">
+                  <button type="button" class="chip-btn" data-ratio="50" aria-pressed="false">50:50</button>
+                  <button type="button" class="chip-btn" data-ratio="45" aria-pressed="false">45:55</button>
+                  <button type="button" class="chip-btn active" data-ratio="40" aria-pressed="true">40:60</button>
+                  <button type="button" class="chip-btn" data-ratio="33" aria-pressed="false">33:67</button>
+                  <button type="button" class="chip-btn" data-ratio="25" aria-pressed="false">25:75</button>
+                </div>
+                <p class="muted" style="font-size: 0.83rem; margin-top: 0.55rem;" data-copy="ratio_note">
+                  Adjustable from 50:50 (symmetric) down to 25:75 (longer exhale) in 1% steps—default 40:60 follows the Lehrer protocol.
+                </p>
               </div>
 
               <!-- Duration & Halfway Break (TRAIN mode) -->
@@ -2139,7 +2156,6 @@
           hero_eyebrow: 'Garmin Connect IQ App & Browser Pacer · Free & Offline',
           hero_title: 'Find and practice your resonance breathing rhythm',
           hero_intro: 'Peak Frequency is a free breath pacer for Garmin watches—and this page is its browser version and complete guide. This is a pet project, not a commercial product. The aim is simply to stick closely to published cardiovascular physiology rather than generic breathwork claims.',
-          hero_ui_note: '<strong>Known watch screen issue:</strong> On some Garmin watch screen sizes, parts of the on-screen text can still get cut off. That is a layout bug I have not solved yet—if something is cut off on your watch, all instructions and the full pacer live right here on this page.',
           cta_learn: 'How to Breathe Properly',
           cta_pacer: 'Try the Web Pacer',
           cta_store: 'Get the free Garmin Connect IQ App ↗',
@@ -2149,7 +2165,7 @@
           breathe_motto_body: 'Most of us normally breathe 12 to 18 times a minute, so slowing down to 5 or 6 breaths per minute feels strange at first. Do not feel discouraged if your first session feels slightly awkward—give yourself a few quiet sessions to get used to it. Once your nervous system trusts the pace, you stop working at it and simply ride the wave.',
           breathe_steps_heading: 'Four Simple Habits While You Practice',
           rule1_title: 'Keep it continuous—no breath holds',
-          rule1_body: 'Follow the 40% inhale / 60% exhale wave cleanly (for example ~4.2 s in and ~6.4 s out at 5.65 BPM). Turn gently from breathing in to breathing out and back without pausing (even brief breath holds spike chest pressure and interrupt the wave).',
+          rule1_body: 'Follow the smooth inhale / exhale wave cleanly—40:60 by default (for example ~4.2 s in and ~6.4 s out at 5.65 BPM), or adjusted between 50:50 and 25:75 in settings. Turn gently from breathing in to breathing out and back without pausing (even brief breath holds spike chest pressure and interrupt the wave).',
           rule2_title: 'Breathe softly through your nose into your belly',
           rule2_body: 'Let the air drift quietly in through your nose so your belly rises gently. Leave your upper chest, shoulders, and neck loose and still.',
           rule3_title: 'Release the exhale gently without pushing',
@@ -2192,6 +2208,8 @@
           est_note: 'Calculated with the Hasuo et al. regression formulas. Because height and sex explain only about half of individual differences, treat this purely as a comfortable starting point.',
           cadence_heading: 'Breathing Pace (Cadence)',
           bpm_unit_label: 'breaths / min',
+          ratio_heading: 'Breath Ratio (In : Out)',
+          ratio_note: 'Adjustable from 50:50 (symmetric) down to 25:75 (longer exhale) in 1% steps—default 40:60 follows the Lehrer protocol.',
           duration_heading: 'Practice Duration',
           duration_watch_note: 'Watch & Web options (5–20 min)',
           break_heading: 'Halfway Free-Breathing Break',
@@ -2330,7 +2348,6 @@
           hero_eyebrow: 'Garmin Connect IQ App & Browser-Pacer · Kostenlos & Offline',
           hero_title: 'Deinen persönlichen Resonanz-Atemrhythmus finden und üben',
           hero_intro: 'Peak Frequency ist ein kostenloser Atem-Pacer für Garmin-Uhren – und diese Seite ist die Browser-Version samt vollständiger Anleitung. Es ist ein privates Herzensprojekt, kein kommerzielles Produkt. Das Ziel ist schlicht, sich eng an die wissenschaftliche Physiologie zu halten statt an allgemeine Atem-Versprechen.',
-          hero_ui_note: '<strong>Bekanntes Darstellungsproblem auf manchen Uhren:</strong> Auf einigen Garmin-Displaygrößen wird Text am Rand noch abgeschnitten. Diesen Layout-Fehler habe ich noch nicht gelöst – falls auf deiner Uhr etwas abgeschnitten ist, findest du hier auf dieser Seite alle Hinweise und den kompletten Pacer.',
           cta_learn: 'So atmest du richtig',
           cta_pacer: 'Web-Pacer ausprobieren',
           cta_store: 'Kostenlos im Garmin Connect IQ Store ↗',
@@ -2340,7 +2357,7 @@
           breathe_motto_body: 'Normalerweise atmen wir im Alltag 12- bis 18-mal pro Minute. Auf 5 oder 6 Atemzüge pro Minute herunterzukommen fühlt sich am Anfang ungewohnt an – fast so, als müsse man besonders tief Luft holen. Das geht fast jedem so. Gib dir ein paar ruhige Durchgänge Zeit: Sobald dein Körper das Tempo kennt, musst du nichts mehr erzwingen.',
           breathe_steps_heading: 'Vier einfache Gewohnheiten für deine Übung',
           rule1_title: 'Fließender Übergang – kein Luftanhalten',
-          rule1_body: 'Folge der Welle aus 40 % Einatmen und 60 % Ausatmen (z. B. ~4,2 s ein und ~6,4 s aus bei 5,65 BPM). Gehe weich vom Einatmen ins Ausatmen über und zurück, ohne die Luft anzuhalten (selbst kurzes Anhalten erzeugt Brustdruck und stört die Welle).',
+          rule1_body: 'Folge der sanften Ein- und Ausatemwelle – standardmäßig 40:60 (z. B. ~4,2 s ein und ~6,4 s aus bei 5,65 BPM) oder in den Einstellungen von 50:50 bis 25:75 anpassbar. Gehe weich vom Einatmen ins Ausatmen über und zurück, ohne die Luft anzuhalten (selbst kurzes Anhalten erzeugt Brustdruck und stört die Welle).',
           rule2_title: 'Leise durch die Nase in den Bauch einatmen',
           rule2_body: 'Lass die Luft ruhig durch die Nase in deinen unteren Bauch strömen. Brustkorb, Schultern und Nacken bleiben dabei locker und ruhig.',
           rule3_title: 'Sanft ausatmen – nicht die Luft herauspressen',
@@ -2383,6 +2400,8 @@
           est_note: 'Berechnet mit den Regressionsformeln nach Hasuo et al. Da Körpergröße und Geschlecht nur etwa die Hälfte der Unterschiede zwischen Menschen erklären, dient dies nur als grober Startwert.',
           cadence_heading: 'Atemtempo (Kadenz)',
           bpm_unit_label: 'Atemzüge / Min.',
+          ratio_heading: 'Atemverhältnis (Ein : Aus)',
+          ratio_note: 'In 1-%-Schritten von 50:50 (symmetrisch) bis 25:75 (längeres Ausatmen) einstellbar – Standard 40:60 nach dem Lehrer-Protokoll.',
           duration_heading: 'Übungsdauer',
           duration_watch_note: 'Uhr & Web-Optionen (5–20 Min.)',
           break_heading: 'Halbzeitpause mit freiem Atmen',
@@ -2541,6 +2560,9 @@
       var selectedSex = (savedPrefs.sex === 'female') ? 'female' : 'male';
       var savedHeight = Math.max(130, Math.min(220, parseInt(savedPrefs.heightCm, 10) || 175));
       var savedCadence = Math.max(3.5, Math.min(8.5, parseFloat(savedPrefs.cadenceBpm) || parseFloat(PacerEngine.calculateEstimatedBpm(savedHeight, selectedSex))));
+      var inhaleRatioPct = (savedPrefs.inhaleRatioPct !== undefined && !isNaN(parseInt(savedPrefs.inhaleRatioPct, 10)))
+        ? Math.max(25, Math.min(50, parseInt(savedPrefs.inhaleRatioPct, 10)))
+        : 40;
       var sessionMode = 'TRAIN';
       var trainingDurationMin = ([5, 10, 15, 20].indexOf(parseInt(savedPrefs.durationMin, 10)) !== -1)
         ? parseInt(savedPrefs.durationMin, 10)
@@ -2561,6 +2583,7 @@
             sex: selectedSex,
             heightCm: parseInt(userHeightSlider.value, 10) || savedHeight,
             cadenceBpm: pacer ? pacer.engine.targetBpm : savedCadence,
+            inhaleRatioPct: inhaleRatioPct,
             durationMin: trainingDurationMin,
             halfwayBreakSec: halfwayBreakSec,
             hideTelemetry: hideTelemetry,
@@ -2611,6 +2634,11 @@
       var presetChipBtns = document.querySelectorAll('#presetChips .chip-btn');
       var cycleSecHint = document.getElementById('cycleSecHint');
       var cycleBreakdown = document.getElementById('cycleBreakdown');
+      var ratioSlider = document.getElementById('ratioSlider');
+      var ratioReadout = document.getElementById('ratioReadout');
+      var ratioMinusBtn = document.getElementById('ratioMinusBtn');
+      var ratioPlusBtn = document.getElementById('ratioPlusBtn');
+      var ratioPresetBtns = document.querySelectorAll('#ratioPresetChips .chip-btn');
 
       var trainDurationGroup = document.getElementById('trainDurationGroup');
       var durationBtns = document.querySelectorAll('.duration-btn');
@@ -2673,6 +2701,7 @@
       // Instantiate Pacer
       var pacer = new GarminPacer('#pacerDemoMount', {
         targetBpm: savedCadence,
+        inhaleRatioPct: inhaleRatioPct,
         sessionMode: 'TRAIN',
         trainingDurationMin: trainingDurationMin,
         halfwayBreakSec: halfwayBreakSec,
@@ -2844,8 +2873,8 @@
 
         var c = getCopy(currentLang);
         var cycleSec = 60.0 / clamped;
-        var inSec = cycleSec * 0.40;
-        var outSec = cycleSec * 0.60;
+        var inSec = cycleSec * (inhaleRatioPct / 100.0);
+        var outSec = cycleSec - inSec;
 
         if (cycleSecHint) {
           cycleSecHint.textContent = fmtNum(cycleSec, 1) + 's ' + c.cycle_unit;
@@ -2863,6 +2892,27 @@
           chip.setAttribute('aria-pressed', active ? 'true' : 'false');
         });
         savePrefs();
+      }
+
+      function updateRatioUI(pct, syncSlider) {
+        var clamped = Math.max(25, Math.min(50, Math.round(parseInt(pct, 10) || 40)));
+        inhaleRatioPct = clamped;
+        if (syncSlider && ratioSlider) {
+          ratioSlider.value = String(clamped);
+        }
+        if (ratioReadout) {
+          ratioReadout.textContent = clamped + ':' + (100 - clamped);
+        }
+        if (typeof pacer.setInhaleRatioPct === 'function') {
+          pacer.setInhaleRatioPct(clamped);
+        }
+        ratioPresetBtns.forEach(function (chip) {
+          var v = parseInt(chip.getAttribute('data-ratio'), 10);
+          var active = v === clamped;
+          chip.classList.toggle('active', active);
+          chip.setAttribute('aria-pressed', active ? 'true' : 'false');
+        });
+        updateCadenceUI(targetBpmInput ? targetBpmInput.value : savedCadence, false);
       }
 
       function updateEstimate(applyToCadence) {
@@ -3111,7 +3161,6 @@
 
         // Apply copy keys cleanly
         var htmlKeys = {
-          hero_ui_note: true,
           feedback_review_note: true,
           fb_item1: true,
           feedback_contact_note: true
@@ -3318,6 +3367,27 @@
         });
       });
 
+      if (ratioMinusBtn) {
+        ratioMinusBtn.addEventListener('click', function () {
+          updateRatioUI(inhaleRatioPct - 1, true);
+        });
+      }
+      if (ratioPlusBtn) {
+        ratioPlusBtn.addEventListener('click', function () {
+          updateRatioUI(inhaleRatioPct + 1, true);
+        });
+      }
+      if (ratioSlider) {
+        ratioSlider.addEventListener('input', function () {
+          updateRatioUI(ratioSlider.value, false);
+        });
+      }
+      ratioPresetBtns.forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          updateRatioUI(btn.getAttribute('data-ratio'), true);
+        });
+      });
+
       durationBtns.forEach(function (btn) {
         btn.addEventListener('click', function () {
           durationBtns.forEach(function (b) {
@@ -3449,6 +3519,13 @@
       sexFemaleBtn.classList.toggle('active', selectedSex === 'female');
       sexFemaleBtn.setAttribute('aria-pressed', selectedSex === 'female' ? 'true' : 'false');
       targetBpmInput.value = savedCadence.toFixed(2);
+      if (ratioSlider) ratioSlider.value = String(inhaleRatioPct);
+      if (ratioReadout) ratioReadout.textContent = inhaleRatioPct + ':' + (100 - inhaleRatioPct);
+      ratioPresetBtns.forEach(function (b) {
+        var active = parseInt(b.getAttribute('data-ratio'), 10) === inhaleRatioPct;
+        b.classList.toggle('active', active);
+        b.setAttribute('aria-pressed', active ? 'true' : 'false');
+      });
       if (chkHideTelemetry) chkHideTelemetry.checked = hideTelemetry;
       if (audioVolumeSlider) audioVolumeSlider.value = savedVolumePct;
       if (audioVolumeVal) audioVolumeVal.textContent = savedVolumePct + '%';

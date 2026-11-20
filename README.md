@@ -6,8 +6,6 @@ This is a pet project, not a commercial product, and the goal here is to stick c
 
 If you want to read all instructions clearly or try the browser version, have a look at the web version here: https://mesw.github.io/PeakFrequency/
 
-> **Known UI issue:** On some watch screen sizes, parts of the on-screen text can still get cut off. That is a layout bug I have not solved yet—if something is cut off on your watch, the full text and instructions are on the website above.
-
 ---
 
 ## Why Resonance Breathing Is Different
@@ -37,7 +35,7 @@ If height and biological sex are set in your Garmin user profile (`UserProfile`)
 Height and sex only explain roughly half of the variance between people, so the app uses this only as a starting estimate and tests around it empirically.
 
 ### 2. Two-Round Calibration (`Resonance Test`)
-- **Breath ratio:** Every paced cycle uses a continuous **40% inhale / 60% exhale** split with no breath holds.
+- **Breath ratio:** Continuous breath wave with no holds—**40:60** by default (40% inhale / 60% exhale), adjustable in Settings from **50:50** down to **25:75** in 1% increments for both Test and Training modes.
 - **Resting baseline:** Starts with **120 s** of free breathing.
 - **Round 1 (±0.25 BPM):** Runs **120 s** paced legs at `center`, `+0.25 BPM`, and `-0.25 BPM`, separated by **120 s** free-breathing rest intervals.
 - **Round 2 (±0.125 BPM):** Runs `+0.125 BPM` and `-0.125 BPM` around the Round 1 winner (plus the center reference) using the same 120 s stages and rest intervals, then locks the winning cadence.

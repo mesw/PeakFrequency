@@ -228,6 +228,28 @@
             </div>
             <small class="estimated-tag" id="estimatedTag">Estimated from body metrics</small>
           </div>
+
+          <!-- Breath Ratio Stepper, Slider & Presets (50:50 to 25:75) -->
+          <div class="form-group">
+            <div class="form-label-row">
+              <label for="ratioSlider" data-i18n="ratio_title">Breath Ratio</label>
+              <span class="value-chip chip-cyan" id="ratioBadge">40:60</span>
+            </div>
+            <div class="input-row">
+              <button type="button" class="step-btn" id="ratioMinus" aria-label="Decrease inhale percentage by 1">−1%</button>
+              <input type="range" id="ratioSlider" min="25" max="50" step="1" value="40" class="slider" aria-label="Inhale percentage from 25 to 50 percent">
+              <button type="button" class="step-btn" id="ratioPlus" aria-label="Increase inhale percentage by 1">+1%</button>
+            </div>
+            <div class="presets-row" role="group" aria-label="Quick Breath Ratio Presets">
+              <span class="presets-label" data-i18n="presets">Presets:</span>
+              <button type="button" class="preset-chip ratio-preset-chip" data-ratio="50">50:50</button>
+              <button type="button" class="preset-chip ratio-preset-chip" data-ratio="45">45:55</button>
+              <button type="button" class="preset-chip ratio-preset-chip active" data-ratio="40">40:60</button>
+              <button type="button" class="preset-chip ratio-preset-chip" data-ratio="33">33:67</button>
+              <button type="button" class="preset-chip ratio-preset-chip" data-ratio="25">25:75</button>
+            </div>
+            <small class="estimated-tag" id="ratioTimingTag">In: 4.2s | Out: 6.4s</small>
+          </div>
         </div>
       </div>
 
@@ -507,6 +529,7 @@
       const PHASE_PACE_SEC = 120;
       let baselineRsaBpm = 10.0;
       let trainingDurationMin = 20;
+      let inhaleRatioPct = 40;
 
       let completedBreathsCount = 0;
       const breathHistory = [];
@@ -537,9 +560,15 @@
       const userSexSelect = document.getElementById('userSex');
       const cycleSecHint = document.getElementById('cycleSecHint');
       const estimatedTag = document.getElementById('estimatedTag');
-      const presetChips = document.querySelectorAll('.preset-chip');
+      const presetChips = document.querySelectorAll('.preset-chip[data-bpm]');
       const bpmMinusBtn = document.getElementById('bpmMinus');
       const bpmPlusBtn = document.getElementById('bpmPlus');
+      const ratioSlider = document.getElementById('ratioSlider');
+      const ratioBadge = document.getElementById('ratioBadge');
+      const ratioMinusBtn = document.getElementById('ratioMinus');
+      const ratioPlusBtn = document.getElementById('ratioPlus');
+      const ratioPresetChips = document.querySelectorAll('.ratio-preset-chip');
+      const ratioTimingTag = document.getElementById('ratioTimingTag');
       const tabModeTest = document.getElementById('tabModeTest');
       const tabModeTrain = document.getElementById('tabModeTrain');
       const trainingConfigRow = document.getElementById('trainingConfigRow');
@@ -567,6 +596,7 @@
       // Initialize Pacer Component
       const pacer = new GarminPacer('#pacerDemoMount', {
         targetBpm: 5.65,
+        inhaleRatioPct: inhaleRatioPct,
         sessionMode: 'TEST',
         onTick: (data) => {
           totalElapsedSec = data.totalElapsedSec;
@@ -654,6 +684,29 @@
         });
       }
 
+      function updateRatioTimingTag() {
+        const bpm = parseFloat(targetBpmInput ? targetBpmInput.value : 5.65) || 5.65;
+        const cycleSec = 60.0 / bpm;
+        const inSec = cycleSec * (inhaleRatioPct / 100.0);
+        const outSec = cycleSec - inSec;
+        const inLbl = s.in_label || 'In';
+        const outLbl = s.out_label || 'Out';
+        if (ratioTimingTag) {
+          ratioTimingTag.textContent = `${inLbl}: ${inSec.toFixed(1)}s | ${outLbl}: ${outSec.toFixed(1)}s`;
+        }
+      }
+
+      function setInhaleRatioPct(pctVal, syncSlider) {
+        inhaleRatioPct = Math.max(25, Math.min(50, Math.round(parseInt(pctVal, 10) || 40)));
+        if (syncSlider && ratioSlider) ratioSlider.value = String(inhaleRatioPct);
+        if (ratioBadge) ratioBadge.textContent = `${inhaleRatioPct}:${100 - inhaleRatioPct}`;
+        if (typeof pacer.setInhaleRatioPct === 'function') pacer.setInhaleRatioPct(inhaleRatioPct);
+        ratioPresetChips.forEach(chip => {
+          chip.classList.toggle('active', parseInt(chip.dataset.ratio, 10) === inhaleRatioPct);
+        });
+        updateRatioTimingTag();
+      }
+
       // Functions
       function setTargetCadence(bpmVal, updateInputs) {
         const bpm = Math.max(3.50, Math.min(9.00, parseFloat(bpmVal) || 5.65));
@@ -669,6 +722,7 @@
         presetChips.forEach(chip => {
           chip.classList.toggle('active', Math.abs(parseFloat(chip.dataset.bpm) - bpm) < 0.01);
         });
+        updateRatioTimingTag();
       }
 
       function updateEstimate(autoApply = true) {
@@ -836,6 +890,30 @@
         });
       });
 
+      if (ratioMinusBtn) {
+        ratioMinusBtn.addEventListener('click', () => {
+          setInhaleRatioPct(inhaleRatioPct - 1, true);
+          pacer.triggerHaptic(15);
+        });
+      }
+      if (ratioPlusBtn) {
+        ratioPlusBtn.addEventListener('click', () => {
+          setInhaleRatioPct(inhaleRatioPct + 1, true);
+          pacer.triggerHaptic(15);
+        });
+      }
+      if (ratioSlider) {
+        ratioSlider.addEventListener('input', () => {
+          setInhaleRatioPct(ratioSlider.value, false);
+        });
+      }
+      ratioPresetChips.forEach(chip => {
+        chip.addEventListener('click', () => {
+          setInhaleRatioPct(chip.dataset.ratio, true);
+          pacer.triggerHaptic(20);
+        });
+      });
+
       btnStartPause.addEventListener('click', () => {
         if (pacer.isRunning) {
           pacer.pause();
@@ -942,6 +1020,7 @@
         if (badgeExcursionGoal) badgeExcursionGoal.textContent = `${s.lightbar_goal || 'Goal: 2× Base'}`;
 
         updateEstimate(false);
+        updateRatioTimingTag();
         if (antBiometrics) antBiometrics.renderVisuals();
       }
 
